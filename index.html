@@ -700,7 +700,7 @@ const THEMES = ['acid', 'paper', 'blocks'];
    로컬 전용 admin.html이 아래 한 줄을 만들어 줍니다.
    여기 id가 든 프로젝트는 화면에서 제거됩니다.
    (페이지 소스에는 남으니, 완전 삭제가 필요하면 HTML 블록을 지우세요)
-   예: const HIDDEN = new Set(['junan','score']);              */
+   숨기는 예시 → 괄호 안을 'junan','score' 처럼 채우면 됩니다       */
 const HIDDEN = new Set([]);
 document.querySelectorAll('.item[data-id]').forEach(d => {
   if (HIDDEN.has(d.dataset.id)) d.remove();
