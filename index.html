@@ -195,9 +195,14 @@ section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
 .item[open] .mk { transform:rotate(45deg); }
 .bd { padding:0 .6rem 2rem; max-width:44rem; }
 .bd p { color:var(--dim); font-size:.93rem; }
-.go { display:flex; gap:.9rem; flex-wrap:wrap; margin-top:1rem; }
-.go a { font-family:var(--mono); font-size:.65rem; letter-spacing:.06em; color:var(--accent);
-  border-bottom:1px solid currentColor; padding-bottom:.1rem; }
+.bd p + p { margin-top:.6rem; }
+/* 상세 탭: "자세히 보기"는 현재 보이는 화면의 표시 칩, "직접 구경하러 가기"는 외부 링크 */
+.tabs { display:flex; flex-wrap:wrap; gap:.45rem; margin-bottom:1rem; }
+.tab { font-family:var(--mono); font-size:.62rem; letter-spacing:.08em; text-transform:uppercase;
+  padding:.38rem .75rem; border:1px solid var(--line); border-radius:var(--radius); color:var(--dim); }
+.tab.on { background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+a.tab { transition:color .2s, border-color .2s, transform .18s ease; }
+a.tab:hover { color:var(--accent); border-color:var(--accent); transform:translateY(-2px); }
 
 /* --- ACID: 행 전체에 색이 차오름 --- */
 [data-theme="acid"] .list { border-top:1px solid var(--line); }
@@ -257,8 +262,10 @@ section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
 [data-theme="blocks"] .nm { display:block; font-size:1.4rem; letter-spacing:-.035em; }
 [data-theme="blocks"] .sb { display:block; font-family:var(--mono); font-size:.62rem; margin-top:.5rem; }
 [data-theme="blocks"] .bd { padding:0 1.1rem 1.2rem; margin-top:-.4rem; }
-[data-theme="blocks"] .go a { color:var(--fg); background:var(--c); border:2px solid var(--line);
-  padding:.25rem .6rem; border-bottom-width:2px; }
+[data-theme="blocks"] .tab { border:2px solid var(--line); }
+[data-theme="blocks"] .tab.on { background:var(--accent); color:var(--fg); }
+[data-theme="blocks"] a.tab { color:var(--fg); background:var(--c); }
+[data-theme="blocks"] a.tab:hover { box-shadow:3px 3px 0 var(--line); transform:translate(-2px,-2px); }
 
 /* ══════════════════════════════════════════════════════════════
    9. 경력
@@ -398,8 +405,11 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="mk">+</span>
           </summary>
           <div class="bd">
+            <div class="tabs">
+              <span class="tab on">자세히 보기</span>
+              <a class="tab" href="https://admin.yoonreka.app" target="_blank" rel="noopener">직접 구경하러 가기 ↗</a>
+            </div>
             <p>수업·학생·성적을 한곳에서 관리하는 웹/앱 시스템입니다. 자동 채점과 리포트 생성, 관리자 페이지, 학생·학부모용 앱, 온라인 강의 기능까지 포함합니다. 서비스 기획과 우선순위 결정, 기술 방향 자문, QA를 맡았습니다.</p>
-          <div class="go"><a href="https://admin.yoonreka.app" target="_blank" rel="noopener">admin.yoonreka.app ↗</a></div>
           </div>
         </details>
         <details class="item" style="--c:#7BE0C0">
@@ -411,8 +421,11 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="mk">+</span>
           </summary>
           <div class="bd">
+            <div class="tabs">
+              <span class="tab on">자세히 보기</span>
+              <a class="tab" href="https://moneyup.sale/" target="_blank" rel="noopener">직접 구경하러 가기 ↗</a>
+            </div>
             <p>오픈마켓·은행 계좌·카드를 연결해 매출을 자동으로 기록하고 분석하는 판매 관리 플랫폼입니다. 세무, CRM, 클레임, 상담 모듈을 붙여 정산부터 고객 응대까지 한 화면에서 처리하도록 설계했습니다.</p>
-          <div class="go"><a href="https://moneyup.sale/" target="_blank" rel="noopener">moneyup.sale ↗</a></div>
           </div>
         </details>
         <details class="item" style="--c:#FF8FB1">
@@ -424,8 +437,11 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="mk">+</span>
           </summary>
           <div class="bd">
+            <div class="tabs">
+              <span class="tab on">자세히 보기</span>
+              <a class="tab" href="https://myminiapp.life/" target="_blank" rel="noopener">직접 구경하러 가기 ↗</a>
+            </div>
             <p>애플리케이션 코드를 사고팔 수 있는 웹 플랫폼입니다. 기획부터 구현, 배포까지 개인 풀스택 MVP로 만들었습니다.</p>
-          <div class="go"><a href="https://myminiapp.life/" target="_blank" rel="noopener">myminiapp.life ↗</a></div>
           </div>
         </details>
         <details class="item" style="--c:#8FB8FF">
@@ -437,8 +453,12 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="mk">+</span>
           </summary>
           <div class="bd">
+            <div class="tabs">
+              <span class="tab on">자세히 보기</span>
+              <a class="tab" href="https://visamanager.life" target="_blank" rel="noopener">구경하러 가기 · visamanager ↗</a>
+              <a class="tab" href="https://vllife.lovable.app" target="_blank" rel="noopener">구경하러 가기 · vllife ↗</a>
+            </div>
             <p>회의와 일정, 강사 지원, 출근 확인, 서류 검토, OCR 기반 확인, 계약·문서 워크플로를 처리하는 내부 운영 도구입니다.</p>
-          <div class="go"><a href="https://visamanager.life" target="_blank" rel="noopener">visamanager.life ↗</a><a href="https://vllife.lovable.app" target="_blank" rel="noopener">vllife.lovable.app ↗</a></div>
           </div>
         </details>
         <details class="item" style="--c:#C9A7FF">
@@ -450,8 +470,12 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="mk">+</span>
           </summary>
           <div class="bd">
+            <div class="tabs">
+              <span class="tab on">자세히 보기</span>
+              <a class="tab" href="https://pronunce-phonics.lovable.app" target="_blank" rel="noopener">구경하러 가기 · 발음 훈련 ↗</a>
+              <a class="tab" href="https://stduykoreanwords.lovable.app" target="_blank" rel="noopener">구경하러 가기 · 어휘 학습 ↗</a>
+            </div>
             <p>알파벳 단계부터 연음까지 이어지는 발음 훈련 사이트와, 단어에서 구·문장·실전 회화로 확장되는 다국어 어휘 학습 사이트를 만들었습니다.</p>
-          <div class="go"><a href="https://pronunce-phonics.lovable.app" target="_blank" rel="noopener">pronunce-phonics ↗</a><a href="https://stduykoreanwords.lovable.app" target="_blank" rel="noopener">stduykoreanwords ↗</a></div>
           </div>
         </details>
         </div>
