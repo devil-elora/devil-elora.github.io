@@ -397,7 +397,7 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
       <div class="rise">
         <div class="group">Shipped — 배포된 제품</div>
         <div class="list">
-        <details class="item" style="--c:#FFD84D">
+        <details class="item" data-id="assistant" style="--c:#FFD84D">
           <summary>
             <span class="n"></span>
             <span class="tg">Platform</span>
@@ -413,7 +413,7 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <p>수업·학생·성적을 한곳에서 관리하는 웹/앱 시스템입니다. 자동 채점과 리포트 생성, 관리자 페이지, 학생·학부모용 앱, 온라인 강의 기능까지 포함합니다. 서비스 기획과 우선순위 결정, 기술 방향 자문, QA를 맡았습니다.</p>
           </div>
         </details>
-        <details class="item" style="--c:#7BE0C0">
+        <details class="item" data-id="moneyup" style="--c:#7BE0C0">
           <summary>
             <span class="n"></span>
             <span class="tg">Fullstack</span>
@@ -429,7 +429,7 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <p>오픈마켓·은행 계좌·카드를 연결해 매출을 자동으로 기록하고 분석하는 판매 관리 플랫폼입니다. 세무, CRM, 클레임, 상담 모듈을 붙여 정산부터 고객 응대까지 한 화면에서 처리하도록 설계했습니다.</p>
           </div>
         </details>
-        <details class="item" style="--c:#FF8FB1">
+        <details class="item" data-id="mini-app" style="--c:#FF8FB1">
           <summary>
             <span class="n"></span>
             <span class="tg">Fullstack</span>
@@ -445,7 +445,7 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <p>애플리케이션 코드를 사고팔 수 있는 웹 플랫폼입니다. 기획부터 구현, 배포까지 개인 풀스택 MVP로 만들었습니다.</p>
           </div>
         </details>
-        <details class="item" style="--c:#8FB8FF">
+        <details class="item" data-id="operations" style="--c:#8FB8FF">
           <summary>
             <span class="n"></span>
             <span class="tg">Ops</span>
@@ -462,7 +462,7 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <p>회의와 일정, 강사 지원, 출근 확인, 서류 검토, OCR 기반 확인, 계약·문서 워크플로를 처리하는 내부 운영 도구입니다.</p>
           </div>
         </details>
-        <details class="item" style="--c:#C9A7FF">
+        <details class="item" data-id="language" style="--c:#C9A7FF">
           <summary>
             <span class="n"></span>
             <span class="tg">Edu</span>
@@ -695,6 +695,16 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
    우측 상단 색 버튼으로 직접 바꿀 수도 있어요.
    ══════════════════════════════════════════════════════════════ */
 const THEMES = ['acid', 'paper', 'blocks'];
+
+/* ── 보이기/숨기기 (관리자 스위치) ─────────────────────
+   로컬 전용 admin.html이 아래 한 줄을 만들어 줍니다.
+   여기 id가 든 프로젝트는 화면에서 제거됩니다.
+   (페이지 소스에는 남으니, 완전 삭제가 필요하면 HTML 블록을 지우세요)
+   예: const HIDDEN = new Set(['junan','score']);              */
+const HIDDEN = new Set([]);
+document.querySelectorAll('.item[data-id]').forEach(d => {
+  if (HIDDEN.has(d.dataset.id)) d.remove();
+});
 
 function applyTheme(name) {
   document.documentElement.dataset.theme = name;
