@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELORA — Portfolio</title>
+<meta name="description" content="문제를 발견하고 제품까지 끌고 갑니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   1. 테마 토큰
+   ── 여기 값만 바꾸면 사이트 전체 인상이 바뀝니다.
+      새 테마를 만들려면 이 블록을 통째로 복사해서
+      [data-theme="이름"] 으로 이름만 바꾸세요.
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  --body-font: "Pretendard Variable", Pretendard, -apple-system, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --pad: clamp(1rem, 4vw, 3.5rem);
+  --maxw: 1220px;
+}
+
+/* ── 테마 A · ACID ─────────────────────────────── */
+[data-theme="acid"] {
+  --bg:#0B0B0C; --surface:#0B0B0C; --fg:#F4F4EF; --dim:#77777E;
+  --line:#242427; --accent:#D8FF47; --accent-ink:#000;
+  --display:"Anton", Impact, "Pretendard Variable", sans-serif;
+  --radius:0; --border:1px solid var(--line); --shadow:none;
+  --dots:none;
+}
+
+/* ── 테마 B · PAPER ────────────────────────────── */
+[data-theme="paper"] {
+  --bg:#F0EEE8; --surface:#E4E1D8; --fg:#14140F; --dim:#6E6C63;
+  --line:#CFCBBF; --accent:#FF3B14; --accent-ink:#FFF;
+  --display:"Archivo Black", Impact, "Pretendard Variable", sans-serif;
+  --radius:0; --border:1px solid var(--line); --shadow:none;
+  --dots:none;
+}
+
+/* ── 테마 E · BLOCKS ───────────────────────────── */
+[data-theme="blocks"] {
+  --bg:#FBF6EC; --surface:#FBF6EC; --fg:#101010; --dim:#5C5952;
+  --line:#101010; --accent:#FFD84D; --accent-ink:#101010;
+  --display:"Bricolage Grotesque", "Pretendard Variable", sans-serif;
+  --radius:0; --border:2.5px solid var(--line); --shadow:6px 6px 0 var(--line);
+  --dots:radial-gradient(var(--line) .6px, transparent .6px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   2. 기본 뼈대
+   ══════════════════════════════════════════════════════════════ */
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body {
+  background:var(--bg); color:var(--fg);
+  font-family:var(--body-font); line-height:1.7;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  background-image:var(--dots); background-size:22px 22px; background-position:-11px -11px;
+  transition:background-color .4s ease, color .4s ease;
+}
+a { color:inherit; text-decoration:none; }
+::selection { background:var(--accent); color:var(--accent-ink); }
+:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+.wrap { max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+.mono { font-family:var(--mono); font-size:.66rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--dim); }
+
+/* ══════════════════════════════════════════════════════════════
+   3. 상단 바 + 테마 전환 버튼
+   ══════════════════════════════════════════════════════════════ */
+.nav {
+  position:fixed; top:0; left:0; right:0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between; gap:.6rem;
+  padding:.65rem var(--pad); border-bottom:1px solid transparent; transition:.3s;
+}
+.nav.on { background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(14px); border-bottom-color:var(--line); }
+[data-theme="blocks"] .nav { background:var(--bg); border-bottom:var(--border); }
+.brand { font-family:var(--display); font-size:1rem; letter-spacing:.04em; }
+.nav-links { display:flex; gap:1.1rem; }
+.nav-links a { font-family:var(--mono); font-size:.64rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--dim); transition:color .2s; }
+.nav-links a:hover { color:var(--accent); }
+@media(max-width:760px) { .nav-links { display:none; } }
+
+.swatches { display:flex; gap:.35rem; }
+.sw {
+  width:26px; height:26px; border:1px solid var(--line); cursor:pointer;
+  border-radius:var(--radius); padding:0; transition:transform .18s ease;
+}
+.sw:hover { transform:translateY(-2px); }
+.sw[aria-pressed="true"] { outline:2px solid var(--accent); outline-offset:2px; }
+.sw-acid   { background:linear-gradient(135deg,#0B0B0C 50%,#D8FF47 50%); }
+.sw-paper  { background:linear-gradient(135deg,#F0EEE8 50%,#FF3B14 50%); }
+.sw-blocks { background:linear-gradient(135deg,#FBF6EC 50%,#FFD84D 50%); }
+
+/* ══════════════════════════════════════════════════════════════
+   4. 히어로
+   ══════════════════════════════════════════════════════════════ */
+.hero { min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  padding:7rem 0 3rem; }
+.hero-top { display:flex; justify-content:space-between; flex-wrap:wrap; gap:1.2rem;
+  margin-bottom:auto; padding-top:1.8rem; }
+.hero-top p { max-width:27rem; color:var(--dim); font-size:.95rem; }
+.hero-top p b { color:var(--fg); font-weight:600; }
+.nm1, .nm2 { font-family:var(--display); text-transform:uppercase;
+  font-size:clamp(3.2rem,15vw,13rem); line-height:.85; letter-spacing:-.02em; }
+
+/* 테마별 이름 처리 */
+[data-theme="acid"]  .nm2 { -webkit-text-stroke:1.5px var(--fg); color:transparent; }
+[data-theme="paper"] .nm1 { letter-spacing:-.035em; }
+[data-theme="paper"] .nm2 { color:var(--accent); letter-spacing:-.035em; margin-left:.12em; }
+[data-theme="blocks"] .nm1 { letter-spacing:-.05em; }
+[data-theme="blocks"] .nm2 { letter-spacing:-.05em; }
+[data-theme="blocks"] .nm2 span { background:var(--accent); border:var(--border);
+  box-shadow:var(--shadow); padding:0 .1em; display:inline-block; transform:rotate(-1deg); }
+
+.hero-meta { display:flex; justify-content:space-between; align-items:flex-end;
+  flex-wrap:wrap; gap:1rem; margin-top:1.6rem; padding-top:1.2rem; border-top:1px solid var(--line); }
+.kr { font-size:1rem; letter-spacing:.45em; font-weight:700; }
+#clock { font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; color:var(--dim); }
+[data-theme="blocks"] #clock { background:#FF8FB1; border:var(--border);
+  box-shadow:4px 4px 0 var(--line); padding:.35rem .8rem; color:var(--fg); }
+
+/* ══════════════════════════════════════════════════════════════
+   5. 흐르는 띠 (마키)
+   ══════════════════════════════════════════════════════════════ */
+.marquee { overflow:hidden; padding:.5rem 0; background:var(--accent); color:var(--accent-ink);
+  border-top:var(--border); border-bottom:var(--border); }
+[data-theme="blocks"] .marquee { background:var(--fg); color:var(--bg); }
+.marquee-track { display:flex; width:max-content; animation:slide 30s linear infinite; }
+.marquee span { font-family:var(--mono); font-size:.7rem; font-weight:500; letter-spacing:.18em;
+  text-transform:uppercase; padding:0 1.2rem; white-space:nowrap; }
+@keyframes slide { to { transform:translateX(-50%); } }
+.marquee:hover .marquee-track { animation-play-state:paused; }
+
+/* ══════════════════════════════════════════════════════════════
+   6. 섹션 제목
+   ══════════════════════════════════════════════════════════════ */
+section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
+.head { display:flex; align-items:baseline; gap:1rem; margin-bottom:2.4rem; flex-wrap:wrap; }
+.head .num { font-family:var(--mono); font-size:.66rem; color:var(--accent); letter-spacing:.14em; }
+.head h2 { font-family:var(--display); text-transform:uppercase;
+  font-size:clamp(1.9rem,6.5vw,4rem); line-height:.92; letter-spacing:-.03em; }
+[data-theme="blocks"] .head h2 { background:var(--surface); border:var(--border);
+  box-shadow:var(--shadow); padding:.15em .5em; transform:rotate(-.8deg); }
+
+/* ══════════════════════════════════════════════════════════════
+   7. 소개
+   ══════════════════════════════════════════════════════════════ */
+.about { display:grid; grid-template-columns:1.15fr .85fr;
+  gap:clamp(1.5rem,5vw,3.5rem); align-items:start; }
+@media(max-width:860px) { .about { grid-template-columns:1fr; } }
+.lede { font-size:clamp(1.2rem,2.8vw,1.9rem); line-height:1.38; font-weight:700; letter-spacing:-.02em; }
+[data-theme="blocks"] .lede { font-family:var(--display); }
+.about p + p { margin-top:1.1rem; color:var(--dim); font-size:.95rem; }
+.facts { border:var(--border); box-shadow:var(--shadow); background:var(--surface);
+  padding:.3rem 1.1rem; border-radius:var(--radius); }
+[data-theme="acid"] .facts, [data-theme="paper"] .facts { border-width:0; border-top:2px solid var(--fg); }
+.facts div { display:flex; justify-content:space-between; gap:.9rem; padding:.75rem 0;
+  border-bottom:1px solid var(--line); }
+.facts div:last-child { border-bottom:0; }
+.facts dt { font-family:var(--mono); font-size:.62rem; letter-spacing:.12em;
+  text-transform:uppercase; flex:none; padding-top:.2rem; color:var(--dim); }
+[data-theme="acid"] .facts dt { color:var(--accent); }
+.facts dd { font-size:.86rem; text-align:right; color:var(--dim); }
+
+/* ══════════════════════════════════════════════════════════════
+   8. 프로젝트 목록  ← 테마마다 모양이 가장 크게 달라지는 부분
+   ══════════════════════════════════════════════════════════════ */
+.group { display:inline-block; font-family:var(--mono); font-size:.64rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--accent); margin-bottom:1rem; }
+.group.two { margin-top:3rem; }
+[data-theme="paper"] .group { display:block; padding-bottom:.5rem; border-bottom:2px solid var(--fg); }
+[data-theme="blocks"] .group { background:var(--fg); color:var(--bg); padding:.3rem .8rem; }
+
+.list { counter-reset:item; }
+.item { border-bottom:1px solid var(--line); }
+.item summary { list-style:none; cursor:pointer; position:relative; overflow:hidden;
+  display:grid; gap:.4rem 1rem; align-items:baseline; padding:1.3rem .6rem;
+  transition:background .25s, padding-left .35s ease, color .3s; }
+.item summary::-webkit-details-marker { display:none; }
+.n { font-family:var(--mono); font-size:.66rem; color:var(--dim); }
+.n::before { counter-increment:item; content:counter(item, decimal-leading-zero); }
+.tg { font-family:var(--mono); font-size:.58rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); white-space:nowrap; }
+.nm { font-family:var(--display); font-weight:800; font-synthesis-weight:none; font-size:clamp(1.25rem,3.4vw,2rem); line-height:1.05;
+  letter-spacing:-.025em; text-transform:uppercase; transition:color .25s; }
+.sb { font-size:.81rem; color:var(--dim); line-height:1.45; }
+.mk { font-family:var(--mono); color:var(--accent); transition:transform .35s; justify-self:end; }
+.item[open] .mk { transform:rotate(45deg); }
+.bd { padding:0 .6rem 2rem; max-width:44rem; }
+.bd p { color:var(--dim); font-size:.93rem; }
+.go { display:flex; gap:.9rem; flex-wrap:wrap; margin-top:1rem; }
+.go a { font-family:var(--mono); font-size:.65rem; letter-spacing:.06em; color:var(--accent);
+  border-bottom:1px solid currentColor; padding-bottom:.1rem; }
+
+/* --- ACID: 행 전체에 색이 차오름 --- */
+[data-theme="acid"] .list { border-top:1px solid var(--line); }
+[data-theme="acid"] .item summary { grid-template-columns:auto 1fr auto;
+  grid-template-areas:"tg nm mk" ".  sb  ."; }
+[data-theme="acid"] .n { display:none; }
+[data-theme="acid"] .tg { grid-area:tg; border:1px solid var(--line);
+  border-radius:99px; padding:.2rem .5rem; }
+[data-theme="acid"] .nm { grid-area:nm; }
+[data-theme="acid"] .sb { grid-area:sb; }
+[data-theme="acid"] .mk { grid-area:mk; }
+[data-theme="acid"] .item summary::before { content:""; position:absolute; inset:0;
+  background:var(--accent); transform:scaleX(0); transform-origin:left;
+  transition:transform .45s cubic-bezier(.19,1,.22,1); z-index:0; }
+[data-theme="acid"] .item summary > * { position:relative; z-index:1; }
+@media(hover:hover) {
+  [data-theme="acid"] .item summary:hover::before { transform:scaleX(1); }
+  [data-theme="acid"] .item summary:hover { color:var(--accent-ink); }
+  [data-theme="acid"] .item summary:hover .tg,
+  [data-theme="acid"] .item summary:hover .sb,
+  [data-theme="acid"] .item summary:hover .mk { color:var(--accent-ink); border-color:var(--accent-ink); }
+}
+[data-theme="acid"] .bd { padding-left:5.2rem; }
+
+/* --- PAPER: 번호가 붙은 목록 --- */
+[data-theme="paper"] .list { border-top:2px solid var(--fg); }
+[data-theme="paper"] .item summary {
+  grid-template-columns:2.8rem minmax(0,auto) 1fr auto 1.2rem;
+  grid-template-areas:"n nm sb tg mk"; }
+[data-theme="paper"] .n { grid-area:n; }
+[data-theme="paper"] .nm { grid-area:nm; white-space:nowrap; }
+[data-theme="paper"] .sb { grid-area:sb; }
+[data-theme="paper"] .tg { grid-area:tg; }
+[data-theme="paper"] .mk { grid-area:mk; }
+[data-theme="paper"] .item summary:hover { background:var(--surface); padding-left:1.4rem; }
+[data-theme="paper"] .item summary:hover .nm { color:var(--accent); }
+[data-theme="paper"] .bd { padding-left:3.4rem; }
+@media(max-width:760px) {
+  [data-theme="paper"] .item summary { grid-template-columns:2.2rem 1fr 1.2rem;
+    grid-template-areas:"n nm mk" ". sb ." ". tg ."; }
+  [data-theme="paper"] .nm { white-space:normal; }
+  [data-theme="paper"] .bd { padding-left:2.8rem; }
+}
+
+/* --- BLOCKS: 카드 격자 (항상 펼침) --- */
+[data-theme="blocks"] .list { display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(285px,1fr)); gap:1.3rem; }
+[data-theme="blocks"] .item { border:var(--border); box-shadow:var(--shadow);
+  background:var(--surface); overflow:hidden; display:flex; flex-direction:column;
+  transition:transform .2s ease, box-shadow .2s ease; }
+@media(hover:hover) { [data-theme="blocks"] .item:hover {
+  transform:translate(-4px,-4px); box-shadow:11px 11px 0 var(--line); } }
+[data-theme="blocks"] .item summary { display:block; cursor:default; padding:1.1rem; }
+[data-theme="blocks"] .n, [data-theme="blocks"] .mk { display:none; }
+[data-theme="blocks"] .tg { display:block; background:var(--c); color:var(--fg);
+  border-bottom:var(--border); margin:-1.1rem -1.1rem 1rem; padding:.5rem .9rem; font-weight:500; }
+[data-theme="blocks"] .nm { display:block; font-size:1.4rem; letter-spacing:-.035em; }
+[data-theme="blocks"] .sb { display:block; font-family:var(--mono); font-size:.62rem; margin-top:.5rem; }
+[data-theme="blocks"] .bd { padding:0 1.1rem 1.2rem; margin-top:-.4rem; }
+[data-theme="blocks"] .go a { color:var(--fg); background:var(--c); border:2px solid var(--line);
+  padding:.25rem .6rem; border-bottom-width:2px; }
+
+/* ══════════════════════════════════════════════════════════════
+   9. 경력
+   ══════════════════════════════════════════════════════════════ */
+.path { max-width:56rem; }
+.stop { display:grid; grid-template-columns:9.5rem 1fr; gap:1.3rem;
+  padding:1.5rem 0; border-bottom:1px solid var(--line); align-items:start; }
+.stop:first-child { border-top:1px solid var(--line); }
+.when { font-family:var(--mono); font-size:.66rem; color:var(--accent);
+  letter-spacing:.05em; padding-top:.35rem; }
+.sc h3 { font-size:1.02rem; font-weight:700; }
+.where { font-family:var(--mono); font-size:.66rem; color:var(--dim); margin-bottom:.45rem; }
+.sc ul { margin-left:1rem; color:var(--dim); font-size:.89rem; }
+.sc li { margin-top:.25rem; }
+[data-theme="blocks"] .stop { border:0; padding:0 0 1.1rem; }
+[data-theme="blocks"] .stop:first-child { border-top:0; }
+[data-theme="blocks"] .when { background:var(--accent); border:var(--border);
+  box-shadow:3px 3px 0 var(--line); padding:.3rem .6rem; text-align:center; color:var(--fg); }
+[data-theme="blocks"] .sc { border:var(--border); box-shadow:var(--shadow);
+  background:var(--surface); padding:1rem 1.2rem; }
+@media(max-width:620px) { .stop { grid-template-columns:1fr; gap:.4rem; }
+  [data-theme="blocks"] .when { justify-self:start; } }
+
+/* ══════════════════════════════════════════════════════════════
+   10. 기술
+   ══════════════════════════════════════════════════════════════ */
+.skills { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.3rem; }
+.sk h3 { font-family:var(--mono); font-size:.64rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:.8rem; padding-bottom:.55rem; border-bottom:1px solid var(--line); }
+.sk ul { list-style:none; }
+.sk li { font-size:.88rem; padding:.3rem 0; color:var(--dim); }
+.sk li::before { content:"— "; color:var(--line); }
+[data-theme="blocks"] .sk { border:var(--border); box-shadow:var(--shadow); background:var(--surface); }
+[data-theme="blocks"] .sk h3 { font-family:var(--display); font-size:1rem; letter-spacing:-.02em;
+  color:var(--fg); background:var(--c); border-bottom:var(--border); padding:.5rem .9rem; margin:0; }
+[data-theme="blocks"] .sk ul { padding:.7rem .9rem 1rem; }
+[data-theme="blocks"] .sk li::before { content:""; }
+
+/* ══════════════════════════════════════════════════════════════
+   11. 연락처 · 푸터
+   ══════════════════════════════════════════════════════════════ */
+.mail { display:inline-block; font-family:var(--display);
+  font-size:clamp(1.2rem,5.5vw,4rem); line-height:1; letter-spacing:-.03em;
+  margin:.8rem 0 2rem; word-break:break-all; transition:color .25s; }
+.mail:hover { color:var(--accent); }
+[data-theme="blocks"] .mail { background:var(--accent); border:var(--border);
+  box-shadow:var(--shadow); padding:.3em .5em; transform:rotate(-.8deg); }
+[data-theme="blocks"] .mail:hover { color:var(--fg);
+  transform:rotate(-.8deg) translate(-3px,-3px); box-shadow:10px 10px 0 var(--line); }
+footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
+  justify-content:space-between; flex-wrap:wrap; gap:.8rem; font-family:var(--mono);
+  font-size:.62rem; letter-spacing:.13em; color:var(--dim); text-transform:uppercase; }
+[data-theme="blocks"] footer { background:var(--fg); color:var(--bg); }
+
+/* ══════════════════════════════════════════════════════════════
+   12. 스크롤 등장 · 접근성
+   ══════════════════════════════════════════════════════════════ */
+.rise { opacity:0; transform:translateY(22px);
+  transition:opacity .7s ease, transform .7s cubic-bezier(.19,1,.22,1); }
+.rise.in { opacity:1; transform:none; }
+@media(prefers-reduced-motion:reduce) {
+  *, *::before, *::after { animation:none !important; transition:none !important; }
+  .rise { opacity:1 !important; transform:none !important; }
+  html { scroll-behavior:auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="brand">ELORA</div>
+  <nav class="nav-links">
+    <a href="#about">About</a><a href="#work">Work</a><a href="#path">Path</a>
+    <a href="#skills">Skills</a><a href="#contact">Contact</a>
+  </nav>
+  <div class="swatches" role="group" aria-label="테마 선택">
+    <button class="sw sw-acid"   data-set="acid"   aria-label="Acid 테마"   aria-pressed="false"></button>
+    <button class="sw sw-paper"  data-set="paper"  aria-label="Paper 테마"  aria-pressed="false"></button>
+    <button class="sw sw-blocks" data-set="blocks" aria-label="Blocks 테마" aria-pressed="false"></button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <!-- ══ 히어로 ══ -->
+    <section class="hero" id="top">
+      <div class="hero-top">
+        <div class="mono">Portfolio / 2026 / Seoul</div>
+        <p><b>문제를 발견하고 제품까지 끌고 갑니다.</b><br>기획 · UX 구조 · 구현 · QA를 한 사람이 이어서 하는 방식으로 여러 개의 MVP를 실제로 배포했습니다.</p>
+      </div>
+      <div class="nm1">ELORA</div>
+      <div class="nm2"><span>BUILDER</span></div>
+      <div class="hero-meta">
+        <div>
+          <div class="kr">가 윤</div>
+          <div class="mono" style="margin-top:.45rem">AI Product Planner · PM · QA Manager</div>
+        </div>
+        <div id="clock">— — : — — KST</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="marquee" aria-hidden="true"><div class="marquee-track" id="ticker"></div></div>
+
+  <div class="wrap">
+    <!-- ══ 소개 ══ -->
+    <section id="about">
+      <div class="head"><span class="num">(01)</span><h2>About</h2></div>
+      <div class="about rise">
+        <div>
+          <p class="lede">기획서에서 멈추지 않고, 배포된 URL까지 만들어 놓는 편입니다.</p>
+          <p>교육 관리 플랫폼의 기획과 QA를 맡으면서 자동 채점·리포트 생성·학부모 앱까지 하나의 흐름으로 묶는 일을 해왔습니다. 동시에 개인 제품으로 판매 관리 시스템, 코드 마켓플레이스, 발음 학습 사이트 등을 문제 정의부터 배포까지 직접 만들었어요. AI 도구로 개발 속도를 끌어올리되, 제품 로직과 사용성은 제 손으로 붙잡는 것을 원칙으로 합니다.</p>
+          <p>지금은 교육과 AI 제품을 다루는 브랜드 AIVERSE를 준비하고 있습니다.</p>
+        </div>
+        <dl class="facts">
+        <div><dt>Role</dt><dd>Product Planner · PM · QA</dd></div>
+        <div><dt>Build</dt><dd>Python · Django · HTML · Java</dd></div>
+        <div><dt>AI Tools</dt><dd>Claude · Cursor · Lovable</dd></div>
+        <div><dt>Focus</dt><dd>교육 · AI 제품 · 사업화</dd></div>
+        <div><dt>Based</dt><dd>Seoul, KR</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ══ 프로젝트 ══ -->
+    <section id="work">
+      <div class="head"><span class="num">(02)</span><h2>Work</h2></div>
+      <div class="rise">
+        <div class="group">Shipped — 배포된 제품</div>
+        <div class="list">
+        <details class="item" style="--c:#FFD84D">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Platform</span>
+            <span class="nm">나의 조교 어플</span>
+            <span class="sb">교육 관리 &amp; AI 리포트 플랫폼 · 2025.01 —</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>수업·학생·성적을 한곳에서 관리하는 웹/앱 시스템입니다. 자동 채점과 리포트 생성, 관리자 페이지, 학생·학부모용 앱, 온라인 강의 기능까지 포함합니다. 서비스 기획과 우선순위 결정, 기술 방향 자문, QA를 맡았습니다.</p>
+          <div class="go"><a href="https://admin.yoonreka.app" target="_blank" rel="noopener">admin.yoonreka.app ↗</a></div>
+          </div>
+        </details>
+        <details class="item" style="--c:#7BE0C0">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Fullstack</span>
+            <span class="nm">MoneyUp</span>
+            <span class="sb">판매·세무·고객·클레임 통합 관리 · 2026.05—06</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>오픈마켓·은행 계좌·카드를 연결해 매출을 자동으로 기록하고 분석하는 판매 관리 플랫폼입니다. 세무, CRM, 클레임, 상담 모듈을 붙여 정산부터 고객 응대까지 한 화면에서 처리하도록 설계했습니다.</p>
+          <div class="go"><a href="https://moneyup.sale/" target="_blank" rel="noopener">moneyup.sale ↗</a></div>
+          </div>
+        </details>
+        <details class="item" style="--c:#FF8FB1">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Fullstack</span>
+            <span class="nm">Mini App</span>
+            <span class="sb">웹앱 코드 거래 마켓플레이스 · 2026.06</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>애플리케이션 코드를 사고팔 수 있는 웹 플랫폼입니다. 기획부터 구현, 배포까지 개인 풀스택 MVP로 만들었습니다.</p>
+          <div class="go"><a href="https://myminiapp.life/" target="_blank" rel="noopener">myminiapp.life ↗</a></div>
+          </div>
+        </details>
+        <details class="item" style="--c:#8FB8FF">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Ops</span>
+            <span class="nm">Operations</span>
+            <span class="sb">내부 관리 · 프리랜서 강사 운영 사이트 · 2026.06</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>회의와 일정, 강사 지원, 출근 확인, 서류 검토, OCR 기반 확인, 계약·문서 워크플로를 처리하는 내부 운영 도구입니다.</p>
+          <div class="go"><a href="https://visamanager.life" target="_blank" rel="noopener">visamanager.life ↗</a><a href="https://vllife.lovable.app" target="_blank" rel="noopener">vllife.lovable.app ↗</a></div>
+          </div>
+        </details>
+        <details class="item" style="--c:#C9A7FF">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Edu</span>
+            <span class="nm">Language</span>
+            <span class="sb">발음 훈련 · 다국어 어휘 학습 사이트 · 2026.06</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>알파벳 단계부터 연음까지 이어지는 발음 훈련 사이트와, 단어에서 구·문장·실전 회화로 확장되는 다국어 어휘 학습 사이트를 만들었습니다.</p>
+          <div class="go"><a href="https://pronunce-phonics.lovable.app" target="_blank" rel="noopener">pronunce-phonics ↗</a><a href="https://stduykoreanwords.lovable.app" target="_blank" rel="noopener">stduykoreanwords ↗</a></div>
+          </div>
+        </details>
+        </div>
+        <div class="group two">Building — 만드는 중</div>
+        <div class="list">
+        <details class="item" style="--c:#FFB067">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Edu</span>
+            <span class="nm">구문분석기</span>
+            <span class="sb">영어 문장 구조를 분해해 보여주는 학습 사이트</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>영어 문장의 구조를 분석해 시각적으로 보여주는 웹사이트입니다.</p>
+          </div>
+        </details>
+        <details class="item" style="--c:#A8E063">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">CLI</span>
+            <span class="nm">모의고사 엔진</span>
+            <span class="sb">영어 문항 자동 출제 커맨드라인 도구</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>영어 모의고사 문항을 자동으로 생성하는 커맨드라인 엔진입니다.</p>
+          </div>
+        </details>
+        <details class="item" style="--c:#FF9F9F">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Web App</span>
+            <span class="nm">무지개 우체국</span>
+            <span class="sb">베타 웹앱</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>무지개 우체국 베타 웹앱을 구현했습니다.</p>
+          </div>
+        </details>
+        <details class="item" style="--c:#FFD84D">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">App</span>
+            <span class="nm">Calendar</span>
+            <span class="sb">외부 의존 없이 직접 구현한 일정 관리</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>기존 라이브러리에 기대지 않고 캘린더를 독립적으로 구현했습니다.</p>
+          </div>
+        </details>
+        <details class="item" style="--c:#7BE0C0">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">App</span>
+            <span class="nm">네이버 웍스</span>
+            <span class="sb">업무용 메신저 기능 구현</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>네이버 웍스 앱의 기능을 구현했습니다.</p>
+          </div>
+        </details>
+        <details class="item" style="--c:#FF8FB1">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Music</span>
+            <span class="nm">Score</span>
+            <span class="sb">음악을 악보로 변환하는 프로그램</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>연주나 음원을 받아 악보 형태로 바꿔주는 변환 도구입니다.</p>
+          </div>
+        </details>
+        <details class="item" style="--c:#8FB8FF">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Game</span>
+            <span class="nm">Junan</span>
+            <span class="sb">게임 프로젝트 · 개발 및 인수인계</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>게임 프로젝트 Junan의 개발과 인수인계 문서화를 맡았습니다.</p>
+          </div>
+        </details>
+        <details class="item" style="--c:#C9A7FF">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">WIP</span>
+            <span class="nm">가사 생성기</span>
+            <span class="sb">기획 단계</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <p>가사를 만들어주는 프로그램을 기획하고 구조를 설계하는 중입니다.</p>
+          </div>
+        </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 경력 ══ -->
+    <section id="path">
+      <div class="head"><span class="num">(03)</span><h2>Path</h2></div>
+      <div class="path rise">
+      <div class="stop">
+        <div class="when">2026 — NOW</div>
+        <div class="sc">
+          <h3>Founder in Preparation</h3>
+          <div class="where">AIVERSE</div>
+          <ul><li>교육과 웹/앱 서비스, 실용적인 AI 제품 개발을 축으로 하는 브랜드 준비</li><li>서비스 컨셉, MVP 범위, 사용자 플로우, 출시 전략 정의</li></ul>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="when">2025.01 — NOW</div>
+        <div class="sc">
+          <h3>AI Product Planner / PM / QA Manager</h3>
+          <div class="where">나의 조교 어플</div>
+          <ul><li>학생·학부모 앱, 관리자 대시보드, 자동 채점, 리포트 생성, 온라인 강의를 포함한 교육 관리 플랫폼 기획 및 운영</li><li>기술 방향과 개발 우선순위 자문, 품질 관리 전반 담당</li></ul>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="when">2026.05 — NOW</div>
+        <div class="sc">
+          <h3>AI-Assisted Full-Stack Product Builder</h3>
+          <div class="where">Personal Web/App Products</div>
+          <ul><li>문제 발견부터 제품 기획, UX 구조, 구현, 테스트, 개선까지 이어지는 MVP 다수 배포</li><li>AI 도구로 개발 속도를 높이되 제품 로직과 사용성은 직접 설계</li></ul>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="when">Certificate</div>
+        <div class="sc">
+          <h3>서울대학교 AI 영어교육 프로그램 수료</h3>
+          <div class="where">Seoul National University</div>
+          <ul><li>AI 기술과 영어교육 서비스 설계를 잇는 관점을 다졌습니다</li></ul>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="when">2026</div>
+        <div class="sc">
+          <h3>AI Startup Hackathon</h3>
+          <div class="where">참가</div>
+          <ul><li>바이브 코딩으로 프로그램을 만들지만 제품화·판매·QA·패키징에서 막히는 개발자와 빌더를 위한 솔루션 준비 중</li></ul>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ══ 기술 ══ -->
+    <section id="skills">
+      <div class="head"><span class="num">(04)</span><h2>Skills</h2></div>
+      <div class="skills rise">
+      <div class="sk" style="--c:#FFD84D">
+        <h3>Product</h3>
+        <ul><li>AI 서비스 기획 및 프로덕트 관리</li><li>QA 관리 · 사용자 플로우 테스트</li><li>교육 AI 콘텐츠 설계</li><li>스타트업 아이데이션 · 사업화 전략</li></ul>
+      </div>
+      <div class="sk" style="--c:#7BE0C0">
+        <h3>Build</h3>
+        <ul><li>HTML · Java · Python · Django</li><li>AI 기반 풀스택 MVP 구축</li><li>GitHub · Notion · Figma · VS Code</li><li>ChatGPT · Claude · Gemini · Lovable · Cursor</li></ul>
+      </div>
+      <div class="sk" style="--c:#FF8FB1">
+        <h3>Language</h3>
+        <ul><li>한국어 — 모국어</li><li>English — 교육 및 비즈니스 커뮤니케이션</li></ul>
+      </div>
+      </div>
+    </section>
+
+    <!-- ══ 연락처 ══ -->
+    <section id="contact">
+      <div class="head"><span class="num">(05)</span><h2>Say hi</h2></div>
+      <div class="rise">
+        <p style="color:var(--dim);max-width:32rem">함께 만들고 싶은 제품이 있다면, 협업이나 채용 제안이라면, 편하게 메일 주세요.</p>
+        <a class="mail" href="mailto:devil.elora@gmail.com">devil.elora@gmail.com</a>
+
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div>© 2026 ELORA</div>
+  <div><a href="#top">Back to top ↑</a></div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   테마: 페이지를 열 때마다 셋 중 하나가 무작위로 걸립니다.
+   우측 상단 색 버튼으로 직접 바꿀 수도 있어요.
+   ══════════════════════════════════════════════════════════════ */
+const THEMES = ['acid', 'paper', 'blocks'];
+
+function applyTheme(name) {
+  document.documentElement.dataset.theme = name;
+
+  // 버튼 눌림 상태
+  document.querySelectorAll('.sw').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.set === name))
+  );
+
+  // blocks 테마는 카드 격자라 전부 펼쳐 두고,
+  // 나머지 두 테마는 아코디언(한 번에 하나만)으로 동작합니다.
+  const isCards = name === 'blocks';
+  document.querySelectorAll('.item').forEach((d, i) => {
+    d.open = isCards || i === 0;
+  });
+}
+
+// 시작할 때 무작위 선택
+applyTheme(THEMES[Math.floor(Math.random() * THEMES.length)]);
+
+// 색 버튼
+document.querySelectorAll('.sw').forEach(b =>
+  b.addEventListener('click', () => applyTheme(b.dataset.set))
+);
+
+/* 아코디언: 하나를 열면 같은 묶음의 나머지는 닫힘 */
+document.querySelectorAll('.list').forEach(list => {
+  const rows = list.querySelectorAll('.item');
+  rows.forEach(d => d.addEventListener('toggle', () => {
+    if (d.open && document.documentElement.dataset.theme !== 'blocks') {
+      rows.forEach(o => { if (o !== d) o.open = false; });
+    }
+  }));
+});
+
+/* 스크롤하면 상단 바에 배경이 생김 */
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('on', scrollY > 30), { passive:true });
+
+/* 화면에 들어오면 스르륵 나타남 */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, { threshold:.08 });
+document.querySelectorAll('.rise').forEach(el => io.observe(el));
+
+/* 흐르는 띠: 같은 목록을 두 번 이어 붙여 끊김 없이 반복 */
+const WORDS = ['Product Planning', 'QA', 'Education AI', 'Full-stack MVP', 'Django', 'Startup', 'AIVERSE', 'Seoul'];
+document.getElementById('ticker').innerHTML =
+  WORDS.concat(WORDS).map(w => `<span>${w} ✦</span>`).join('');
+
+/* 서울 시각 */
+const clock = document.getElementById('clock');
+const tick = () => clock.textContent =
+  new Date().toLocaleTimeString('en-GB', { timeZone:'Asia/Seoul', hour:'2-digit', minute:'2-digit' }) + ' KST';
+tick();
+setInterval(tick, 20000);
+</script>
+</body>
+</html>
