@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ELORA — Portfolio</title>
-<meta name="description" content="문제를 발견하고 제품까지 끌고 갑니다.">
+<title>ELORA — AI 웹서비스 개발 · 기획부터 운영까지</title>
+<meta name="description" content="AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다. 라이브 서비스 9개 운영 중 — 교육·문서 자동화, 사내 도구, AI 연동 전문.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -105,8 +105,22 @@ a { color:inherit; text-decoration:none; }
   padding:7rem 0 3rem; }
 .hero-top { display:flex; justify-content:space-between; flex-wrap:wrap; gap:1.2rem;
   margin-bottom:auto; padding-top:1.8rem; }
-.hero-top p { max-width:27rem; color:var(--dim); font-size:.95rem; }
-.hero-top p b { color:var(--fg); font-weight:600; }
+.hero-pitch { max-width:27rem; }
+.hero-pitch p { color:var(--dim); font-size:.95rem; }
+.hero-pitch p b { color:var(--fg); font-weight:600; }
+
+/* 의뢰 문의 버튼 — 히어로·작업 뒤·연락처 3곳에서 재사용 */
+.cta-row { display:flex; gap:.6rem; margin-top:1.1rem; flex-wrap:wrap; }
+.cta { display:inline-block; font-family:var(--mono); font-size:.7rem; letter-spacing:.1em;
+  text-transform:uppercase; background:var(--accent); color:var(--accent-ink);
+  padding:.68rem 1.15rem; border:1px solid var(--accent); border-radius:var(--radius);
+  transition:transform .18s ease, box-shadow .18s ease, color .2s, border-color .2s; }
+.cta:hover { transform:translateY(-2px); }
+.cta.ghost { background:transparent; color:var(--fg); border-color:var(--line); }
+.cta.ghost:hover { border-color:var(--accent); color:var(--accent); }
+[data-theme="blocks"] .cta { border:var(--border); box-shadow:4px 4px 0 var(--line); color:var(--fg); }
+[data-theme="blocks"] .cta:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--line); }
+[data-theme="blocks"] .cta.ghost { background:var(--surface); }
 .nm1, .nm2 { font-family:var(--display); text-transform:uppercase;
   font-size:clamp(3.2rem,15vw,13rem); line-height:.85; letter-spacing:-.02em; }
 
@@ -354,14 +368,20 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
     <section class="hero" id="top">
       <div class="hero-top">
         <div class="mono">Portfolio / 2026 / Seoul</div>
-        <p><b>문제를 발견하고 제품까지 끌고 갑니다.</b><br>기획 · UX 구조 · 구현 · QA를 한 사람이 이어서 하는 방식으로 여러 개의 MVP를 실제로 배포했습니다.</p>
+        <div class="hero-pitch">
+          <p><b>AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다.</b><br>지금 라이브로 운영 중인 서비스 9개를 전부 1인으로 기획→개발→배포→운영까지 완결해 왔습니다.</p>
+          <div class="cta-row">
+            <a class="cta" href="#contact">의뢰 문의하기</a>
+            <a class="cta ghost" href="#work">작업 보기 ↓</a>
+          </div>
+        </div>
       </div>
       <div class="nm1">ELORA</div>
       <div class="nm2"><span>BUILDER</span></div>
       <div class="hero-meta">
         <div>
           <div class="kr">가 윤</div>
-          <div class="mono" style="margin-top:.45rem">AI Product Planner · PM · QA Manager</div>
+          <div class="mono" style="margin-top:.45rem">AI 웹서비스 개발 · 기획→운영 1인 완결</div>
         </div>
         <div id="clock">— — : — — KST</div>
       </div>
@@ -702,7 +722,7 @@ const io = new IntersectionObserver(entries => {
 document.querySelectorAll('.rise').forEach(el => io.observe(el));
 
 /* 흐르는 띠: 같은 목록을 두 번 이어 붙여 끊김 없이 반복 */
-const WORDS = ['Product Planning', 'QA', 'Education AI', 'Full-stack MVP', 'Django', 'Startup', 'AIVERSE', 'Seoul'];
+const WORDS = ['라이브 서비스 9개 운영 중', '기획→개발→배포→운영 1인 완결', 'AI 실서비스 연동 5건+', '실사용 기업 고객 보유', '월 유지비 0원부터 설계', 'HWP·문서 자동화', 'Education AI', 'Seoul'];
 document.getElementById('ticker').innerHTML =
   WORDS.concat(WORDS).map(w => `<span>${w} ✦</span>`).join('');
 
