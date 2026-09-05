@@ -398,6 +398,7 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
         <div>
           <p class="lede">기획서에서 멈추지 않고, 배포된 URL까지 만들어 놓는 편입니다.</p>
           <p>교육 관리 플랫폼의 기획과 QA를 맡으면서 자동 채점·리포트 생성·학부모 앱까지 하나의 흐름으로 묶는 일을 해왔습니다. 동시에 개인 제품으로 판매 관리 시스템, 코드 마켓플레이스, 발음 학습 사이트 등을 문제 정의부터 배포까지 직접 만들었어요.</p>
+          <p>특히 교육업 실무 경험이 있어서, 학원·교육기관의 문서와 운영 흐름을 아는 개발이 강점입니다. HWP(한글) 문서 자동화처럼 드문 작업까지 다룹니다.</p>
           <p>AI 도구로 개발 속도를 끌어올리되, 제품 로직과 사용성은 제 손으로 붙잡는 것을 원칙으로 합니다.</p>
           <p>지금은 교육과 AI 제품을 다루는 브랜드 AIVERSE를 준비하고 있습니다.</p>
         </div>
@@ -553,6 +554,9 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
           </div>
         </details>
         </div>
+        <div class="cta-row">
+          <a class="cta" href="#contact">이런 걸 맡기고 싶다면 — 의뢰 문의</a>
+        </div>
       </div>
     </section>
 
@@ -624,11 +628,13 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
 
     <!-- ══ 연락처 ══ -->
     <section id="contact">
-      <div class="head"><span class="num">(05)</span><h2>Say hi</h2></div>
+      <div class="head"><span class="num">(05)</span><h2>Contact</h2></div>
       <div class="rise">
-        <p style="color:var(--dim);max-width:32rem">함께 만들고 싶은 제품이 있다면, 협업이나 채용 제안이라면, 편하게 메일 주세요.</p>
-        <a class="mail" href="mailto:devil.elora@gmail.com">devil.elora@gmail.com</a>
-
+        <p style="color:var(--dim);max-width:32rem">만들고 싶은 것이 있다면 편하게 보내주세요. 한 줄이면 충분합니다 — 기획이 흐릿해도 요구사항 정리부터 같이 합니다.</p>
+        <a class="mail js-mail" href="mailto:devil.elora@gmail.com">devil.elora@gmail.com</a>
+        <div class="cta-row">
+          <a class="cta js-mail" href="mailto:devil.elora@gmail.com">메일로 의뢰 문의 — 양식 자동 완성</a>
+        </div>
       </div>
     </section>
   </div>
@@ -636,7 +642,7 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
 
 <footer>
   <div>© 2026 ELORA</div>
-  <div><a href="#top">Back to top ↑</a></div>
+  <div><a href="#contact">의뢰 문의</a> &nbsp;·&nbsp; <a href="#top">Back to top ↑</a></div>
 </footer>
 
 <script>
@@ -710,6 +716,23 @@ document.querySelectorAll('.rise').forEach(el => io.observe(el));
 const WORDS = ['라이브 서비스 9개 운영 중', '기획→개발→배포→운영 1인 완결', 'AI 실서비스 연동 5건+', '실사용 기업 고객 보유', '월 유지비 0원부터 설계', 'HWP·문서 자동화', 'Education AI', 'Seoul'];
 document.getElementById('ticker').innerHTML =
   WORDS.concat(WORDS).map(w => `<span>${w} ✦</span>`).join('');
+
+/* 메일 문의 템플릿: .js-mail 링크를 클릭하면 제목·본문이 미리 채워진 메일이 열립니다 */
+const MAIL_TO = 'devil.elora@gmail.com';
+const MAIL_SUBJECT = '[의뢰 문의] 프로젝트 상담';
+const MAIL_BODY = [
+  '만들고 싶은 것: ',
+  '예산 범위(대략): ',
+  '희망 일정: ',
+  '참고 링크(있다면): ',
+  '',
+  '한 줄씩만 적어 보내주셔도 됩니다.'
+].join('\n');
+document.querySelectorAll('.js-mail').forEach(a => {
+  a.href = 'mailto:' + MAIL_TO
+    + '?subject=' + encodeURIComponent(MAIL_SUBJECT)
+    + '&body=' + encodeURIComponent(MAIL_BODY);
+});
 
 /* 서울 시각 */
 const clock = document.getElementById('clock');
