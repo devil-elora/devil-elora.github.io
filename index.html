@@ -667,8 +667,12 @@ function applyTheme(name) {
   });
 }
 
-// 시작할 때 무작위 선택
-applyTheme(THEMES[Math.floor(Math.random() * THEMES.length)]);
+// 시작할 때: URL에 ?theme=acid|paper|blocks 가 있으면 그 테마로 고정(공유·비교용),
+// 없으면 지금처럼 무작위 선택
+const askedTheme = new URLSearchParams(location.search).get('theme');
+applyTheme(THEMES.includes(askedTheme)
+  ? askedTheme
+  : THEMES[Math.floor(Math.random() * THEMES.length)]);
 
 // 색 버튼
 document.querySelectorAll('.sw').forEach(b =>
