@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="paper">
+<html lang="ko" data-theme="retro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ELORA — AI 웹서비스 개발 · 기획부터 운영까지</title>
 <meta name="description" content="AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다. 라이브 서비스 9개 운영 중 — 교육·문서 자동화, 사내 도구, AI 연동 전문.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6D7DA'/%3E%3Crect x='3' y='3' width='26' height='26' fill='%23FFFDF7' stroke='%23141414' stroke-width='2'/%3E%3Crect x='3' y='3' width='26' height='7' fill='%23141414'/%3E%3Ctext x='16' y='26' font-family='monospace' font-size='15' font-weight='bold' text-anchor='middle' fill='%23141414'%3EE%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
 <style>
+/* 레트로 테마용 한글 픽셀 서체 (둥근모꼴) */
+@font-face {
+  font-family: "DungGeunMo";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.woff") format("woff");
+  font-weight: normal; font-style: normal; font-display: swap;
+}
+
 /* ══════════════════════════════════════════════════════════════
    1. 테마 토큰
    ── 여기 값만 바꾸면 사이트 전체 인상이 바뀝니다.
@@ -21,12 +30,26 @@
   --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
   --pad: clamp(1rem, 4vw, 3.5rem);
   --maxw: 1220px;
+  --dots-size: 22px;
+  --hot: #E0453A;          /* 강조 포인트(LIVE 배지 등) — 테마별로 덮어씀 */
+}
+
+/* ── 테마 R · RETRO (기본) ──────────────────────── */
+[data-theme="retro"] {
+  --bg:#F6D7DA; --surface:#FFFDF7; --fg:#141414; --dim:#5F5A52;
+  --line:#141414; --accent:#141414; --accent-ink:#FFFDF7;
+  --hot:#E0453A; --mint:#BFEAE0; --butter:#F9E8A0; --paper2:#F3EDE0;
+  --display:"DungGeunMo", "Galmuri9", "Pretendard Variable", monospace;
+  --mono:"DungGeunMo", "JetBrains Mono", monospace;
+  --radius:0; --border:1.5px solid var(--line); --shadow:3px 3px 0 rgba(20,20,20,.28);
+  --dots:radial-gradient(rgba(20,20,20,.13) .8px, transparent .8px); --dots-size:4px;
 }
 
 /* ── 테마 A · ACID ─────────────────────────────── */
 [data-theme="acid"] {
   --bg:#0B0B0C; --surface:#0B0B0C; --fg:#F4F4EF; --dim:#77777E;
-  --line:#242427; --accent:#D8FF47; --accent-ink:#000;
+  --line:#242427; --accent:#D8FF47; --accent-ink:#000; --hot:#D8FF47;
+  --mint:#1C2A22; --butter:#2A2A18; --paper2:#151517;
   --display:"Anton", Impact, "Pretendard Variable", sans-serif;
   --radius:0; --border:1px solid var(--line); --shadow:none;
   --dots:none;
@@ -35,7 +58,8 @@
 /* ── 테마 B · PAPER ────────────────────────────── */
 [data-theme="paper"] {
   --bg:#F0EEE8; --surface:#E4E1D8; --fg:#14140F; --dim:#6E6C63;
-  --line:#CFCBBF; --accent:#FF3B14; --accent-ink:#FFF;
+  --line:#CFCBBF; --accent:#FF3B14; --accent-ink:#FFF; --hot:#FF3B14;
+  --mint:#DCE9E2; --butter:#F1E7C2; --paper2:#E4E1D8;
   --display:"Archivo Black", Impact, "Pretendard Variable", sans-serif;
   --radius:0; --border:1px solid var(--line); --shadow:none;
   --dots:none;
@@ -44,7 +68,8 @@
 /* ── 테마 E · BLOCKS ───────────────────────────── */
 [data-theme="blocks"] {
   --bg:#FBF6EC; --surface:#FBF6EC; --fg:#101010; --dim:#5C5952;
-  --line:#101010; --accent:#FFD84D; --accent-ink:#101010;
+  --line:#101010; --accent:#FFD84D; --accent-ink:#101010; --hot:#FF3B30;
+  --mint:#BFEAE0; --butter:#FFD84D; --paper2:#FBF6EC;
   --display:"Bricolage Grotesque", "Pretendard Variable", sans-serif;
   --radius:0; --border:2.5px solid var(--line); --shadow:6px 6px 0 var(--line);
   --dots:radial-gradient(var(--line) .6px, transparent .6px);
@@ -59,18 +84,19 @@ body {
   background:var(--bg); color:var(--fg);
   font-family:var(--body-font); line-height:1.7;
   -webkit-font-smoothing:antialiased; overflow-x:hidden;
-  background-image:var(--dots); background-size:22px 22px; background-position:-11px -11px;
+  background-image:var(--dots); background-size:var(--dots-size) var(--dots-size);
   transition:background-color .4s ease, color .4s ease;
 }
 a { color:inherit; text-decoration:none; }
 ::selection { background:var(--accent); color:var(--accent-ink); }
-:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+:focus-visible { outline:2px solid var(--hot); outline-offset:3px; }
 .wrap { max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
 .mono { font-family:var(--mono); font-size:.66rem; letter-spacing:.14em;
   text-transform:uppercase; color:var(--dim); }
+img { max-width:100%; }
 
 /* ══════════════════════════════════════════════════════════════
-   3. 상단 바 + 테마 전환 버튼
+   3. 상단 바 + 테마 전환 버튼  (retro 테마에서는 하단 독으로 변신 — 14번 구역)
    ══════════════════════════════════════════════════════════════ */
 .nav {
   position:fixed; top:0; left:0; right:0; z-index:60;
@@ -84,7 +110,7 @@ a { color:inherit; text-decoration:none; }
 .nav-links { display:flex; gap:1.1rem; }
 .nav-links a { font-family:var(--mono); font-size:.64rem; letter-spacing:.12em;
   text-transform:uppercase; color:var(--dim); transition:color .2s; }
-.nav-links a:hover { color:var(--accent); }
+.nav-links a:hover { color:var(--hot); }
 @media(max-width:760px) { .nav-links { display:none; } }
 
 .swatches { display:flex; gap:.35rem; }
@@ -93,52 +119,98 @@ a { color:inherit; text-decoration:none; }
   border-radius:var(--radius); padding:0; transition:transform .18s ease;
 }
 .sw:hover { transform:translateY(-2px); }
-.sw[aria-pressed="true"] { outline:2px solid var(--accent); outline-offset:2px; }
+.sw[aria-pressed="true"] { outline:2px solid var(--hot); outline-offset:2px; }
+.sw-retro  { background:linear-gradient(135deg,#F6D7DA 50%,#141414 50%); }
 .sw-acid   { background:linear-gradient(135deg,#0B0B0C 50%,#D8FF47 50%); }
 .sw-paper  { background:linear-gradient(135deg,#F0EEE8 50%,#FF3B14 50%); }
 .sw-blocks { background:linear-gradient(135deg,#FBF6EC 50%,#FFD84D 50%); }
 
 /* ══════════════════════════════════════════════════════════════
-   4. 히어로
+   4. 히어로 — "데스크톱": 플레이어 창 + 캐릭터 창 + 숫자 창
    ══════════════════════════════════════════════════════════════ */
-.hero { min-height:100svh; display:flex; flex-direction:column; justify-content:center;
-  padding:7rem 0 3rem; }
-.hero-top { display:flex; justify-content:space-between; flex-wrap:wrap; gap:1.2rem;
-  margin-bottom:auto; padding-top:1.8rem; }
-.hero-pitch { max-width:27rem; }
-.hero-pitch p { color:var(--dim); font-size:.95rem; }
-.hero-pitch p b { color:var(--fg); font-weight:600; }
+.hero { padding:5.5rem 0 2.5rem; }
+.chips { display:flex; justify-content:space-between; align-items:center; gap:.6rem; flex-wrap:wrap;
+  margin-bottom:1.4rem; }
+.chips .right { display:flex; gap:.5rem; flex-wrap:wrap; }
+.chip { font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; padding:.42rem .75rem;
+  border:var(--border); background:var(--surface); box-shadow:var(--shadow); }
+.chip.dark { background:var(--accent); color:var(--accent-ink); }
+.chip i { font-style:normal; color:var(--hot); }
 
-/* 의뢰 문의 버튼 — 히어로·작업 뒤·연락처 3곳에서 재사용 */
+.desk { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:1.4rem; align-items:start; }
+@media(max-width:900px) { .desk { grid-template-columns:minmax(0,1fr); } }
+.side { display:grid; gap:1.4rem; min-width:0; }
+.win, .player, .screen, .infocard, .channel { min-width:0; }
+@media(max-width:900px) and (min-width:560px) { .side { grid-template-columns:1fr 1fr; } }
+
+/* 창 공통 */
+.win { border:var(--border); background:var(--surface); box-shadow:var(--shadow); border-radius:var(--radius); }
+.titlebar { display:flex; align-items:center; gap:.5rem; padding:.5rem .8rem;
+  border-bottom:var(--border); font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; }
+.titlebar .wb { display:flex; gap:5px; }
+.titlebar .wb i { width:12px; height:12px; border:1.5px solid var(--line); display:block; }
+.titlebar .name { margin-left:auto; }
+
+/* 플레이어 */
+.screen { position:relative; margin:.75rem; aspect-ratio:16/10; background:#141414; border:var(--border);
+  overflow:hidden; }
+.screen svg.tv { position:absolute; inset:0; width:100%; height:100%; }
+.screen .slide { position:absolute; inset:0; opacity:0; transition:opacity .6s ease; }
+.screen .slide.on { opacity:1; }
+.screen .slide img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+.screen .cap { position:absolute; left:0; right:0; bottom:0; padding:.45rem .8rem;
+  background:rgba(20,20,20,.82); color:#FFFDF7; font-family:var(--mono); font-size:.7rem; letter-spacing:.08em;
+  display:flex; justify-content:space-between; gap:1rem; }
+.screen .idle { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; color:#F6D7DA; text-align:center; gap:.4rem; }
+.screen .idle .big { font-family:var(--display); font-size:clamp(2.6rem,7vw,4.6rem); letter-spacing:.06em;
+  text-shadow:3px 3px 0 rgba(0,0,0,.55); }
+.filebar { display:flex; justify-content:space-between; gap:1rem; margin:0 .75rem; padding:.3rem .7rem;
+  background:var(--accent); color:var(--accent-ink); font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; }
+.infocard { margin:.75rem; border:var(--border); }
+.infocard .row1 { padding:.7rem .9rem; border-bottom:1px solid var(--paper2); font-size:1.02rem; font-weight:700; line-height:1.5; }
+.infocard .row1 .dot { color:var(--hot); }
+.infocard .row2 { padding:.55rem .9rem .7rem; font-size:.86rem; color:var(--dim); }
+.controls { display:flex; align-items:stretch; gap:.6rem; margin:0 .75rem .75rem; flex-wrap:wrap; }
+.transport { display:flex; border:var(--border); }
+.transport button { width:52px; height:44px; border:0; border-right:var(--border); background:var(--surface);
+  font-size:1rem; font-family:inherit; cursor:pointer; color:var(--fg); }
+.transport button:last-child { border-right:0; }
+.transport .play { background:var(--mint); }
+@media(max-width:600px) {
+  .controls { flex-direction:column; }
+  .transport { width:100%; }
+  .transport button { flex:1; width:auto; }
+  .cta.big, .controls .cta.ghost { width:100%; }
+}
+.channel { display:flex; margin:0 .75rem .8rem; border:var(--border); font-family:var(--mono); font-size:.68rem; letter-spacing:.06em; }
+.channel .label { flex:1; padding:.42rem .7rem; background:var(--accent); color:var(--accent-ink); }
+.channel .live { padding:.42rem .7rem; background:var(--hot); color:#fff; letter-spacing:.14em; }
+
+/* 캐릭터 창 · 숫자 창 */
+.me .ph { margin:.6rem; height:230px; border:var(--border); background:linear-gradient(#FFF3F4,#EFE7DA);
+  display:flex; align-items:center; justify-content:center; }
+.me .ph svg { height:88%; }
+.me .tag { margin:0 .6rem .6rem; border:var(--border); background:var(--butter); text-align:center;
+  padding:.35rem; font-family:var(--mono); font-size:.8rem; letter-spacing:.2em; }
+.stats dl { margin:.6rem; border:var(--border); }
+.stats .srow { display:flex; justify-content:space-between; gap:.6rem; padding:.55rem .75rem;
+  border-bottom:1px solid var(--paper2); font-size:.86rem; }
+.stats .srow:last-child { border-bottom:0; }
+.stats .srow b { color:var(--hot); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* 의뢰 문의 버튼 — 히어로·작업 뒤·연락처 등 여러 곳에서 재사용 */
 .cta-row { display:flex; gap:.6rem; margin-top:1.1rem; flex-wrap:wrap; }
-.cta { display:inline-block; font-family:var(--mono); font-size:.7rem; letter-spacing:.1em;
-  text-transform:uppercase; background:var(--accent); color:var(--accent-ink);
-  padding:.68rem 1.15rem; border:1px solid var(--accent); border-radius:var(--radius);
+.cta { display:inline-flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:.74rem;
+  letter-spacing:.1em; text-transform:uppercase; background:var(--accent); color:var(--accent-ink);
+  padding:.72rem 1.15rem; border:var(--border); border-radius:var(--radius);
   transition:transform .18s ease, box-shadow .18s ease, color .2s, border-color .2s; }
 .cta:hover { transform:translateY(-2px); }
-.cta.ghost { background:transparent; color:var(--fg); border-color:var(--line); }
-.cta.ghost:hover { border-color:var(--accent); color:var(--accent); }
-[data-theme="blocks"] .cta { border:var(--border); box-shadow:4px 4px 0 var(--line); color:var(--fg); }
-[data-theme="blocks"] .cta:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--line); }
-[data-theme="blocks"] .cta.ghost { background:var(--surface); }
-.nm1, .nm2 { font-family:var(--display); text-transform:uppercase;
-  font-size:clamp(3.2rem,15vw,13rem); line-height:.85; letter-spacing:-.02em; }
+.cta.ghost { background:var(--surface); color:var(--fg); }
+.cta.ghost:hover { color:var(--hot); }
+.cta.big { flex:1; font-size:.9rem; letter-spacing:.14em; }
 
-/* 테마별 이름 처리 */
-[data-theme="acid"]  .nm2 { -webkit-text-stroke:1.5px var(--fg); color:transparent; }
-[data-theme="paper"] .nm1 { letter-spacing:-.035em; }
-[data-theme="paper"] .nm2 { color:var(--accent); letter-spacing:-.035em; margin-left:.12em; }
-[data-theme="blocks"] .nm1 { letter-spacing:-.05em; }
-[data-theme="blocks"] .nm2 { letter-spacing:-.05em; }
-[data-theme="blocks"] .nm2 span { background:var(--accent); border:var(--border);
-  box-shadow:var(--shadow); padding:0 .1em; display:inline-block; transform:rotate(-1deg); }
-
-.hero-meta { display:flex; justify-content:space-between; align-items:flex-end;
-  flex-wrap:wrap; gap:1rem; margin-top:1.6rem; padding-top:1.2rem; border-top:1px solid var(--line); }
-.kr { font-size:1rem; letter-spacing:.45em; font-weight:700; }
-#clock { font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; color:var(--dim); }
-[data-theme="blocks"] #clock { background:#FF8FB1; border:var(--border);
-  box-shadow:4px 4px 0 var(--line); padding:.35rem .8rem; color:var(--fg); }
+#clock { font-variant-numeric:tabular-nums; }
 
 /* ══════════════════════════════════════════════════════════════
    5. 흐르는 띠 (마키)
@@ -153,15 +225,17 @@ a { color:inherit; text-decoration:none; }
 .marquee:hover .marquee-track { animation-play-state:paused; }
 
 /* ══════════════════════════════════════════════════════════════
-   6. 섹션 제목
+   6. 섹션 제목  (retro 테마에서는 창 제목줄 — 14번 구역)
    ══════════════════════════════════════════════════════════════ */
 section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
 .head { display:flex; align-items:baseline; gap:1rem; margin-bottom:2.4rem; flex-wrap:wrap; }
-.head .num { font-family:var(--mono); font-size:.66rem; color:var(--accent); letter-spacing:.14em; }
+.head .num { font-family:var(--mono); font-size:.66rem; color:var(--hot); letter-spacing:.14em; }
 .head h2 { font-family:var(--display); text-transform:uppercase;
   font-size:clamp(1.9rem,6.5vw,4rem); line-height:.92; letter-spacing:-.03em; }
+.head .file { display:none; }
 [data-theme="blocks"] .head h2 { background:var(--surface); border:var(--border);
   box-shadow:var(--shadow); padding:.15em .5em; transform:rotate(-.8deg); }
+.lead { max-width:40rem; color:var(--dim); font-size:.95rem; margin:-1.4rem 0 1.6rem; }
 
 /* ══════════════════════════════════════════════════════════════
    7. 소개
@@ -177,6 +251,7 @@ section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
 [data-theme="acid"] .facts, [data-theme="paper"] .facts { border-width:0; border-top:2px solid var(--fg); }
 .facts div { display:flex; justify-content:space-between; gap:.9rem; padding:.75rem 0;
   border-bottom:1px solid var(--line); }
+[data-theme="retro"] .facts div { border-bottom-color:var(--paper2); }
 .facts div:last-child { border-bottom:0; }
 .facts dt { font-family:var(--mono); font-size:.62rem; letter-spacing:.12em;
   text-transform:uppercase; flex:none; padding-top:.2rem; color:var(--dim); }
@@ -187,7 +262,7 @@ section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
    8. 프로젝트 목록  ← 테마마다 모양이 가장 크게 달라지는 부분
    ══════════════════════════════════════════════════════════════ */
 .group { display:inline-block; font-family:var(--mono); font-size:.64rem; letter-spacing:.16em;
-  text-transform:uppercase; color:var(--accent); margin-bottom:1rem; }
+  text-transform:uppercase; color:var(--hot); margin-bottom:1rem; }
 .group.two { margin-top:3rem; }
 [data-theme="paper"] .group { display:block; padding-bottom:.5rem; border-bottom:2px solid var(--fg); }
 [data-theme="blocks"] .group { background:var(--fg); color:var(--bg); padding:.3rem .8rem; }
@@ -205,7 +280,7 @@ section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
 .nm { font-family:var(--display); font-weight:800; font-synthesis-weight:none; font-size:clamp(1.25rem,3.4vw,2rem); line-height:1.05;
   letter-spacing:-.025em; text-transform:uppercase; transition:color .25s; }
 .sb { font-size:.81rem; color:var(--dim); line-height:1.45; }
-.mk { font-family:var(--mono); color:var(--accent); transition:transform .35s; justify-self:end; }
+.mk { font-family:var(--mono); color:var(--hot); transition:transform .35s; justify-self:end; }
 .item[open] .mk { transform:rotate(45deg); }
 .bd { padding:0 .6rem 2rem; max-width:44rem; }
 .bd p { color:var(--dim); font-size:.93rem; }
@@ -216,7 +291,15 @@ section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
   padding:.38rem .75rem; border:1px solid var(--line); border-radius:var(--radius); color:var(--dim); }
 .tab.on { background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
 a.tab { transition:color .2s, border-color .2s, transform .18s ease; }
-a.tab:hover { color:var(--accent); border-color:var(--accent); transform:translateY(-2px); }
+a.tab:hover { color:var(--hot); border-color:var(--hot); transform:translateY(-2px); }
+/* 실제 서비스 화면 */
+.shot { margin:.9rem 0 1rem; border:var(--border); box-shadow:var(--shadow); max-width:560px; background:#141414; }
+.shot img { display:block; width:100%; height:auto; }
+.shot figcaption { font-family:var(--mono); font-size:.62rem; letter-spacing:.08em; padding:.3rem .6rem;
+  background:var(--accent); color:var(--accent-ink); }
+.feat { margin:.6rem 0 0 1.1rem; color:var(--dim); font-size:.88rem; }
+.feat li { margin-top:.25rem; }
+.feat b { color:var(--fg); font-weight:600; }
 
 /* --- ACID: 행 전체에 색이 차오름 --- */
 [data-theme="acid"] .list { border-top:1px solid var(--line); }
@@ -241,25 +324,26 @@ a.tab:hover { color:var(--accent); border-color:var(--accent); transform:transla
 }
 [data-theme="acid"] .bd { padding-left:5.2rem; }
 
-/* --- PAPER: 번호가 붙은 목록 --- */
-[data-theme="paper"] .list { border-top:2px solid var(--fg); }
-[data-theme="paper"] .item summary {
+/* --- PAPER · RETRO: 번호가 붙은 목록 --- */
+[data-theme="paper"] .list, [data-theme="retro"] .list { border-top:2px solid var(--fg); }
+[data-theme="paper"] .item summary, [data-theme="retro"] .item summary {
   grid-template-columns:2.8rem minmax(0,auto) 1fr auto 1.2rem;
   grid-template-areas:"n nm sb tg mk"; }
-[data-theme="paper"] .n { grid-area:n; }
-[data-theme="paper"] .nm { grid-area:nm; white-space:nowrap; }
-[data-theme="paper"] .sb { grid-area:sb; }
-[data-theme="paper"] .tg { grid-area:tg; }
-[data-theme="paper"] .mk { grid-area:mk; }
-[data-theme="paper"] .item summary:hover { background:var(--surface); padding-left:1.4rem; }
-[data-theme="paper"] .item summary:hover .nm { color:var(--accent); }
-[data-theme="paper"] .bd { padding-left:3.4rem; }
+[data-theme="paper"] .n, [data-theme="retro"] .n { grid-area:n; }
+[data-theme="paper"] .nm, [data-theme="retro"] .nm { grid-area:nm; white-space:nowrap; }
+[data-theme="paper"] .sb, [data-theme="retro"] .sb { grid-area:sb; }
+[data-theme="paper"] .tg, [data-theme="retro"] .tg { grid-area:tg; }
+[data-theme="paper"] .mk, [data-theme="retro"] .mk { grid-area:mk; }
+[data-theme="paper"] .item summary:hover, [data-theme="retro"] .item summary:hover { background:var(--paper2); padding-left:1.4rem; }
+[data-theme="paper"] .item summary:hover .nm, [data-theme="retro"] .item summary:hover .nm { color:var(--hot); }
+[data-theme="paper"] .bd, [data-theme="retro"] .bd { padding-left:3.4rem; }
 @media(max-width:760px) {
-  [data-theme="paper"] .item summary { grid-template-columns:2.2rem 1fr 1.2rem;
+  [data-theme="paper"] .item summary, [data-theme="retro"] .item summary { grid-template-columns:2.2rem 1fr 1.2rem;
     grid-template-areas:"n nm mk" ". sb ." ". tg ."; }
-  [data-theme="paper"] .nm { white-space:normal; }
-  [data-theme="paper"] .bd { padding-left:2.8rem; }
+  [data-theme="paper"] .nm, [data-theme="retro"] .nm { white-space:normal; }
+  [data-theme="paper"] .bd, [data-theme="retro"] .bd { padding-left:2.8rem; }
 }
+[data-theme="retro"] .nm { font-weight:400; font-size:clamp(1.05rem,2.6vw,1.45rem); letter-spacing:.02em; }
 
 /* --- BLOCKS: 카드 격자 (항상 펼침) --- */
 [data-theme="blocks"] .list { display:grid;
@@ -288,7 +372,8 @@ a.tab:hover { color:var(--accent); border-color:var(--accent); transform:transla
 .stop { display:grid; grid-template-columns:9.5rem 1fr; gap:1.3rem;
   padding:1.5rem 0; border-bottom:1px solid var(--line); align-items:start; }
 .stop:first-child { border-top:1px solid var(--line); }
-.when { font-family:var(--mono); font-size:.66rem; color:var(--accent);
+[data-theme="retro"] .stop { border-bottom-color:var(--paper2); }
+.when { font-family:var(--mono); font-size:.66rem; color:var(--hot);
   letter-spacing:.05em; padding-top:.35rem; }
 .sc h3 { font-size:1.02rem; font-weight:700; }
 .where { font-family:var(--mono); font-size:.66rem; color:var(--dim); margin-bottom:.45rem; }
@@ -308,7 +393,7 @@ a.tab:hover { color:var(--accent); border-color:var(--accent); transform:transla
    ══════════════════════════════════════════════════════════════ */
 .skills { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.3rem; }
 .sk h3 { font-family:var(--mono); font-size:.64rem; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--accent); margin-bottom:.8rem; padding-bottom:.55rem; border-bottom:1px solid var(--line); }
+  color:var(--hot); margin-bottom:.8rem; padding-bottom:.55rem; border-bottom:1px solid var(--line); }
 .sk ul { list-style:none; }
 .sk li { font-size:.88rem; padding:.3rem 0; color:var(--dim); }
 .sk li::before { content:"— "; color:var(--line); }
@@ -321,14 +406,21 @@ a.tab:hover { color:var(--accent); border-color:var(--accent); transform:transla
 /* ══════════════════════════════════════════════════════════════
    11. 연락처 · 푸터
    ══════════════════════════════════════════════════════════════ */
+.contact-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:1.6rem; align-items:start; }
+@media(max-width:820px) { .contact-grid { grid-template-columns:1fr; } }
 .mail { display:inline-block; font-family:var(--display);
-  font-size:clamp(1.2rem,5.5vw,4rem); line-height:1; letter-spacing:-.03em;
-  margin:.8rem 0 2rem; word-break:break-all; transition:color .25s; }
-.mail:hover { color:var(--accent); }
+  font-size:clamp(1.2rem,4.2vw,2.6rem); line-height:1; letter-spacing:-.01em;
+  margin:.8rem 0 1rem; word-break:break-all; transition:color .25s; }
+.mail:hover { color:var(--hot); }
 [data-theme="blocks"] .mail { background:var(--accent); border:var(--border);
   box-shadow:var(--shadow); padding:.3em .5em; transform:rotate(-.8deg); }
 [data-theme="blocks"] .mail:hover { color:var(--fg);
   transform:rotate(-.8deg) translate(-3px,-3px); box-shadow:10px 10px 0 var(--line); }
+.howto { border:var(--border); background:var(--surface); box-shadow:var(--shadow); padding:1rem 1.1rem; }
+.howto h3 { font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--hot); margin-bottom:.6rem; }
+.howto ol { margin-left:1.1rem; color:var(--dim); font-size:.9rem; }
+.howto li { margin-top:.35rem; }
 footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
   justify-content:space-between; flex-wrap:wrap; gap:.8rem; font-family:var(--mono);
   font-size:.62rem; letter-spacing:.13em; color:var(--dim); text-transform:uppercase; }
@@ -345,17 +437,99 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
   .rise { opacity:1 !important; transform:none !important; }
   html { scroll-behavior:auto; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   13. 의뢰 섹션 — 서비스 · 진행 방식 · FAQ
+   ══════════════════════════════════════════════════════════════ */
+.svc { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1rem; }
+.svc article { border:var(--border); background:var(--surface); box-shadow:var(--shadow);
+  padding:1rem 1.1rem 1.1rem; display:flex; flex-direction:column; gap:.45rem; }
+.svc article.main { outline:3px solid var(--hot); outline-offset:-3px; }
+.svc .k { font-family:var(--mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--hot); }
+.svc h3 { font-family:var(--display); font-weight:400; font-size:1.15rem; line-height:1.3; letter-spacing:.01em; }
+.svc .for { font-size:.86rem; color:var(--fg); }
+.svc .for::before { content:"“"; color:var(--hot); }
+.svc .for::after { content:"”"; color:var(--hot); }
+.svc p { font-size:.86rem; color:var(--dim); }
+.svc .proof { margin-top:auto; padding-top:.5rem; border-top:1px dashed var(--line);
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.06em; color:var(--dim); }
+
+.steps { list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1rem; counter-reset:step; }
+.steps li { border:var(--border); background:var(--surface); box-shadow:var(--shadow); padding:1rem 1.1rem 1.1rem; }
+.steps li::before { counter-increment:step; content:"STEP " counter(step); display:inline-block;
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.16em; padding:.2rem .5rem;
+  background:var(--accent); color:var(--accent-ink); margin-bottom:.6rem; }
+.steps h3 { font-size:1rem; font-weight:700; margin-bottom:.3rem; }
+.steps p { font-size:.86rem; color:var(--dim); }
+.promise { margin-top:1.4rem; border:var(--border); background:var(--butter); padding:1rem 1.1rem; box-shadow:var(--shadow); }
+.promise h3 { font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; margin-bottom:.5rem; }
+.promise ol { margin-left:1.1rem; font-size:.9rem; }
+.promise li { margin-top:.25rem; }
+
+.qa { border:var(--border); background:var(--surface); box-shadow:var(--shadow); margin-bottom:.7rem; }
+.qa summary { list-style:none; cursor:pointer; padding:.85rem 1rem; font-weight:700; font-size:.95rem;
+  display:flex; gap:.7rem; align-items:baseline; }
+.qa summary::-webkit-details-marker { display:none; }
+.qa summary::before { content:"Q."; font-family:var(--mono); color:var(--hot); flex:none; }
+.qa summary::after { content:"+"; margin-left:auto; font-family:var(--mono); color:var(--hot); }
+.qa[open] summary::after { content:"–"; }
+.qa .a { padding:0 1rem 1rem 2.6rem; font-size:.9rem; color:var(--dim); }
+
+/* ══════════════════════════════════════════════════════════════
+   14. 레트로 테마 — 섹션은 OS 창, 상단 바는 하단 독
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="retro"] body, body[data-retro] { }
+[data-theme="retro"] { --section-gap:1.6rem; }
+[data-theme="retro"] section:not(.hero) { border:var(--border); background:var(--surface); box-shadow:var(--shadow);
+  padding:0 0 1.6rem; margin:var(--section-gap) 0; }
+[data-theme="retro"] section:not(.hero) > *:not(.head) { padding-left:1.1rem; padding-right:1.1rem; }
+[data-theme="retro"] .head { margin:0 0 1.6rem; padding:.55rem .9rem; gap:.6rem; align-items:center;
+  border-bottom:var(--border); background:var(--surface); }
+[data-theme="retro"] .head::before { content:"\25A1 \25A1"; font-family:var(--mono); font-size:.8rem; letter-spacing:.1em; }
+[data-theme="retro"] .head .num { display:none; }
+[data-theme="retro"] .head .file { display:inline; margin-left:auto; font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; }
+[data-theme="retro"] .head h2 { font-size:1rem; font-weight:400; letter-spacing:.12em; line-height:1; }
+[data-theme="retro"] .lead { margin-top:-.4rem; }
+[data-theme="retro"] .lede { font-family:var(--body-font); }
+[data-theme="retro"] body { padding-bottom:0; }
+[data-theme="retro"] main { padding-bottom:7.5rem; }
+
+/* 하단 독 */
+[data-theme="retro"] .nav { top:auto; bottom:1rem; left:50%; right:auto; transform:translateX(-50%);
+  width:max-content; max-width:calc(100vw - 1.5rem); padding:0; gap:0;
+  background:var(--surface); border:var(--border); box-shadow:var(--shadow); backdrop-filter:none; }
+[data-theme="retro"] .nav.on { background:var(--surface); }
+[data-theme="retro"] .brand { display:none; }
+[data-theme="retro"] .nav-links { display:flex; gap:0; }
+[data-theme="retro"] .nav-links a { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  width:76px; padding:.6rem 0 .5rem; border-right:var(--border); color:var(--fg); font-size:.62rem; letter-spacing:.1em; text-transform:none; }
+[data-theme="retro"] .nav-links a::before { content:attr(data-ico); width:34px; height:34px; border:var(--border);
+  display:flex; align-items:center; justify-content:center; font-size:1rem; background:var(--tile, var(--paper2)); }
+[data-theme="retro"] .nav-links a:hover::before { transform:translateY(-2px); }
+[data-theme="retro"] .swatches { padding:0 .55rem; gap:.3rem; }
+[data-theme="retro"] .sw { width:18px; height:18px; border:1.5px solid var(--line); }
+@media(max-width:760px) {
+  [data-theme="retro"] .nav-links { display:flex; }
+  [data-theme="retro"] .nav-links a { width:52px; font-size:.55rem; }
+  [data-theme="retro"] .nav-links a::before { width:28px; height:28px; font-size:.85rem; }
+  [data-theme="retro"] .swatches { display:none; }
+}
 </style>
 </head>
 <body>
 
 <header class="nav" id="nav">
   <div class="brand">ELORA</div>
-  <nav class="nav-links">
-    <a href="#about">About</a><a href="#work">Work</a><a href="#path">Path</a>
-    <a href="#skills">Skills</a><a href="#contact">Contact</a>
+  <nav class="nav-links" aria-label="사이트 섹션">
+    <a href="#about"    data-ico="☺" style="--tile:var(--mint)">소개</a>
+    <a href="#services" data-ico="♪" style="--tile:var(--butter)">서비스</a>
+    <a href="#work"     data-ico="▤" style="--tile:#F6C6CD">작업 9</a>
+    <a href="#process"  data-ico="✎" style="--tile:#CBD9F2">진행방식</a>
+    <a href="#faq"      data-ico="?" style="--tile:#DED1F0">FAQ</a>
+    <a href="#contact"  data-ico="✉" style="--tile:var(--hot);color:var(--fg)">문의</a>
   </nav>
   <div class="swatches" role="group" aria-label="테마 선택">
+    <button class="sw sw-retro"  data-set="retro"  aria-label="Retro 테마"  aria-pressed="false"></button>
     <button class="sw sw-acid"   data-set="acid"   aria-label="Acid 테마"   aria-pressed="false"></button>
     <button class="sw sw-paper"  data-set="paper"  aria-label="Paper 테마"  aria-pressed="false"></button>
     <button class="sw sw-blocks" data-set="blocks" aria-label="Blocks 테마" aria-pressed="false"></button>
@@ -364,26 +538,82 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
 
 <main>
   <div class="wrap">
-    <!-- ══ 히어로 ══ -->
+    <!-- ══ 히어로: 데스크톱 ══ -->
     <section class="hero" id="top">
-      <div class="hero-top">
-        <div class="mono">Portfolio / 2026 / Seoul</div>
-        <div class="hero-pitch">
-          <p><b>AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다.</b><br>지금 라이브로 운영 중인 서비스 9개를 전부 1인으로 기획→개발→배포→운영까지 완결해 왔습니다.</p>
-          <div class="cta-row">
-            <a class="cta" href="#contact">의뢰 문의하기</a>
+      <div class="chips">
+        <span class="chip dark">ELORA.EXE — 의뢰 받는 중</span>
+        <span class="right">
+          <span class="chip" id="today">— — —</span>
+          <span class="chip"><i>●</i> SEOUL <span id="clock">— — : — —</span></span>
+        </span>
+      </div>
+
+      <div class="desk">
+        <!-- 플레이어 창: 실제 서비스 화면이 돌아갑니다 -->
+        <div class="win player">
+          <div class="titlebar"><span class="wb"><i></i><i></i><i></i></span><span class="name">ELORA — AI 웹서비스 스튜디오</span></div>
+          <div class="screen" id="screen">
+            <svg class="tv" aria-hidden="true">
+              <filter id="tv"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/>
+                <feColorMatrix type="matrix" values="0 0 0 0 0.55  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.35 0"/></filter>
+              <rect width="100%" height="100%" filter="url(#tv)"/>
+            </svg>
+            <div class="idle" id="idle">
+              <div class="big">ELORA</div>
+              <div class="mono" style="color:#FFE9EC">AI 웹서비스 개발 · 기획→운영 1인 완결</div>
+            </div>
+            <!-- 슬라이드는 JS가 SLIDES 목록으로 채웁니다 -->
+            <div class="cap"><span id="slide-label">실제 서비스 화면</span><span id="slide-idx"></span></div>
+          </div>
+          <div class="filebar"><span id="slide-file">now_playing.avi</span><span>1280x800</span></div>
+          <div class="infocard">
+            <div class="row1">AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다. <span class="dot">●</span></div>
+            <div class="row2">지금 실제로 운영 중인 서비스 9개를 전부 혼자 기획하고, 만들고, 배포하고, 운영하고 있습니다. 회사 하나가 통째로 쓰는 협업 프로그램, AI가 답장을 써 주는 감성 서비스, 학원에서 실제 납품받는 시험지 자동 생성기 같은 것들입니다.</div>
+          </div>
+          <div class="controls">
+            <div class="transport" role="group" aria-label="서비스 화면 넘기기">
+              <button type="button" id="prev" aria-label="이전 화면">⏮</button>
+              <button type="button" class="play" id="play" aria-label="자동 재생 켜기/끄기">▶</button>
+              <button type="button" id="next" aria-label="다음 화면">⏭</button>
+            </div>
+            <a class="cta big" href="#contact">의뢰 문의하기</a>
             <a class="cta ghost" href="#work">작업 보기 ↓</a>
           </div>
+          <div class="channel"><span class="label">Channel: AI 웹앱 · 교육 자동화 · 사내 도구 · 홈페이지 · 문서 자동화</span><span class="live">LIVE</span></div>
         </div>
-      </div>
-      <div class="nm1">ELORA</div>
-      <div class="nm2"><span>BUILDER</span></div>
-      <div class="hero-meta">
-        <div>
-          <div class="kr">가 윤</div>
-          <div class="mono" style="margin-top:.45rem">AI 웹서비스 개발 · 기획→운영 1인 완결</div>
+
+        <div class="side">
+          <!-- 캐릭터 창 (3D 캐릭터가 준비되면 이 자리에 교체) -->
+          <aside class="win me">
+            <div class="titlebar"><span class="wb"><i></i><i></i></span><span class="name">me_3d.png</span></div>
+            <div class="ph">
+              <svg viewBox="0 0 200 240" aria-hidden="true">
+                <defs><radialGradient id="g1" cx="40%" cy="35%"><stop offset="0" stop-color="#FFE7D6"/><stop offset="1" stop-color="#E6B9A4"/></radialGradient>
+                <radialGradient id="g2" cx="40%" cy="30%"><stop offset="0" stop-color="#BFEAE0"/><stop offset="1" stop-color="#6FB8AA"/></radialGradient></defs>
+                <ellipse cx="100" cy="228" rx="70" ry="10" fill="#00000018"/>
+                <path d="M40 225 C40 170 66 150 100 150 C134 150 160 170 160 225 Z" fill="url(#g2)"/>
+                <circle cx="100" cy="88" r="52" fill="url(#g1)"/>
+                <path d="M50 78 C55 40 145 40 150 78 C140 60 60 60 50 78 Z" fill="#3B2A24"/>
+                <circle cx="82" cy="94" r="5" fill="#2B2B2B"/><circle cx="118" cy="94" r="5" fill="#2B2B2B"/>
+                <circle cx="84" cy="92" r="1.6" fill="#fff"/><circle cx="120" cy="92" r="1.6" fill="#fff"/>
+                <path d="M88 112 Q100 122 112 112" stroke="#B0503F" stroke-width="3" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tag">가 윤 — ELORA</div>
+          </aside>
+
+          <!-- 숫자 창 -->
+          <aside class="win stats">
+            <div class="titlebar"><span class="wb"><i></i><i></i></span><span class="name">stats.txt</span></div>
+            <dl>
+              <div class="srow"><dt>라이브 서비스</dt><dd><b>9개 운영</b></dd></div>
+              <div class="srow"><dt>AI 실서비스 연동</dt><dd><b>5건+</b></dd></div>
+              <div class="srow"><dt>실사용 기업 고객</dt><dd><b>2곳</b></dd></div>
+              <div class="srow"><dt>월 유지비 설계</dt><dd><b>0원~</b></dd></div>
+              <div class="srow"><dt>기획→운영</dt><dd><b>1인 완결</b></dd></div>
+            </dl>
+          </aside>
         </div>
-        <div id="clock">— — : — — KST</div>
       </div>
     </section>
   </div>
@@ -391,45 +621,161 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
   <div class="marquee" aria-hidden="true"><div class="marquee-track" id="ticker"></div></div>
 
   <div class="wrap">
-    <!-- ══ 소개 ══ -->
-    <section id="about">
-      <div class="head"><span class="num">(01)</span><h2>About</h2></div>
-      <div class="about rise">
-        <div>
-          <p class="lede">기획서에서 멈추지 않고, 배포된 URL까지 만들어 놓는 편입니다.</p>
-          <p>교육 관리 플랫폼의 기획과 QA를 맡으면서 자동 채점·리포트 생성·학부모 앱까지 하나의 흐름으로 묶는 일을 해왔습니다. 동시에 개인 제품으로 판매 관리 시스템, 코드 마켓플레이스, 발음 학습 사이트 등을 문제 정의부터 배포까지 직접 만들었어요.</p>
-          <p>특히 교육업 실무 경험이 있어서, 학원·교육기관의 문서와 운영 흐름을 아는 개발이 강점입니다. HWP(한글) 문서 자동화처럼 드문 작업까지 다룹니다.</p>
-          <p>AI 도구로 개발 속도를 끌어올리되, 제품 로직과 사용성은 제 손으로 붙잡는 것을 원칙으로 합니다.</p>
-          <p>지금은 교육과 AI 제품을 다루는 브랜드 AIVERSE를 준비하고 있습니다.</p>
-        </div>
-        <dl class="facts">
-        <div><dt>Role</dt><dd>Product Planner · PM · QA</dd></div>
-        <div><dt>Build</dt><dd>Python · Django · HTML · Java</dd></div>
-        <div><dt>AI Tools</dt><dd>Claude · Cursor · Lovable</dd></div>
-        <div><dt>Focus</dt><dd>교육 · AI 제품 · 사업화</dd></div>
-        <div><dt>Based</dt><dd>Seoul, KR</dd></div>
-        </dl>
+    <!-- ══ 서비스: 의뢰 가능한 작업 ══ -->
+    <section id="services">
+      <div class="head"><span class="num">(01)</span><h2>Services</h2><span class="file">services.exe</span></div>
+      <p class="lead">이런 것들을 맡기실 수 있어요. 기획이 흐릿한 상태로 오셔도 요구사항 정리부터 같이 합니다.</p>
+      <div class="svc rise">
+        <article class="main">
+          <span class="k">주력 · 2~6주</span>
+          <h3>AI 웹앱 MVP 제작</h3>
+          <p class="for">우리 서비스에 AI 기능을 넣고 싶어요</p>
+          <p>Claude·Gemini API를 실제로 돌아가게 붙이고, 요금 폭탄이 안 나는 구조(사용자당 비용 통제·안전 규칙)로 만듭니다.</p>
+          <div class="proof">근거: 무지개 우체국 · 작사공방</div>
+        </article>
+        <article>
+          <span class="k">교육업 특화</span>
+          <h3>학원·교육기관 맞춤 자동화</h3>
+          <p class="for">시험지·교재 만드는 데 시간이 너무 들어요</p>
+          <p>시험지·교재 자동 생성, 채점·리포트 흐름, 한글(HWP)·PPT·PDF 변환 파이프라인. 교육업 실무를 아는 개발입니다.</p>
+          <div class="proof">근거: 모의고사 출제 엔진(실납품) · HWP→PPT 변환기</div>
+        </article>
+        <article>
+          <span class="k">B2B</span>
+          <h3>사내 협업·관리 도구</h3>
+          <p class="for">우리 회사만의 업무 프로그램이 필요해요</p>
+          <p>메신저·일정·할 일·문서·관리자까지, 회사 하나가 통째로 쓰는 그룹웨어를 처음부터 끝까지 만듭니다.</p>
+          <div class="proof">근거: DBLV 사내 협업툴(12개 모듈, 실운영)</div>
+        </article>
+        <article>
+          <span class="k">진입용</span>
+          <h3>홈페이지·랜딩페이지</h3>
+          <p class="for">홈페이지가 필요한데 뭘 어떻게 시작할지 모르겠어요</p>
+          <p>요구사항 정리부터 디자인·개발·배포·도메인 연결까지. 월 유지비 0원~ 구조로 설계합니다.</p>
+          <div class="proof">근거: 이 사이트 · 서비스 랜딩 다수</div>
+        </article>
+        <article>
+          <span class="k">소액 · 빠른 납기</span>
+          <h3>문서·업무 자동화</h3>
+          <p class="for">엑셀·한글(HWP)·PPT 반복 작업이 너무 많아요</p>
+          <p>반복 작업을 자동화 프로그램으로 만들어 드립니다. 한글 HWP 자동화가 가능한 흔치 않은 개발자입니다.</p>
+          <div class="proof">근거: HWP 파싱 · PPT/DOCX/PDF 생성 파이프라인</div>
+        </article>
       </div>
+      <div class="cta-row"><a class="cta" href="#contact">어떤 걸 맡길지 상담하기</a></div>
     </section>
 
     <!-- ══ 프로젝트 ══ -->
     <section id="work">
-      <div class="head"><span class="num">(02)</span><h2>Work</h2></div>
+      <div class="head"><span class="num">(02)</span><h2>Work</h2><span class="file">work — 9 items</span></div>
+      <p class="lead">전부 실제로 운영 중인 서비스입니다. 항목을 열면 실제 화면과 기능 설명이 나옵니다.</p>
       <div class="rise">
         <div class="group">Shipped — 배포된 제품</div>
         <div class="list">
+        <details class="item" data-id="rainbow-post" style="--c:#FF9F9F">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">AI · Web App</span>
+            <span class="nm">무지개 우체국</span>
+            <span class="sb">반려동물 추모 AI 편지 서비스 · 실사용 운영 중</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <p>떠난 반려동물에게 편지를 쓰면, 등록한 추억·성격·말투를 반영한 AI 답장이 실제 우편처럼 시간을 두고 도착하는 감성 서비스입니다. 기획부터 세계관 설정, 개발, 배포, 실사용자 운영까지 1인으로 수행했습니다.</p>
+            <ul class="feat">
+              <li><b>AI 답장</b> — 환각 방지 규칙 설계, 사진 인식 답장</li>
+              <li><b>지연 배달 연출</b> — 편지가 시간을 두고 도착</li>
+              <li><b>2.5D 캐릭터·방 꾸미기</b> — 반려동물 캐릭터 생성, 음성 명령</li>
+              <li><b>운영 설계</b> — 유저당 AI 비용을 월 수십 원 수준으로 통제, 위험 키워드 감지 등 안전 규칙, 웹푸시, 5개 언어</li>
+            </ul>
+          </div>
+        </details>
+        <details class="item" data-id="dblv" style="--c:#7BE0C0">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">B2B · 실운영</span>
+            <span class="nm">DBLV</span>
+            <span class="sb">엔터테인먼트사 사내 협업툴 · 12개 모듈</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <p>작곡·프로듀싱 회사가 실제로 쓰는 자체 협업 도구입니다. 메시지·캘린더·할일·스튜디오 예약·설문·드라이브·관리자 등 12개 모듈, 직원 간 실시간 동기화, 말로 하는 일정 등록(한국어 자연어 파서 자체 개발), 가입 승인 흐름, PWA까지 갖췄고 실직원이 매일 사용합니다.</p>
+            <ul class="feat">
+              <li><b>12개 업무 모듈</b> — 메신저·캘린더·할일·예약·설문·드라이브·관리자</li>
+              <li><b>실시간 동기화</b> — 직원 간 즉시 반영, 웹푸시</li>
+              <li><b>말로 일정 등록</b> — 한국어 자연어 날짜 파서 자체 개발</li>
+              <li><b>기술</b> — 순수 HTML/CSS/JS + Cloudflare Pages/Functions + D1</li>
+            </ul>
+          </div>
+        </details>
+        <details class="item" data-id="lyrics" style="--c:#C9A7FF">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">AI · Web</span>
+            <span class="nm">작사공방</span>
+            <span class="sb">AI 가사 생성 스튜디오 · 라이브</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <figure class="shot"><img src="images/lyrics-studio.jpg" alt="작사공방 실제 화면 — 가사 주제, 꼭 넣을 단어, 데모 음절 가이드 입력 폼" loading="lazy" width="960" height="600"><figcaption>lyrics_studio — 실제 화면</figcaption></figure>
+            <p>작사가용 가사 초안 생성 도구입니다. 사용자가 본인 AI 키를 등록해 쓰는 BYOK 구조(운영자 서버 비용 0원)와 무료 프롬프트 모드를 함께 제공하고, 원곡 가사 복제 금지 정책을 내장했습니다.</p>
+            <ul class="feat">
+              <li><b>BYOK 구조</b> — 서버 유지비 없이 돌아가는 AI 도구</li>
+              <li><b>기술</b> — 단일 HTML 경량 앱, Claude API 직접 연동, Vercel</li>
+            </ul>
+          </div>
+        </details>
+        <details class="item" data-id="junan" style="--c:#8FB8FF">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Game · PWA</span>
+            <span class="nm">응징 대작전</span>
+            <span class="sb">친구끼리 벌칙 대결하는 캐주얼 PWA 게임 · 유지비 0원</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <figure class="shot"><img src="images/eungjing.jpg" alt="응징 대작전 실제 화면 — 아바타, 스트레스 풀기, 대결 로비, 무기 상점 메뉴" loading="lazy" width="960" height="600"><figcaption>eungjing — 실제 화면</figcaption></figure>
+            <p>친구끼리 캐리커처로 벌칙 대결을 하는 모바일 웹 게임입니다. P2P 실시간 대결, 포인트 배팅, 홈 화면 설치(PWA)까지 서버 비용 없는 인프라로 구현했습니다.</p>
+            <ul class="feat">
+              <li><b>실시간 P2P 대결</b> — WebRTC, 서버 비용 0원</li>
+              <li><b>포인트 배팅 · PWA 설치</b></li>
+              <li><b>기술</b> — Cloudflare Pages, WebRTC, PWA</li>
+            </ul>
+          </div>
+        </details>
+        <details class="item" data-id="calendar" style="--c:#FFD84D">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">AI · App</span>
+            <span class="nm">말하면</span>
+            <span class="sb">음성 일정 관리 앱 · 말하면 일정이 됩니다</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <figure class="shot"><img src="images/malhamyeon.jpg" alt="말하면 실제 화면 — 말로 일정 입력, 월간 달력, 체크리스트" loading="lazy" width="960" height="600"><figcaption>malhamyeon — 실제 화면</figcaption></figure>
+            <p>"다음 주 화요일 저녁 7시 강남에서 저녁" 같은 말을 그대로 일정으로 바꿔 주는 커플 일정 앱입니다. AI 파싱과 규칙 파서의 이중 구조로 동작하고, 캘린더 UI를 외부 라이브러리 없이 직접 구현했습니다.</p>
+            <ul class="feat">
+              <li><b>말로 일정 등록</b> — AI 파싱 + 규칙 파서 이중 구조</li>
+              <li><b>직접 구현한 캘린더</b> — 외부 라이브러리 의존 없음</li>
+            </ul>
+          </div>
+        </details>
         <details class="item" data-id="moneyup" style="--c:#7BE0C0">
           <summary>
             <span class="n"></span>
             <span class="tg">Fullstack</span>
             <span class="nm">MoneyUp</span>
-            <span class="sb">판매·세무·고객·클레임 통합 관리 · 2026.05—06</span>
+            <span class="sb">판매·세무·고객·클레임 통합 관리</span>
             <span class="mk">+</span>
           </summary>
           <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <figure class="shot"><img src="images/moneyup.jpg" alt="MoneyUp 실제 화면 — 매출·순수익·지출·예상 세금 대시보드" loading="lazy" width="960" height="600"><figcaption>moneyup — 실제 화면</figcaption></figure>
             <p>오픈마켓·은행 계좌·카드를 연결해 매출을 자동으로 기록하고 분석하는 판매 관리 플랫폼입니다. 세무, CRM, 클레임, 상담 모듈을 붙여 정산부터 고객 응대까지 한 화면에서 처리하도록 설계했습니다.</p>
           </div>
         </details>
@@ -438,13 +784,12 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="n"></span>
             <span class="tg">Fullstack</span>
             <span class="nm">Mini App</span>
-            <span class="sb">웹앱 코드 거래 마켓플레이스 · 2026.06</span>
+            <span class="sb">웹앱 코드 거래 마켓플레이스</span>
             <span class="mk">+</span>
           </summary>
           <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <figure class="shot"><img src="images/miniapp.jpg" alt="Mini App 실제 화면 — 리딤 코드, 내 라이브러리, 자연어 편집" loading="lazy" width="960" height="600"><figcaption>miniapp — 실제 화면</figcaption></figure>
             <p>애플리케이션 코드를 사고팔 수 있는 웹 플랫폼입니다. 기획부터 구현, 배포까지 개인 풀스택 MVP로 만들었습니다.</p>
           </div>
         </details>
@@ -453,13 +798,11 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="n"></span>
             <span class="tg">Ops</span>
             <span class="nm">Operations</span>
-            <span class="sb">내부 관리 · 프리랜서 강사 운영 사이트 · 2026.06</span>
+            <span class="sb">내부 관리 · 프리랜서 강사 운영 사이트</span>
             <span class="mk">+</span>
           </summary>
           <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
             <p>회의와 일정, 강사 지원, 출근 확인, 서류 검토, OCR 기반 확인, 계약·문서 워크플로를 처리하는 내부 운영 도구입니다.</p>
           </div>
         </details>
@@ -468,89 +811,12 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
             <span class="n"></span>
             <span class="tg">Edu</span>
             <span class="nm">Language</span>
-            <span class="sb">발음 훈련 · 다국어 어휘 학습 사이트 · 2026.06</span>
+            <span class="sb">발음 훈련 · 다국어 어휘 학습 사이트</span>
             <span class="mk">+</span>
           </summary>
           <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
             <p>알파벳 단계부터 연음까지 이어지는 발음 훈련 사이트와, 단어에서 구·문장·실전 회화로 확장되는 다국어 어휘 학습 사이트를 만들었습니다.</p>
-          </div>
-        </details>
-        <details class="item" data-id="rainbow-post" style="--c:#FF9F9F">
-          <summary>
-            <span class="n"></span>
-            <span class="tg">Web App</span>
-            <span class="nm">무지개 우체국</span>
-            <span class="sb">지연 배달 편지 웹앱 · 베타 운영 중</span>
-            <span class="mk">+</span>
-          </summary>
-          <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
-            <p>편지가 시간을 두고 도착하는 우체국 콘셉트의 웹앱입니다. 지연 배달 편지와 2.5D로 꾸미는 나만의 방, AI 연동 학습 기능을 담아 베타로 운영하고 있습니다.</p>
-          </div>
-        </details>
-        <details class="item" data-id="calendar" style="--c:#FFD84D">
-          <summary>
-            <span class="n"></span>
-            <span class="tg">App</span>
-            <span class="nm">말하면</span>
-            <span class="sb">커플 일정 공유 앱 · 직접 구현한 캘린더</span>
-            <span class="mk">+</span>
-          </summary>
-          <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
-            <p>두 사람이 일정을 함께 쓰는 커플 스케줄 앱입니다. 캘린더 UI를 외부 라이브러리에 기대지 않고 직접 구현했고, 독립적으로 배포해 운영하고 있습니다.</p>
-          </div>
-        </details>
-        <details class="item" data-id="dblv" style="--c:#7BE0C0">
-          <summary>
-            <span class="n"></span>
-            <span class="tg">App</span>
-            <span class="nm">DBLV</span>
-            <span class="sb">음악 작업팀용 협업 도구 · 베타</span>
-            <span class="mk">+</span>
-          </summary>
-          <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
-            <p>작곡·프로듀싱·작사 팀을 위한 협업 도구입니다. 메신저를 포함한 12개 업무 모듈을 갖췄고, 팀에 맞게 메뉴와 기능을 켜고 끌 수 있습니다. 베타로 운영하고 있습니다.</p>
-          </div>
-        </details>
-        <details class="item" data-id="junan" style="--c:#8FB8FF">
-          <summary>
-            <span class="n"></span>
-            <span class="tg">Game</span>
-            <span class="nm">Junan</span>
-            <span class="sb">게임 프로젝트 · 개발 및 인수인계</span>
-            <span class="mk">+</span>
-          </summary>
-          <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
-            <p>웹 기반 캐주얼 대전 게임입니다. 실시간 P2P 대결과 포인트 배팅, 앱처럼 설치되는 PWA를 지원하며, 개발과 인수인계 문서화까지 맡았습니다.</p>
-          </div>
-        </details>
-        <details class="item" data-id="lyrics" style="--c:#C9A7FF">
-          <summary>
-            <span class="n"></span>
-            <span class="tg">Web</span>
-            <span class="nm">작사공방</span>
-            <span class="sb">가사 작업 웹 도구 · 라이브</span>
-            <span class="mk">+</span>
-          </summary>
-          <div class="bd">
-            <div class="tabs">
-              <span class="tab on">자세히 보기</span>
-            </div>
-            <p>노래 가사 작업을 돕는 웹 도구입니다. 무료 프롬프트 모드로 시작해, 본인 API 키를 연결하면 AI가 가사를 직접 생성해 줍니다. 라이브로 운영하고 있습니다.</p>
           </div>
         </details>
         </div>
@@ -560,9 +826,65 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
       </div>
     </section>
 
+    <!-- ══ 진행 방식 ══ -->
+    <section id="process">
+      <div class="head"><span class="num">(03)</span><h2>Process</h2><span class="file">how_it_works.txt</span></div>
+      <p class="lead">애매하게 시작해서 늘어지는 일이 없도록, 순서를 정해 두고 일합니다.</p>
+      <ol class="steps rise">
+        <li><h3>요구사항 정리</h3><p>10분 통화나 채팅으로 핵심 3가지를 확인합니다. 기획이 없어도 됩니다 — 정리부터 같이 합니다.</p></li>
+        <li><h3>완료 기준 합의</h3><p>무엇이 되면 끝인지 체크리스트로 문서화하고, 기간과 비용을 확정한 뒤 시작합니다.</p></li>
+        <li><h3>실제 화면으로 보고</h3><p>배포 가능한 단위로 쪼개서 진행하고, 진행 상황은 실제 화면 링크로 보여 드립니다. 말로만 하는 보고는 없습니다.</p></li>
+        <li><h3>납품 · 운영 설계</h3><p>도메인·배포·운영비 설계까지 넘겨 드리고, 하자보수 기간 안의 문제는 무상으로 고칩니다.</p></li>
+      </ol>
+      <div class="promise rise">
+        <h3>약속드리는 것</h3>
+        <ol>
+          <li>시작 전에 완료 기준을 문서로 합의합니다.</li>
+          <li>진행 상황을 실제 화면 링크로 보여 드립니다.</li>
+          <li>납품 후 문제가 생기면 기간 내 무상으로 고칩니다. (하자보수 기간은 견적서에 명시)</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ══ 소개 ══ -->
+    <section id="about">
+      <div class="head"><span class="num">(04)</span><h2>About</h2><span class="file">about_me.txt</span></div>
+      <div class="about rise">
+        <div>
+          <p class="lede">기획서에서 멈추지 않고, 배포된 URL까지 만들어 놓는 편입니다.</p>
+          <p>교육 관리 플랫폼의 기획과 QA를 맡으면서 자동 채점·리포트 생성·학부모 앱까지 하나의 흐름으로 묶는 일을 해왔습니다. 동시에 개인 제품으로 판매 관리 시스템, 코드 마켓플레이스, 발음 학습 사이트 등을 문제 정의부터 배포까지 직접 만들었어요.</p>
+          <p>특히 교육업 실무 경험이 있어서, 학원·교육기관의 문서와 운영 흐름을 아는 개발이 강점입니다. HWP(한글) 문서 자동화처럼 드문 작업까지 다룹니다.</p>
+          <p>AI 도구로 개발 속도를 끌어올리되, 제품 로직과 사용성은 제 손으로 붙잡는 것을 원칙으로 합니다.</p>
+          <p>지금은 교육과 AI 제품을 다루는 브랜드 AIVERSE를 준비하고 있습니다.</p>
+        </div>
+        <dl class="facts">
+        <div><dt>Role</dt><dd>기획 · 개발 · 배포 · 운영 (1인)</dd></div>
+        <div><dt>Frontend</dt><dd>React · Next.js · 순수 JS · PWA</dd></div>
+        <div><dt>Backend</dt><dd>Node · Python · Supabase · Cloudflare</dd></div>
+        <div><dt>AI</dt><dd>Claude · Gemini API 실서비스 연동</dd></div>
+        <div><dt>Docs</dt><dd>HWP · PPT · DOCX · PDF 자동화</dd></div>
+        <div><dt>Based</dt><dd>Seoul, KR</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ══ FAQ ══ -->
+    <section id="faq">
+      <div class="head"><span class="num">(05)</span><h2>FAQ</h2><span class="file">faq.txt</span></div>
+      <div class="rise">
+        <details class="qa"><summary>기획이 없는데 의뢰해도 되나요?</summary><div class="a">네. 요구사항 정리부터 같이 합니다. 10분 통화(또는 채팅)로 핵심 3가지만 확인하면 견적을 확정해 드릴 수 있어요.</div></details>
+        <details class="qa"><summary>비용은 어떻게 정해지나요?</summary><div class="a">범위를 확인한 뒤 기간과 비용을 먼저 범위로 알려 드리고, 완료 기준을 문서로 합의한 뒤 확정합니다. 확정 전에는 비용이 발생하지 않습니다.</div></details>
+        <details class="qa"><summary>AI 기능을 넣으면 요금 폭탄이 나지 않나요?</summary><div class="a">사용자당 AI 비용을 통제하는 구조로 설계합니다. 프롬프트 설계, 비용 상한, 필요하면 사용자 본인 키(BYOK) 방식까지 — 실서비스 5건 이상에서 검증한 방법입니다.</div></details>
+        <details class="qa"><summary>매달 서버비가 나가는 게 부담돼요.</summary><div class="a">Vercel·Cloudflare·Supabase 조합으로 월 유지비 0원~수천 원 수준의 인프라를 설계합니다. 소규모 서비스가 감당 가능한 구조를 처음부터 잡습니다.</div></details>
+        <details class="qa"><summary>한글(HWP)·PPT·엑셀 같은 문서 작업도 자동화되나요?</summary><div class="a">네. 한글(HWP) 파일을 직접 읽어 PPT·DOCX·PDF로 만드는 파이프라인을 만들어 교육기관에 실제 납품했습니다. 반복 문서 작업은 대부분 자동화할 수 있습니다.</div></details>
+        <details class="qa"><summary>납품 후 문제가 생기면요?</summary><div class="a">하자보수 기간 안의 문제는 무상으로 고칩니다. 기간은 견적서에 명시합니다.</div></details>
+        <details class="qa"><summary>진행 상황은 어떻게 알 수 있나요?</summary><div class="a">배포 가능한 단위로 쪼개 진행하고, 실제 화면 링크로 보여 드립니다. 캡처나 말로만 하는 보고는 하지 않습니다.</div></details>
+      </div>
+    </section>
+
     <!-- ══ 경력 ══ -->
     <section id="path">
-      <div class="head"><span class="num">(03)</span><h2>Path</h2></div>
+      <div class="head"><span class="num">(06)</span><h2>Path</h2><span class="file">career.log</span></div>
       <div class="path rise">
       <div class="stop">
         <div class="when">2026 — NOW</div>
@@ -609,31 +931,42 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
 
     <!-- ══ 기술 ══ -->
     <section id="skills">
-      <div class="head"><span class="num">(04)</span><h2>Skills</h2></div>
+      <div class="head"><span class="num">(07)</span><h2>Skills</h2><span class="file">stack.cfg</span></div>
       <div class="skills rise">
       <div class="sk" style="--c:#FFD84D">
-        <h3>Product</h3>
-        <ul><li>AI 서비스 기획 및 프로덕트 관리</li><li>QA 관리 · 사용자 플로우 테스트</li><li>교육 AI 콘텐츠 설계</li><li>스타트업 아이데이션 · 사업화 전략</li></ul>
+        <h3>Frontend</h3>
+        <ul><li>React · Next.js(App Router) · TypeScript · Vite</li><li>순수 HTML/CSS/JS · PWA(웹푸시·오프라인)</li><li>WebRTC(P2P) · Web Speech API(음성)</li></ul>
       </div>
       <div class="sk" style="--c:#7BE0C0">
-        <h3>Build</h3>
-        <ul><li>HTML · Java · Python · Django</li><li>AI 기반 풀스택 MVP 구축</li><li>GitHub · Notion · Figma · VS Code</li><li>ChatGPT · Claude · Gemini · Lovable · Cursor</li></ul>
+        <h3>Backend · 배포</h3>
+        <ul><li>Node.js · Python · Supabase(PostgreSQL·RLS·Auth)</li><li>Cloudflare Workers/Functions/D1 · Vercel</li><li>GitHub Actions·크론 · 도메인/DNS · 캐시 전략</li></ul>
       </div>
       <div class="sk" style="--c:#FF8FB1">
-        <h3>Language</h3>
-        <ul><li>한국어 — 모국어</li><li>English — 교육 및 비즈니스 커뮤니케이션</li></ul>
+        <h3>AI · 문서 자동화</h3>
+        <ul><li>Claude API · Gemini API(텍스트·이미지·비전)</li><li>프롬프트 설계 · structured outputs · 스트리밍 · BYOK 구조</li><li>HWP 저수준 파싱 · python-pptx · DOCX 생성 · PDF 조판 · 엑셀</li></ul>
       </div>
       </div>
     </section>
 
     <!-- ══ 연락처 ══ -->
     <section id="contact">
-      <div class="head"><span class="num">(05)</span><h2>Contact</h2></div>
-      <div class="rise">
-        <p style="color:var(--dim);max-width:32rem">만들고 싶은 것이 있다면 편하게 보내주세요. 한 줄이면 충분합니다 — 기획이 흐릿해도 요구사항 정리부터 같이 합니다.</p>
-        <a class="mail js-mail" href="mailto:devil.elora@gmail.com">devil.elora@gmail.com</a>
-        <div class="cta-row">
-          <a class="cta js-mail" href="mailto:devil.elora@gmail.com">메일로 의뢰 문의 — 양식 자동 완성</a>
+      <div class="head"><span class="num">(08)</span><h2>Contact</h2><span class="file">contact.exe</span></div>
+      <div class="contact-grid rise">
+        <div>
+          <p style="color:var(--dim);max-width:32rem">만들고 싶은 것이 있다면 편하게 보내주세요. 한 줄이면 충분합니다 — 기획이 흐릿해도 요구사항 정리부터 같이 합니다.</p>
+          <a class="mail js-mail" href="mailto:devil.elora@gmail.com">devil.elora@gmail.com</a>
+          <div class="cta-row">
+            <a class="cta js-mail" href="mailto:devil.elora@gmail.com">메일로 의뢰 문의 — 양식 자동 완성</a>
+          </div>
+        </div>
+        <div class="howto">
+          <h3>이렇게 진행돼요</h3>
+          <ol>
+            <li>만들고 싶은 것을 한 줄로 보내 주세요.</li>
+            <li>10분 통화나 채팅으로 핵심 3가지를 확인합니다.</li>
+            <li>기간·비용 범위와 완료 기준을 문서로 드립니다.</li>
+            <li>합의 후 시작 — 진행은 실제 화면 링크로 보여 드립니다.</li>
+          </ol>
         </div>
       </div>
     </section>
@@ -647,10 +980,10 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   테마: 페이지를 열 때마다 셋 중 하나가 무작위로 걸립니다.
-   우측 상단 색 버튼으로 직접 바꿀 수도 있어요.
+   테마: 기본은 retro. URL에 ?theme=acid|paper|blocks|retro 가 있으면 그 테마로,
+   우측 하단(독) 색 버튼으로 직접 바꿀 수도 있어요.
    ══════════════════════════════════════════════════════════════ */
-const THEMES = ['acid', 'paper', 'blocks'];
+const THEMES = ['retro', 'acid', 'paper', 'blocks'];
 
 /* ── 보이기/숨기기 (관리자 스위치) ─────────────────────
    로컬 전용 admin.html이 아래 한 줄을 만들어 줍니다.
@@ -671,19 +1004,15 @@ function applyTheme(name) {
   );
 
   // blocks 테마는 카드 격자라 전부 펼쳐 두고,
-  // 나머지 두 테마는 아코디언(한 번에 하나만)으로 동작합니다.
+  // 나머지 테마는 아코디언(한 번에 하나만)으로 동작합니다.
   const isCards = name === 'blocks';
   document.querySelectorAll('.item').forEach((d, i) => {
     d.open = isCards || i === 0;
   });
 }
 
-// 시작할 때: URL에 ?theme=acid|paper|blocks 가 있으면 그 테마로 고정(공유·비교용),
-// 없으면 지금처럼 무작위 선택
 const askedTheme = new URLSearchParams(location.search).get('theme');
-applyTheme(THEMES.includes(askedTheme)
-  ? askedTheme
-  : THEMES[Math.floor(Math.random() * THEMES.length)]);
+applyTheme(THEMES.includes(askedTheme) ? askedTheme : 'retro');
 
 // 색 버튼
 document.querySelectorAll('.sw').forEach(b =>
@@ -700,7 +1029,7 @@ document.querySelectorAll('.list').forEach(list => {
   }));
 });
 
-/* 스크롤하면 상단 바에 배경이 생김 */
+/* 스크롤하면 상단 바에 배경이 생김 (retro에서는 독이라 영향 없음) */
 const nav = document.getElementById('nav');
 addEventListener('scroll', () => nav.classList.toggle('on', scrollY > 30), { passive:true });
 
@@ -711,11 +1040,52 @@ const io = new IntersectionObserver(entries => {
   });
 }, { threshold:.08 });
 document.querySelectorAll('.rise').forEach(el => io.observe(el));
+// 안전장치: 어떤 이유로든 관찰이 안 되면 2.5초 뒤 전부 보이게 (내용이 숨겨진 채 남지 않도록)
+setTimeout(() => document.querySelectorAll('.rise:not(.in)').forEach(el => el.classList.add('in')), 2500);
 
 /* 흐르는 띠: 같은 목록을 두 번 이어 붙여 끊김 없이 반복 */
 const WORDS = ['라이브 서비스 9개 운영 중', '기획→개발→배포→운영 1인 완결', 'AI 실서비스 연동 5건+', '실사용 기업 고객 보유', '월 유지비 0원부터 설계', 'HWP·문서 자동화', 'Education AI', 'Seoul'];
 document.getElementById('ticker').innerHTML =
   WORDS.concat(WORDS).map(w => `<span>${w} ✦</span>`).join('');
+
+/* ── 플레이어: 실제 서비스 화면 슬라이드 ──────────────────
+   images/ 폴더의 캡처를 4초마다 넘깁니다. ⏮ ⏭ 로 직접 넘기고,
+   ▶/❚❚ 로 자동 재생을 멈출 수 있어요. 움직임 줄이기 설정이면 자동 재생 안 함. */
+const SLIDES = [
+  { src:'images/lyrics-studio.jpg', file:'lyrics_studio.avi', label:'작사공방 — AI 가사 작업 도구' },
+  { src:'images/eungjing.jpg',      file:'eungjing.avi',      label:'응징 대작전 — P2P 대결 PWA 게임' },
+  { src:'images/malhamyeon.jpg',    file:'malhamyeon.avi',    label:'말하면 — 음성 일정 관리 앱' },
+  { src:'images/moneyup.jpg',       file:'moneyup.avi',       label:'MoneyUp — 판매·세무 통합 관리' },
+  { src:'images/miniapp.jpg',       file:'miniapp.avi',       label:'Mini App — 웹앱 코드 마켓플레이스' },
+];
+const screen = document.getElementById('screen');
+const cap = screen.querySelector('.cap');
+SLIDES.forEach((s, i) => {
+  const d = document.createElement('div');
+  d.className = 'slide';
+  d.innerHTML = `<img src="${s.src}" alt="${s.label} 실제 화면" ${i ? 'loading="lazy"' : ''}>`;
+  screen.insertBefore(d, cap);
+});
+const slides = screen.querySelectorAll('.slide');
+let cur = -1, timer = null;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function show(i) {
+  cur = (i + SLIDES.length) % SLIDES.length;
+  slides.forEach((s, k) => s.classList.toggle('on', k === cur));
+  document.getElementById('idle').style.display = 'none';
+  document.getElementById('slide-label').textContent = SLIDES[cur].label;
+  document.getElementById('slide-idx').textContent = `${cur + 1} / ${SLIDES.length}`;
+  document.getElementById('slide-file').textContent = SLIDES[cur].file;
+}
+function play() { if (timer) return; timer = setInterval(() => show(cur + 1), 4000); document.getElementById('play').textContent = '❚❚'; }
+function stop() { clearInterval(timer); timer = null; document.getElementById('play').textContent = '▶'; }
+document.getElementById('prev').addEventListener('click', () => { stop(); show(cur - 1); });
+document.getElementById('next').addEventListener('click', () => { stop(); show(cur + 1); });
+document.getElementById('play').addEventListener('click', () => timer ? stop() : play());
+screen.addEventListener('mouseenter', () => { if (timer) clearInterval(timer), timer = 'paused'; });
+screen.addEventListener('mouseleave', () => { if (timer === 'paused') { timer = null; play(); } });
+show(0);
+if (!reduce) play();
 
 /* 메일 문의 템플릿: .js-mail 링크를 클릭하면 제목·본문이 미리 채워진 메일이 열립니다 */
 const MAIL_TO = 'devil.elora@gmail.com';
@@ -734,12 +1104,14 @@ document.querySelectorAll('.js-mail').forEach(a => {
     + '&body=' + encodeURIComponent(MAIL_BODY);
 });
 
-/* 서울 시각 */
+/* 서울 시각 · 오늘 날짜 칩 */
 const clock = document.getElementById('clock');
 const tick = () => clock.textContent =
-  new Date().toLocaleTimeString('en-GB', { timeZone:'Asia/Seoul', hour:'2-digit', minute:'2-digit' }) + ' KST';
+  new Date().toLocaleTimeString('en-GB', { timeZone:'Asia/Seoul', hour:'2-digit', minute:'2-digit' });
 tick();
 setInterval(tick, 20000);
+document.getElementById('today').textContent =
+  new Date().toLocaleDateString('en-GB', { timeZone:'Asia/Seoul', weekday:'short', day:'numeric', month:'short', year:'numeric' }).toUpperCase();
 </script>
 </body>
 </html>
