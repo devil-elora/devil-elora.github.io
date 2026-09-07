@@ -5,6 +5,27 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ELORA — AI 웹서비스 개발 · 기획부터 운영까지</title>
 <meta name="description" content="AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다. 라이브 서비스 9개 운영 중 — 교육·문서 자동화, 사내 도구, AI 연동 전문.">
+<link rel="canonical" href="https://devil-elora.github.io/">
+<!-- 카톡·슬랙·SNS에 링크를 붙였을 때 보이는 미리보기 카드 -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://devil-elora.github.io/">
+<meta property="og:site_name" content="ELORA">
+<meta property="og:title" content="ELORA — AI 웹서비스 개발 · 기획부터 운영까지">
+<meta property="og:description" content="AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다. 라이브 서비스 9개 운영 중.">
+<meta property="og:image" content="https://devil-elora.github.io/images/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ELORA — AI 웹서비스 개발 · 기획부터 운영까지">
+<meta name="twitter:description" content="AI 기능까지 되는 웹사이트·웹앱, 기획부터 운영까지 한 사람이 끝까지 만듭니다. 라이브 서비스 9개 운영 중.">
+<meta name="twitter:image" content="https://devil-elora.github.io/images/og.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Elora","alternateName":"가윤",
+ "jobTitle":"AI 웹서비스 개발자 (기획·개발·배포·운영 1인 완결)","url":"https://devil-elora.github.io/",
+ "email":"mailto:devil.elora@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Seoul","addressCountry":"KR"},
+ "knowsAbout":["AI 웹앱 개발","Claude API","Gemini API","교육기관 자동화","HWP 문서 자동화","사내 협업 도구","Next.js","Supabase","Cloudflare"]}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6D7DA'/%3E%3Crect x='3' y='3' width='26' height='26' fill='%23FFFDF7' stroke='%23141414' stroke-width='2'/%3E%3Crect x='3' y='3' width='26' height='7' fill='%23141414'/%3E%3Ctext x='16' y='26' font-family='monospace' font-size='15' font-weight='bold' text-anchor='middle' fill='%23141414'%3EE%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -300,6 +321,26 @@ a.tab:hover { color:var(--hot); border-color:var(--hot); transform:translateY(-2
 .feat { margin:.6rem 0 0 1.1rem; color:var(--dim); font-size:.88rem; }
 .feat li { margin-top:.25rem; }
 .feat b { color:var(--fg); font-weight:600; }
+/* 기능 화면 갤러리: 가로 스크롤(모바일은 스와이프), 그림을 누르면 확대 */
+.gal { display:flex; gap:.7rem; overflow-x:auto; padding:.2rem .1rem .8rem; margin:.9rem 0 .5rem;
+  scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+.gal figure { flex:0 0 auto; width:min(320px, 78vw); margin:0; scroll-snap-align:start;
+  border:var(--border); box-shadow:var(--shadow); background:#141414; cursor:zoom-in; }
+.gal figure.tall { width:min(170px, 42vw); }
+.gal img { display:block; width:100%; height:200px; object-fit:cover; object-position:top; }
+.gal figure.tall img { height:300px; }
+.gal figcaption { font-family:var(--mono); font-size:.6rem; letter-spacing:.08em; padding:.3rem .55rem;
+  background:var(--accent); color:var(--accent-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.gal figure:focus-visible { outline:2px solid var(--hot); outline-offset:3px; }
+/* 확대 보기 창 */
+dialog.lb { border:var(--border); background:var(--surface); color:var(--fg); padding:0;
+  max-width:min(96vw, 1100px); box-shadow:var(--shadow); }
+dialog.lb::backdrop { background:rgba(20,20,20,.72); }
+dialog.lb img { display:block; max-width:96vw; max-height:80vh; width:auto; height:auto; }
+dialog.lb .bar { display:flex; align-items:center; gap:1rem; padding:.5rem .8rem; border-top:var(--border);
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; }
+dialog.lb button { margin-left:auto; font-family:var(--mono); border:var(--border); background:var(--accent);
+  color:var(--accent-ink); padding:.35rem .8rem; cursor:pointer; }
 
 /* --- ACID: 행 전체에 색이 차오름 --- */
 [data-theme="acid"] .list { border-top:1px solid var(--line); }
@@ -720,7 +761,11 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
           </summary>
           <div class="bd">
             <div class="tabs"><span class="tab on">자세히 보기</span></div>
-            <figure class="shot"><img src="images/lyrics-studio.jpg" alt="작사공방 실제 화면 — 가사 주제, 꼭 넣을 단어, 데모 음절 가이드 입력 폼" loading="lazy" width="960" height="600"><figcaption>lyrics_studio — 실제 화면</figcaption></figure>
+            <div class="gal">
+              <figure><img src="images/lyrics-studio.jpg" alt="작사공방 — 가사 주제, 꼭 넣을 단어, 데모 음절 가이드 입력 폼" loading="lazy" width="960" height="600"><figcaption>01 · 주제·단어·음절 가이드 입력</figcaption></figure>
+              <figure><img src="images/lyrics-studio-2.jpg" alt="작사공방 — 장르·분위기·곡 구성·영어 비율 옵션과 가사 생성 버튼" loading="lazy" width="960" height="600"><figcaption>02 · 스타일 옵션 → 가사 생성</figcaption></figure>
+              <figure class="tall"><img src="images/lyrics-studio-m.jpg" alt="작사공방 — 모바일 화면" loading="lazy" width="430" height="900"><figcaption>03 · 모바일</figcaption></figure>
+            </div>
             <p>작사가용 가사 초안 생성 도구입니다. 사용자가 본인 AI 키를 등록해 쓰는 BYOK 구조(운영자 서버 비용 0원)와 무료 프롬프트 모드를 함께 제공하고, 원곡 가사 복제 금지 정책을 내장했습니다.</p>
             <ul class="feat">
               <li><b>BYOK 구조</b> — 서버 유지비 없이 돌아가는 AI 도구</li>
@@ -738,7 +783,10 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
           </summary>
           <div class="bd">
             <div class="tabs"><span class="tab on">자세히 보기</span></div>
-            <figure class="shot"><img src="images/eungjing.jpg" alt="응징 대작전 실제 화면 — 아바타, 스트레스 풀기, 대결 로비, 무기 상점 메뉴" loading="lazy" width="960" height="600"><figcaption>eungjing — 실제 화면</figcaption></figure>
+            <div class="gal">
+              <figure><img src="images/eungjing.jpg" alt="응징 대작전 — 아바타, 혼자 스트레스 풀기, 대결 로비, 무기 상점 메뉴" loading="lazy" width="960" height="600"><figcaption>01 · 메인 — 아바타·대결 로비·무기 상점</figcaption></figure>
+              <figure class="tall"><img src="images/eungjing-m.jpg" alt="응징 대작전 — 모바일 화면(PWA)" loading="lazy" width="430" height="900"><figcaption>02 · 모바일(PWA 설치)</figcaption></figure>
+            </div>
             <p>친구끼리 캐리커처로 벌칙 대결을 하는 모바일 웹 게임입니다. P2P 실시간 대결, 포인트 배팅, 홈 화면 설치(PWA)까지 서버 비용 없는 인프라로 구현했습니다.</p>
             <ul class="feat">
               <li><b>실시간 P2P 대결</b> — WebRTC, 서버 비용 0원</li>
@@ -757,7 +805,10 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
           </summary>
           <div class="bd">
             <div class="tabs"><span class="tab on">자세히 보기</span></div>
-            <figure class="shot"><img src="images/malhamyeon.jpg" alt="말하면 실제 화면 — 말로 일정 입력, 월간 달력, 체크리스트" loading="lazy" width="960" height="600"><figcaption>malhamyeon — 실제 화면</figcaption></figure>
+            <div class="gal">
+              <figure><img src="images/malhamyeon.jpg" alt="말하면 — 말로 일정 입력, 월간 달력, 체크리스트" loading="lazy" width="960" height="600"><figcaption>01 · 말로 일정 입력 · 달력</figcaption></figure>
+              <figure class="tall"><img src="images/malhamyeon-m.jpg" alt="말하면 — 모바일 화면" loading="lazy" width="430" height="900"><figcaption>02 · 모바일</figcaption></figure>
+            </div>
             <p>"다음 주 화요일 저녁 7시 강남에서 저녁" 같은 말을 그대로 일정으로 바꿔 주는 커플 일정 앱입니다. AI 파싱과 규칙 파서의 이중 구조로 동작하고, 캘린더 UI를 외부 라이브러리 없이 직접 구현했습니다.</p>
             <ul class="feat">
               <li><b>말로 일정 등록</b> — AI 파싱 + 규칙 파서 이중 구조</li>
@@ -775,7 +826,11 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
           </summary>
           <div class="bd">
             <div class="tabs"><span class="tab on">자세히 보기</span></div>
-            <figure class="shot"><img src="images/moneyup.jpg" alt="MoneyUp 실제 화면 — 매출·순수익·지출·예상 세금 대시보드" loading="lazy" width="960" height="600"><figcaption>moneyup — 실제 화면</figcaption></figure>
+            <div class="gal">
+              <figure><img src="images/moneyup.jpg" alt="MoneyUp — 매출·순수익·지출·예상 세금 대시보드" loading="lazy" width="960" height="600"><figcaption>01 · 매출·세금 대시보드</figcaption></figure>
+              <figure><img src="images/moneyup-2.jpg" alt="MoneyUp — 실시간 매출 대시보드, 카드·계좌 자동 정리, 고객 분석 기능" loading="lazy" width="960" height="600"><figcaption>02 · 기능 — 자동 정리·고객 분석</figcaption></figure>
+              <figure><img src="images/moneyup-3.jpg" alt="MoneyUp — 개인·소상공인·법인 플랜 구성" loading="lazy" width="960" height="600"><figcaption>03 · 개인 · 소상공인 · 법인</figcaption></figure>
+            </div>
             <p>오픈마켓·은행 계좌·카드를 연결해 매출을 자동으로 기록하고 분석하는 판매 관리 플랫폼입니다. 세무, CRM, 클레임, 상담 모듈을 붙여 정산부터 고객 응대까지 한 화면에서 처리하도록 설계했습니다.</p>
           </div>
         </details>
@@ -789,7 +844,9 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
           </summary>
           <div class="bd">
             <div class="tabs"><span class="tab on">자세히 보기</span></div>
-            <figure class="shot"><img src="images/miniapp.jpg" alt="Mini App 실제 화면 — 리딤 코드, 내 라이브러리, 자연어 편집" loading="lazy" width="960" height="600"><figcaption>miniapp — 실제 화면</figcaption></figure>
+            <div class="gal">
+              <figure><img src="images/miniapp.jpg" alt="Mini App — 리딤 코드, 내 라이브러리, 자연어 편집" loading="lazy" width="960" height="600"><figcaption>01 · 리딤 코드 · 라이브러리 · 자연어 편집</figcaption></figure>
+            </div>
             <p>애플리케이션 코드를 사고팔 수 있는 웹 플랫폼입니다. 기획부터 구현, 배포까지 개인 풀스택 MVP로 만들었습니다.</p>
           </div>
         </details>
@@ -973,6 +1030,12 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
   </div>
 </main>
 
+<!-- 갤러리 확대 보기 창 (JS가 채움) -->
+<dialog class="lb" id="lb" aria-label="화면 확대 보기">
+  <img id="lb-img" alt="">
+  <div class="bar"><span id="lb-cap"></span><button type="button" id="lb-close">닫기 ✕</button></div>
+</dialog>
+
 <footer>
   <div>© 2026 ELORA</div>
   <div><a href="#contact">의뢰 문의</a> &nbsp;·&nbsp; <a href="#top">Back to top ↑</a></div>
@@ -1086,6 +1149,24 @@ screen.addEventListener('mouseenter', () => { if (timer) clearInterval(timer), t
 screen.addEventListener('mouseleave', () => { if (timer === 'paused') { timer = null; play(); } });
 show(0);
 if (!reduce) play();
+
+/* 갤러리 확대 보기: .gal 안의 그림을 누르면 <dialog>로 크게 봅니다 (ESC · 닫기 · 바깥 클릭으로 닫힘) */
+const lb = document.getElementById('lb');
+const lbImg = document.getElementById('lb-img');
+const lbCap = document.getElementById('lb-cap');
+document.querySelectorAll('.gal figure').forEach(f => {
+  f.tabIndex = 0; f.setAttribute('role', 'button');
+  const open = () => {
+    const img = f.querySelector('img');
+    lbImg.src = img.src; lbImg.alt = img.alt;
+    lbCap.textContent = (f.querySelector('figcaption') || img).textContent || img.alt;
+    lb.showModal();
+  };
+  f.addEventListener('click', open);
+  f.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+});
+document.getElementById('lb-close').addEventListener('click', () => lb.close());
+lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
 
 /* 메일 문의 템플릿: .js-mail 링크를 클릭하면 제목·본문이 미리 채워진 메일이 열립니다 */
 const MAIL_TO = 'devil.elora@gmail.com';
