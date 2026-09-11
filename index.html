@@ -285,6 +285,8 @@ section { padding:clamp(3.5rem,8vh,6.5rem) 0; }
 .group { display:inline-block; font-family:var(--mono); font-size:.64rem; letter-spacing:.16em;
   text-transform:uppercase; color:var(--hot); margin-bottom:1rem; }
 .group.two { margin-top:3rem; }
+.gnote { font-size:.85rem; color:var(--dim); margin:-.6rem 0 1rem; max-width:44rem; }
+.soon { font-size:.9rem; color:var(--dim); border:1px dashed var(--line); padding:1rem 1.1rem; }
 [data-theme="paper"] .group { display:block; padding-bottom:.5rem; border-bottom:2px solid var(--fg); }
 [data-theme="blocks"] .group { background:var(--fg); color:var(--bg); padding:.3rem .8rem; }
 
@@ -903,7 +905,9 @@ body.site-mode .backworld { display:block; }
       <div class="head"><span class="num">(02)</span><h2>Work</h2><span class="file">work — 9 items</span></div>
       <p class="lead">전부 실제로 운영 중인 서비스입니다. 항목을 열면 실제 화면과 기능 설명이 나옵니다.</p>
       <div class="rise">
-        <div class="group">Shipped — 배포된 제품</div>
+        <div class="workgroup" data-group="own">
+        <div class="group">내 프로그램 — 혼자 만든 것</div>
+        <p class="gnote">문제 정의부터 기획·디자인·개발·배포·운영까지 전부 직접 한 제품들입니다.</p>
         <div class="list">
         <details class="item" data-id="rainbow-post" style="--c:#FF9F9F">
           <summary>
@@ -921,25 +925,6 @@ body.site-mode .backworld { display:block; }
               <li><b>지연 배달 연출</b> — 편지가 시간을 두고 도착</li>
               <li><b>2.5D 캐릭터·방 꾸미기</b> — 반려동물 캐릭터 생성, 음성 명령</li>
               <li><b>운영 설계</b> — 유저당 AI 비용을 월 수십 원 수준으로 통제, 위험 키워드 감지 등 안전 규칙, 웹푸시, 5개 언어</li>
-            </ul>
-          </div>
-        </details>
-        <details class="item" data-id="dblv" style="--c:#7BE0C0">
-          <summary>
-            <span class="n"></span>
-            <span class="tg">B2B · 실운영</span>
-            <span class="nm">DBLV</span>
-            <span class="sb">엔터테인먼트사 사내 협업툴 · 12개 모듈</span>
-            <span class="mk">+</span>
-          </summary>
-          <div class="bd">
-            <div class="tabs"><span class="tab on">자세히 보기</span></div>
-            <p>작곡·프로듀싱 회사가 실제로 쓰는 자체 협업 도구입니다. 메시지·캘린더·할일·스튜디오 예약·설문·드라이브·관리자 등 12개 모듈, 직원 간 실시간 동기화, 말로 하는 일정 등록(한국어 자연어 파서 자체 개발), 가입 승인 흐름, PWA까지 갖췄고 실직원이 매일 사용합니다.</p>
-            <ul class="feat">
-              <li><b>12개 업무 모듈</b> — 메신저·캘린더·할일·예약·설문·드라이브·관리자</li>
-              <li><b>실시간 동기화</b> — 직원 간 즉시 반영, 웹푸시</li>
-              <li><b>말로 일정 등록</b> — 한국어 자연어 날짜 파서 자체 개발</li>
-              <li><b>기술</b> — 순수 HTML/CSS/JS + Cloudflare Pages/Functions + D1</li>
             </ul>
           </div>
         </details>
@@ -1042,19 +1027,6 @@ body.site-mode .backworld { display:block; }
             <p>애플리케이션 코드를 사고팔 수 있는 웹 플랫폼입니다. 기획부터 구현, 배포까지 개인 풀스택 MVP로 만들었습니다.</p>
           </div>
         </details>
-        <details class="item" data-id="operations" style="--c:#8FB8FF">
-          <summary>
-            <span class="n"></span>
-            <span class="tg">Ops</span>
-            <span class="nm">Operations</span>
-            <span class="sb">내부 관리 · 프리랜서 강사 운영 사이트</span>
-            <span class="mk">+</span>
-          </summary>
-          <div class="bd">
-            <div class="tabs"><span class="tab on">자세히 보기</span></div>
-            <p>회의와 일정, 강사 지원, 출근 확인, 서류 검토, OCR 기반 확인, 계약·문서 워크플로를 처리하는 내부 운영 도구입니다.</p>
-          </div>
-        </details>
         <details class="item" data-id="language" style="--c:#C9A7FF">
           <summary>
             <span class="n"></span>
@@ -1068,6 +1040,53 @@ body.site-mode .backworld { display:block; }
             <p>알파벳 단계부터 연음까지 이어지는 발음 훈련 사이트와, 단어에서 구·문장·실전 회화로 확장되는 다국어 어휘 학습 사이트를 만들었습니다.</p>
           </div>
         </details>
+        </div>
+        </div>
+        <div class="workgroup" data-group="full">
+        <div class="group two">의뢰 작업 — 기획부터 전부</div>
+        <p class="gnote">의뢰를 받아 기획·설계부터 개발·배포·운영까지 통째로 맡은 작업입니다.</p>
+        <div class="list">
+        <details class="item" data-id="dblv" style="--c:#7BE0C0">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">B2B · 실운영</span>
+            <span class="nm">DBLV</span>
+            <span class="sb">엔터테인먼트사 사내 협업툴 · 12개 모듈</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <p>작곡·프로듀싱 회사가 실제로 쓰는 자체 협업 도구입니다. 메시지·캘린더·할일·스튜디오 예약·설문·드라이브·관리자 등 12개 모듈, 직원 간 실시간 동기화, 말로 하는 일정 등록(한국어 자연어 파서 자체 개발), 가입 승인 흐름, PWA까지 갖췄고 실직원이 매일 사용합니다.</p>
+            <ul class="feat">
+              <li><b>12개 업무 모듈</b> — 메신저·캘린더·할일·예약·설문·드라이브·관리자</li>
+              <li><b>실시간 동기화</b> — 직원 간 즉시 반영, 웹푸시</li>
+              <li><b>말로 일정 등록</b> — 한국어 자연어 날짜 파서 자체 개발</li>
+              <li><b>기술</b> — 순수 HTML/CSS/JS + Cloudflare Pages/Functions + D1</li>
+            </ul>
+          </div>
+        </details>
+        <details class="item" data-id="operations" style="--c:#8FB8FF">
+          <summary>
+            <span class="n"></span>
+            <span class="tg">Ops</span>
+            <span class="nm">Operations</span>
+            <span class="sb">내부 관리 · 프리랜서 강사 운영 사이트</span>
+            <span class="mk">+</span>
+          </summary>
+          <div class="bd">
+            <div class="tabs"><span class="tab on">자세히 보기</span></div>
+            <p>회의와 일정, 강사 지원, 출근 확인, 서류 검토, OCR 기반 확인, 계약·문서 워크플로를 처리하는 내부 운영 도구입니다.</p>
+          </div>
+        </details>
+        </div>
+        </div>
+        <div class="workgroup" data-group="part">
+        <div class="group two">의뢰 작업 — 개발 · 디자인 참여</div>
+        <p class="gnote">기획은 의뢰인이 하고, 개발이나 디자인 등 맡은 부분을 수행한 작업입니다.</p>
+        <div class="list">
+        <div class="soon">여기 들어갈 작업을 정리하는 중입니다.</div>
+        </div>
+        </div>
         </div>
         <div class="cta-row">
           <a class="cta" href="#contact">이런 걸 맡기고 싶다면 — 의뢰 문의</a>
@@ -1408,27 +1427,31 @@ let canEnterWorld = false;
 
 /* ── 마을 지도: 건물 = 섹션 ───────────────────────────────── */
 const BUILDINGS = [
-  { id:'about', ko:'소개', name:'ABOUT_ME', color:0xBFEAE0, pos:[-21,-6], size:[10,6,10], face:'x+',
+  { key:'about', sec:'about', ko:'소개', name:'ABOUT_ME', board:'어떤 사람인지', color:0xBFEAE0, pos:[-21,-12], size:[10,6,10], face:'x+',
     say:'저는 기획서에서 멈추지 않고 배포된 URL까지 만들어 놓는 편이에요. 교육업 실무를 알아서 학원·교육기관 일이 특히 잘 맞습니다.' },
-  { id:'services', ko:'서비스', name:'SERVICES.EXE', color:0xF9E8A0, pos:[-15,17], size:[11,7,10], face:'z-',
+  { key:'services', sec:'services', ko:'서비스', name:'SERVICES.EXE', board:'무엇을 맡길 수 있나', color:0xF9E8A0, pos:[-21,12], size:[11,7,10], face:'x+',
     say:'맡기실 수 있는 일 다섯 가지가 여기 있어요. AI 웹앱, 교육 자동화, 사내 도구, 홈페이지, 문서 자동화.' },
-  { id:'work', ko:'작업', name:'WORK · 9', color:0xF6C6CD, pos:[21,-6], size:[12,8,11], face:'x-',
-    say:'지금 실제로 돌아가는 서비스 아홉 개예요. 들어가면 진짜 화면이랑 기능 설명까지 볼 수 있어요.' },
-  { id:'process', ko:'진행 방식', name:'HOW_IT_WORKS', color:0xCBD9F2, pos:[15,17], size:[10,6,10], face:'z-',
+  { key:'apps', sec:'work', group:'own', ko:'내 프로그램', name:'MY APPS · 7', board:'혼자 만든 것 7개', color:0xF6C6CD, pos:[22,-12], size:[12,8,12], face:'x-',
+    say:'혼자 만든 제 프로그램들이에요. 기획도, 디자인도, 개발도, 배포랑 운영까지 전부 제가 했어요.' },
+  { key:'client', sec:'work', group:'full', ko:'의뢰 · 전부', name:'CLIENT · ALL', board:'의뢰받아 통째로', color:0xF2A79F, pos:[22,12], size:[10,7,10], face:'x-',
+    say:'의뢰를 받아 기획부터 개발·배포·운영까지 통째로 맡은 작업이에요. 회사가 매일 쓰는 시스템들입니다.' },
+  { key:'part', sec:'work', group:'part', ko:'의뢰 · 참여', name:'CLIENT · PART', board:'개발·디자인 참여', color:0xE8CDA3, pos:[12,23], size:[9,6,9], face:'z-',
+    say:'기획은 의뢰인이 하고 개발이나 디자인처럼 맡은 부분을 수행한 작업이에요. 지금 정리하는 중입니다.' },
+  { key:'process', sec:'process', ko:'진행 방식', name:'HOW_IT_WORKS', board:'어떻게 진행되나', color:0xCBD9F2, pos:[-12,23], size:[10,6,10], face:'z-',
     say:'요구사항 정리 → 완료 기준 합의 → 실제 화면으로 보고 → 납품. 약속 세 가지도 안에 붙여놨어요.' },
-  { id:'faq', ko:'FAQ', name:'FAQ.TXT', color:0xDED1F0, pos:[-15,-22], size:[9,5.5,9], face:'z+',
+  { key:'faq', sec:'faq', ko:'FAQ', name:'FAQ.TXT', board:'비용·기간 궁금하면', color:0xDED1F0, pos:[-12,-24], size:[9,5.5,9], face:'z+',
     say:'비용은 어떻게 정해지는지, AI 요금 폭탄은 안 나는지 — 자주 받는 질문 일곱 개를 모아뒀어요.' },
-  { id:'contact', ko:'문의', name:'CONTACT.EXE', color:0xE0453A, pos:[15,-22], size:[9,7,9], face:'z+',
+  { key:'contact', sec:'contact', ko:'문의', name:'CONTACT.EXE', board:'여기서 의뢰하기 ♥', color:0xE0453A, pos:[12,-24], size:[9,7,9], face:'z+',
     say:'만들고 싶은 것 한 줄이면 충분해요. 여기서 바로 문의 메일을 보내실 수 있어요.' },
 ];
-const SCREENS = [
-  { src:'images/lyrics-studio.jpg', title:'작사공방 — AI 가사 작업 도구', pos:[-9,-9], rot:Math.PI*0.25 },
-  { src:'images/eungjing.jpg',      title:'응징 대작전 — P2P 대결 PWA 게임', pos:[9,-9], rot:-Math.PI*0.25 },
-  { src:'images/malhamyeon.jpg',    title:'말하면 — 음성 일정 관리 앱', pos:[-9,9], rot:Math.PI*0.75 },
-  { src:'images/moneyup.jpg',       title:'MoneyUp — 판매·세무 통합 관리', pos:[9,9], rot:-Math.PI*0.75 },
-  { src:'images/miniapp.jpg',       title:'Mini App — 웹앱 코드 마켓플레이스', pos:[0,-30], rot:0 },
+const SCREENS = [   // 광장 둘레에 세워 건물 출입구를 가리지 않게 배치
+  { src:'images/lyrics-studio.jpg', title:'작사공방 — AI 가사 작업 도구',      pos:[-6.5,-6.5], rot:  0.785 },
+  { src:'images/eungjing.jpg',      title:'응징 대작전 — P2P 대결 PWA 게임',    pos:[ 6.5,-6.5], rot: -0.785 },
+  { src:'images/malhamyeon.jpg',    title:'말하면 — 음성 일정 관리 앱',        pos:[-6.5, 6.5], rot:  2.356 },
+  { src:'images/moneyup.jpg',       title:'MoneyUp — 판매·세무 통합 관리',     pos:[ 6.5, 6.5], rot: -2.356 },
+  { src:'images/miniapp.jpg',       title:'Mini App — 웹앱 코드 마켓플레이스', pos:[   0, -32], rot:  0 },
 ];
-const LIMIT = 36;
+const LIMIT = 40;
 
 /* ── 사이트 모드 전환 ─────────────────────────────────────── */
 function toSite(scrollTo) {
@@ -1458,7 +1481,7 @@ document.body.classList.add('world-on');
 renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
 renderer.setClearColor(0xF6D7DA);
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xF6D7DA, 46, 86);
+scene.fog = new THREE.Fog(0xF6D7DA, 52, 96);
 const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 200);
 scene.add(new THREE.HemisphereLight(0xFFFFFF, 0xE7CFD3, 1.35));
 const sun = new THREE.DirectionalLight(0xFFF6E8, 0.7); sun.position.set(14, 26, 10); scene.add(sun);
@@ -1470,8 +1493,11 @@ function labelTex(text, bg = '#141414', fg = '#FFFDF7', w = 512, h = 128) {
   const g = c.getContext('2d');
   g.fillStyle = bg; g.fillRect(0, 0, w, h);
   g.strokeStyle = '#141414'; g.lineWidth = 10; g.strokeRect(5, 5, w - 10, h - 10);
-  g.fillStyle = fg; g.font = 'bold ' + Math.round(h * 0.42) + 'px "DungGeunMo", monospace';
-  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, w / 2, h * 0.54);
+  g.fillStyle = fg; g.textAlign = 'center'; g.textBaseline = 'middle';
+  let fs = Math.round(h * 0.42);                       // 글자가 길면 판에 맞게 줄인다
+  do { g.font = 'bold ' + fs + 'px "DungGeunMo", monospace'; fs -= 2; }
+  while (fs > 10 && g.measureText(text).width > w - 44);
+  g.fillText(text, w / 2, h * 0.54);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 const mat = (color) => new THREE.MeshLambertMaterial({ color });
@@ -1481,45 +1507,70 @@ function box(w, h, d, color, x, y, z, parent = scene, outline = false) {
   if (outline) edge(m); parent.add(m); return m;
 }
 
-/* ── 바닥 · 길 · 플라자 ── */
-const dotC = document.createElement('canvas'); dotC.width = dotC.height = 64;
-{ const g = dotC.getContext('2d'); g.fillStyle = '#F3EDE0'; g.fillRect(0, 0, 64, 64);
-  g.fillStyle = 'rgba(20,20,20,.13)'; for (let y = 8; y < 64; y += 16) for (let x = 8; x < 64; x += 16) g.fillRect(x, y, 2, 2); }
-const dotTex = new THREE.CanvasTexture(dotC); dotTex.wrapS = dotTex.wrapT = THREE.RepeatWrapping; dotTex.repeat.set(40, 40);
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(LIMIT * 2 + 24, LIMIT * 2 + 24), new THREE.MeshLambertMaterial({ map:dotTex }));
+/* ── 바닥: 잔디 + 흙길 + 광장 (동물의 숲 톤) ── */
+const grassC = document.createElement('canvas'); grassC.width = grassC.height = 64;
+{ const g = grassC.getContext('2d'); g.fillStyle = '#CFE7BE'; g.fillRect(0, 0, 64, 64);
+  g.fillStyle = '#C3DFB0'; for (let i = 0; i < 26; i++) { const x = Math.random()*64, y = Math.random()*64; g.fillRect(x, y, 3, 2); }
+  g.fillStyle = '#DCEFCE'; for (let i = 0; i < 16; i++) { const x = Math.random()*64, y = Math.random()*64; g.fillRect(x, y, 2, 2); } }
+const grassTex = new THREE.CanvasTexture(grassC); grassTex.wrapS = grassTex.wrapT = THREE.RepeatWrapping; grassTex.repeat.set(30, 30);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(LIMIT * 2 + 24, LIMIT * 2 + 24), new THREE.MeshLambertMaterial({ map: grassTex }));
 ground.rotation.x = -Math.PI / 2; scene.add(ground);
-const roadMat = mat(0x2F2F36), lineMat = mat(0xF6D7DA);
-[[9, 84, 0, 0], [84, 9, 0, 0]].forEach(([w, d, x, z]) => {
-  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d), roadMat); r.rotation.x = -Math.PI / 2; r.position.set(x, 0.01, z); scene.add(r);
+
+const pathMat = mat(0xE9D8B8), pathEdge = mat(0xD9C49B);
+[[11, 92], [92, 11]].forEach(([w, d]) => {
+  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d), pathEdge); r.rotation.x = -Math.PI / 2; r.position.y = 0.01; scene.add(r);
 });
-for (let i = -38; i <= 38; i += 6) {   // 중앙선 점선
-  if (Math.abs(i) < 8) continue;
-  const a = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 2.6), lineMat); a.rotation.x = -Math.PI / 2; a.position.set(0, 0.02, i); scene.add(a);
-  const b = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.5), lineMat); b.rotation.x = -Math.PI / 2; b.position.set(i, 0.02, 0); scene.add(b);
+[[9, 92], [92, 9]].forEach(([w, d]) => {
+  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d), pathMat); r.rotation.x = -Math.PI / 2; r.position.y = 0.02; scene.add(r);
+});
+// 흙길 위 자갈 무늬
+for (let i = -40; i <= 40; i += 5) {
+  if (Math.abs(i) < 9) continue;
+  [[0.8, 0.5, 1.6, i], [0.5, 0.8, i, 1.6], [0.8, 0.5, -1.6, i], [0.5, 0.8, i, -1.6]].forEach(([w, d, x, z]) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), pathEdge); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.03, z); scene.add(m);
+  });
 }
-const walkMat = mat(0xEFE4DA);
-[[-6.2, 0, 1.6, 84], [6.2, 0, 1.6, 84], [0, -6.2, 84, 1.6], [0, 6.2, 84, 1.6]].forEach(([x, z, w, d]) => {
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), walkMat); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.015, z); scene.add(m);
-});
 const plaza = new THREE.Mesh(new THREE.CircleGeometry(8, 48), mat(0xF6D7DA));
-plaza.rotation.x = -Math.PI / 2; plaza.position.y = 0.03; scene.add(plaza);
-const plazaRing = new THREE.Mesh(new THREE.RingGeometry(7.4, 8, 48), mat(0x141414));
-plazaRing.rotation.x = -Math.PI / 2; plazaRing.position.y = 0.04; scene.add(plazaRing);
+plaza.rotation.x = -Math.PI / 2; plaza.position.y = 0.04; scene.add(plaza);
+const plazaRing = new THREE.Mesh(new THREE.RingGeometry(7.5, 8.3, 48), mat(0xFFFDF7));
+plazaRing.rotation.x = -Math.PI / 2; plazaRing.position.y = 0.05; scene.add(plazaRing);
+
+// 광장 둘레 울타리
+for (let a = 0; a < Math.PI * 2; a += Math.PI / 14) {
+  const x = Math.cos(a) * 9.2, z = Math.sin(a) * 9.2;
+  if (Math.abs(x) < 5.6 || Math.abs(z) < 5.6) continue;     // 길 쪽은 비워 둔다
+  box(0.28, 1.1, 0.28, 0xC99A6B, x, 0.55, z, scene, true);
+}
 // 가운데 분수
 const fountain = new THREE.Group(); scene.add(fountain);
-box(3.4, 0.7, 3.4, 0xFFFDF7, 0, 0.35, 0, fountain, true);
-box(1.2, 1.6, 1.2, 0xBFEAE0, 0, 1.3, 0, fountain, true);
-const drop = box(0.7, 0.7, 0.7, 0x7FC9B9, 0, 2.4, 0, fountain, true);
+box(4, 0.6, 4, 0xFFFDF7, 0, 0.3, 0, fountain, true);
+const water = new THREE.Mesh(new THREE.CircleGeometry(1.7, 24), mat(0x9BD8E8));
+water.rotation.x = -Math.PI / 2; water.position.y = 0.62; fountain.add(water);
+box(1.1, 1.5, 1.1, 0xFFFDF7, 0, 1.3, 0, fountain, true);
+const drop = box(0.7, 0.7, 0.7, 0x9BD8E8, 0, 2.4, 0, fountain, true);
+
+// 잔디에 꽃 흩뿌리기
+const FLOWER = [0xF6A6AE, 0xF9E8A0, 0xFFFDF7, 0xC9A7FF];
+for (let i = 0; i < 150; i++) {
+  const x = (Math.random() - 0.5) * (LIMIT * 2), z = (Math.random() - 0.5) * (LIMIT * 2);
+  if (Math.abs(x) < 8 || Math.abs(z) < 8) continue;                 // 길 위에는 안 심는다
+  if (Math.hypot(x, z) < 11) continue;
+  const f = new THREE.Mesh(new THREE.CircleGeometry(0.34, 6), mat(FLOWER[i % FLOWER.length]));
+  f.rotation.x = -Math.PI / 2; f.position.set(x, 0.06, z); scene.add(f);
+}
 
 /* ── 건물 ── */
-const colliders = [], signs = [], doors = [];
+const colliders = [], signs = [], doors = [], boards = [];
 BUILDINGS.forEach(b => {
   const [w, h, d] = b.size, [x, z] = b.pos;
   const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
   const body = box(w, h, d, b.color, 0, h / 2, 0, g, true);
-  box(w + 0.8, 0.5, d + 0.8, 0x141414, 0, h + 0.25, 0, g);           // 지붕 테두리
+  box(w + 0.9, 0.45, d + 0.9, 0xFFFDF7, 0, h + 0.22, 0, g, true);    // 처마
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.78, 3.2, 4),
+    mat(new THREE.Color(b.color).multiplyScalar(0.62).getHex()));
+  roof.position.set(0, h + 2.05, 0); roof.rotation.y = Math.PI / 4; g.add(roof); edge(roof);
   // 창문
-  const winMat = mat(0x2B3550);
+  const winMat = mat(0x8FC6DE);
   for (let iy = 0; iy < Math.max(1, Math.floor(h / 2.6)); iy++)
     for (let ix = -1; ix <= 1; ix++) {
       if (ix === 0 && iy === 0) continue;
@@ -1547,7 +1598,19 @@ BUILDINGS.forEach(b => {
   // 문 앞 자리 · 충돌 상자
   b.door = { x: x + (isX ? sgn * (w / 2 + 2.6) : 0), z: z + (isX ? 0 : sgn * (d / 2 + 2.6)) };
   b.out = { x: isX ? sgn : 0, z: isX ? 0 : sgn };          // 건물에서 바깥쪽(광장 쪽) 방향
-  b.mesh = body; b.group = g;
+  // 문 앞 나무 팻말 — "여기서 뭘 맡길 수 있는지" 한 줄
+  if (b.board) {
+    const post = new THREE.Group();
+    post.position.set(b.door.x + b.out.x * 0.2 - b.out.z * 3, 0, b.door.z + b.out.z * 0.2 + b.out.x * 3);
+    post.rotation.y = Math.atan2(b.out.x, b.out.z);
+    box(0.22, 1.9, 0.22, 0xC99A6B, 0, 0.95, 0, post);
+    const plank = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.1),
+      new THREE.MeshBasicMaterial({ map: labelTex(b.board, '#FFFDF7', '#141414', 512, 156) }));
+    plank.position.set(0, 2.3, 0.09); post.add(plank);
+    box(3.7, 1.2, 0.12, 0xF0DCC0, 0, 2.3, 0, post, true);
+    scene.add(post); boards.push({ post, plank, b });
+  }
+  b.mesh = body; b.node = g;          // 3D 그룹 (데이터 필드 b.group 과 겹치지 않게)
   colliders.push({ x, z, w: w / 2 + 0.6, d: d / 2 + 0.6 });
   doors.push(b);
 });
@@ -1558,8 +1621,9 @@ let pending = SCREENS.length;
 const screenMeshes = [];
 SCREENS.forEach(s => {
   const g = new THREE.Group(); g.position.set(s.pos[0], 0, s.pos[1]); g.rotation.y = s.rot; scene.add(g);
-  box(0.4, 3, 0.4, 0x141414, -2.4, 1.5, 0, g); box(0.4, 3, 0.4, 0x141414, 2.4, 1.5, 0, g);
-  box(6.2, 4, 0.35, 0x141414, 0, 5, 0, g, true);
+  box(0.4, 3, 0.4, 0xC99A6B, -2.4, 1.5, 0, g, true); box(0.4, 3, 0.4, 0xC99A6B, 2.4, 1.5, 0, g, true);
+  box(6.2, 4, 0.35, 0xFFFDF7, 0, 5, 0, g, true);
+  box(6.6, 0.5, 0.5, 0xC99A6B, 0, 7.2, 0, g, true);      // 차양
   const tex = loader.load(s.src, t => { t.colorSpace = THREE.SRGBColorSpace; progress(); }, undefined, progress);
   const shot = new THREE.Mesh(new THREE.PlaneGeometry(5.7, 3.5), new THREE.MeshBasicMaterial({ map:tex }));
   shot.position.set(0, 5, 0.2); shot.userData.s = s; g.add(shot); screenMeshes.push(shot);
@@ -1585,8 +1649,9 @@ function bench(x, z, rot = 0) {
   box(2.8, 0.9, 0.2, 0xC98F5E, 0, 1.4, -0.4, g, true);
   box(0.25, 0.9, 0.9, 0x141414, -1.2, 0.45, 0, g); box(0.25, 0.9, 0.9, 0x141414, 1.2, 0.45, 0, g);
 }
-[[-26,-26],[26,-26],[-26,26],[26,26],[-30,0],[30,0],[0,-34],[0,34],[-13,-11],[13,-11],[-13,11],[13,11]].forEach(p => tree(p[0], p[1]));
-[[-6,-6],[6,-6],[-6,6],[6,6],[-6,-20],[6,-20],[-6,20],[6,20]].forEach(p => lamp(p[0], p[1]));
+[[-30,-30],[30,-30],[-30,30],[30,30],[-34,-8],[34,-8],[-34,8],[34,8],
+ [-6.2,-21],[6.2,-21],[-6.2,21],[6.2,21],[-6.2,-30],[6.2,-30],[-6.2,30],[6.2,30]].forEach(p => tree(p[0], p[1]));
+[[-6.6,-9],[6.6,-9],[-6.6,9],[6.6,9]].forEach(p => lamp(p[0], p[1]));
 bench(-5.4, 0, Math.PI / 2); bench(5.4, 0, -Math.PI / 2);
 
 /* ── 캐릭터 (블록 스타일 — 실제 3D 캐릭터가 준비되면 이 그룹만 교체) ── */
@@ -1636,7 +1701,7 @@ const hideSay = () => sayEl.classList.remove('on');
 /* ── 가볼 곳 목록 ── */
 const visited = new Set();
 BUILDINGS.forEach(b => {
-  const li = document.createElement('li'); li.textContent = b.ko; li.dataset.id = b.id;
+  const li = document.createElement('li'); li.textContent = b.ko; li.dataset.id = b.key;
   li.addEventListener('click', () => { stopTour(); walkTo(b.door.x, b.door.z); });
   questUl.appendChild(li);
 });
@@ -1651,13 +1716,14 @@ function markVisited(id) {
 /* ── 실내: 섹션 내용을 그대로 복제해 보여줍니다 ── */
 let roomOpen = false;
 function enterRoom(b) {
-  const src = document.getElementById(b.id); if (!src) return;
+  const src = document.getElementById(b.sec); if (!src) return;
   roomTitle.textContent = b.name;
   roomBody.innerHTML = '';
   const note = document.createElement('div'); note.className = 'roomnote';
   note.textContent = '🏠 ' + b.ko + ' 건물 안 · ESC 를 누르면 마을로 돌아갑니다';
   roomBody.appendChild(note);
   const clone = src.cloneNode(true);
+  if (b.group) clone.querySelectorAll('.workgroup').forEach(g => { if (g.dataset.group !== b.group) g.remove(); });
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
   clone.querySelectorAll('.rise').forEach(n => n.classList.add('in'));
@@ -1673,7 +1739,7 @@ function enterRoom(b) {
   roomBody.appendChild(clone);
   roomBody.scrollTop = 0;
   roomEl.classList.add('on'); roomOpen = true;
-  markVisited(b.id);
+  markVisited(b.key);
 }
 function exitRoom() { roomEl.classList.remove('on'); roomOpen = false; canvas.focus({ preventScroll:true }); }
 $('w-room-x').addEventListener('click', exitRoom);
@@ -1749,14 +1815,16 @@ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const voiceBtn = $('w-voice');
 if (SR) {
   voiceBtn.hidden = false;
-  const MAP = [[/서비스|맡길|가격|얼마/, 'services'], [/작업|포트폴리오|프로젝트|작품|만든/, 'work'], [/진행|방식|과정|어떻게/, 'process'],
-    [/질문|자주|faq|에프에이큐/i, 'faq'], [/소개|누구|자기|about/i, 'about'], [/문의|연락|의뢰|상담|메일/, 'contact']];
+  const MAP = [[/서비스|맡길|가격|얼마/, 'services'], [/내 ?프로그램|앱|작업|포트폴리오|프로젝트|작품|만든/, 'apps'],
+      [/외주|의뢰 ?작업|클라이언트/, 'client'], [/참여|개발만|디자인만/, 'part'],
+      [/진행|방식|과정|어떻게/, 'process'], [/질문|자주|faq|에프에이큐/i, 'faq'],
+      [/소개|누구|자기|about/i, 'about'], [/문의|연락|상담|메일/, 'contact']];
   voiceBtn.addEventListener('click', () => {
     const rec = new SR(); rec.lang = 'ko-KR'; rec.interimResults = false; rec.continuous = false;
     voiceBtn.textContent = '🎤 듣는 중…';
     rec.onresult = e => {
       const t = e.results[0][0].transcript, hit = MAP.find(([re]) => re.test(t));
-      if (hit) { const b = BUILDINGS.find(x => x.id === hit[1]); stopTour(); walkTo(b.door.x, b.door.z); say('🎤 ' + t, '「' + b.ko + '」로 모실게요.'); }
+      if (hit) { const b = BUILDINGS.find(x => x.key === hit[1]); stopTour(); walkTo(b.door.x, b.door.z); say('🎤 ' + t, '「' + b.ko + '」로 모실게요.'); }
       else say('🎤 ' + t, '잘 못 들었어요. "서비스", "작업", "문의"처럼 말해 보세요.', [], 4500);
     };
     rec.onerror = () => say('🎤', '음성 인식을 쓸 수 없어요. 조이스틱이나 화면을 눌러 이동해 주세요.', [], 4500);
@@ -1769,12 +1837,12 @@ if (SR) {
 const mm = $('w-minimap'), mg = mm.getContext('2d'), MM = mm.width, SC = MM / (LIMIT * 2 + 8);
 const toMap = v => MM / 2 + v * SC;
 function drawMap() {
-  mg.fillStyle = '#F3EDE0'; mg.fillRect(0, 0, MM, MM);
-  mg.fillStyle = '#2F2F36';
+  mg.fillStyle = '#CFE7BE'; mg.fillRect(0, 0, MM, MM);
+  mg.fillStyle = '#E9D8B8';
   mg.fillRect(toMap(-4.5), 0, 9 * SC, MM); mg.fillRect(0, toMap(-4.5), MM, 9 * SC);
   mg.fillStyle = '#F6D7DA'; mg.beginPath(); mg.arc(toMap(0), toMap(0), 8 * SC, 0, 7); mg.fill();
   BUILDINGS.forEach(b => {
-    mg.fillStyle = visited.has(b.id) ? '#E0453A' : '#141414';
+    mg.fillStyle = visited.has(b.key) ? '#E0453A' : '#141414';
     mg.fillRect(toMap(b.pos[0] - b.size[0] / 2), toMap(b.pos[1] - b.size[2] / 2), b.size[0] * SC, b.size[2] * SC);
   });
   mg.fillStyle = '#7FC9B9';
@@ -1892,7 +1960,7 @@ $('w-enter').addEventListener('click', () => enterWorld(true));
 {
   const q = new URLSearchParams(location.search), go = q.get('go');
   if (q.get('enter') === '1' || go) {
-    const b = BUILDINGS.find(x => x.id === go);
+    const b = BUILDINGS.find(x => x.key === go);
     if (b) {
       hero.position.set(b.door.x, 0, b.door.z);
       hero.rotation.y = Math.atan2(-b.out.x, -b.out.z);      // 문을 바라보게
@@ -1909,11 +1977,11 @@ document.fonts.ready.then(() => {
 });
 /* 콘솔/자동화용 — eloraWorld.goto('work') 처럼 쓸 수 있습니다 */
 window.eloraWorld = {
-  list: () => BUILDINGS.map(b => b.id),
-  goto(id) { const b = BUILDINGS.find(x => x.id === id); if (!b) return false; stopTour(); walkTo(b.door.x, b.door.z); return true; },
-  warp(id) { const b = BUILDINGS.find(x => x.id === id); if (!b) return false; stopTour(); target = null; hero.position.set(b.door.x, 0, b.door.z); checkNear(); return true; },
-  enter(id) { const b = BUILDINGS.find(x => x.id === id); if (!b) return false; enterRoom(b); return true; },
-  pos: () => ({ x: +hero.position.x.toFixed(2), z: +hero.position.z.toFixed(2), near: near && near.id }),
+  list: () => BUILDINGS.map(b => b.key),
+  goto(id) { const b = BUILDINGS.find(x => x.key === id); if (!b) return false; stopTour(); walkTo(b.door.x, b.door.z); return true; },
+  warp(id) { const b = BUILDINGS.find(x => x.key === id); if (!b) return false; stopTour(); target = null; hero.position.set(b.door.x, 0, b.door.z); checkNear(); return true; },
+  enter(id) { const b = BUILDINGS.find(x => x.key === id); if (!b) return false; enterRoom(b); return true; },
+  pos: () => ({ x: +hero.position.x.toFixed(2), z: +hero.position.z.toFixed(2), near: near && near.key }),
   cam: () => ({ x:+camera.position.x.toFixed(2), y:+camera.position.y.toFixed(2), z:+camera.position.z.toFixed(2),
                 fov:camera.fov, aspect:+camera.aspect.toFixed(2), yaw:+yaw.toFixed(2), dist }),
 };
