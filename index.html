@@ -1334,12 +1334,29 @@ const SLIDES = [
 ];
 const screen = document.getElementById('screen');
 const cap = screen.querySelector('.cap');
-SLIDES.forEach((s, i) => {
+/* 캡처 한 장당 딱 한 번만 받아서, 히어로 슬라이드와 3D 마을 전광판이 같은 이미지를 씁니다.
+   예전엔 슬라이드용·전광판용으로 따로 받아 같은 파일이 두 번씩 전송됐어요.
+   (lazy 를 쓰지 않는 이유: 3D 마을로 바로 들어가면 슬라이드가 화면에 안 보여서
+    영영 안 받아지고, 그러면 전광판이 까맣게 남습니다.) */
+const SHOT_IMG = new Map();
+SLIDES.forEach(s => {
   const d = document.createElement('div');
   d.className = 'slide';
-  d.innerHTML = `<img src="${s.src}" alt="${s.label} 실제 화면" ${i ? 'loading="lazy"' : ''}>`;
   screen.insertBefore(d, cap);
+  // 화면 밖에서 한 번만 내려받습니다. 이 이미지를 3D 전광판 텍스처가 그대로 쓰고,
+  // 슬라이드용 <img>는 다 받은 뒤에 만들어 브라우저 캐시에서 바로 꺼내 씁니다.
+  // (숨겨진 <img>는 GPU에 올릴 수 없어서 전광판이 까맣게 나옵니다 — 그래서 화면 밖 이미지를 씁니다.)
+  const pre = new Image();
+  pre.addEventListener('load', () => {
+    const img = new Image();
+    img.src = s.src;
+    img.alt = s.label + ' 실제 화면';
+    d.appendChild(img);
+  }, { once:true });
+  pre.src = s.src;
+  SHOT_IMG.set(s.src, pre);
 });
+window.SHOT_IMG = SHOT_IMG;
 const slides = screen.querySelectorAll('.slide');
 let cur = -1, timer = null;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1671,6 +1688,28 @@ BUILDINGS.forEach(b => {
 
 /* ── 전광판 ── */
 const loader = new THREE.TextureLoader();
+
+/* 히어로 슬라이드가 받아 둔 그 이미지를 전광판 텍스처로 그대로 씁니다(SHOT_IMG).
+   전에는 같은 캡처 5장을 슬라이드용·전광판용으로 따로 받아 전송량이 두 배였어요.
+   슬라이드가 없는 경우(구조가 바뀐 경우)에만 예전처럼 직접 받습니다. */
+function shotTexture(src, done) {
+  const el = window.SHOT_IMG && window.SHOT_IMG.get(src);
+  if (!el) return loader.load(src, t => { t.colorSpace = THREE.SRGBColorSpace; done(); }, undefined, done);
+  const tex = new THREE.Texture(el);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const ready = () => { tex.needsUpdate = true; done(); };
+  // 다 받은 뒤 decode() 까지 기다렸다가 GPU에 올립니다(안전).
+  // 기다리는 김에 done() 도 다음 차례로 밀립니다 —
+  // 여기서 바로 부르면 아직 선언 전인 로딩 카운터를 건드려 터집니다.
+  const upload = () => { el.decode ? el.decode().then(ready, ready) : queueMicrotask(ready); };
+  if (el.complete && el.naturalWidth) upload();
+  else {
+    el.addEventListener('load', upload, { once:true });
+    el.addEventListener('error', done, { once:true });
+  }
+  return tex;
+}
+
 let pending = SCREENS.length;
 const screenMeshes = [];
 SCREENS.forEach(s => {
@@ -1678,7 +1717,7 @@ SCREENS.forEach(s => {
   box(0.4, 3, 0.4, 0xC99A6B, -2.4, 1.5, 0, g, true); box(0.4, 3, 0.4, 0xC99A6B, 2.4, 1.5, 0, g, true);
   box(6.2, 4, 0.35, 0xFFFDF7, 0, 5, 0, g, true);
   box(6.6, 0.5, 0.5, 0xC99A6B, 0, 7.2, 0, g, true);      // 차양
-  const tex = loader.load(s.src, t => { t.colorSpace = THREE.SRGBColorSpace; progress(); }, undefined, progress);
+  const tex = shotTexture(s.src, progress);
   const shot = new THREE.Mesh(new THREE.PlaneGeometry(5.7, 3.5), new THREE.MeshBasicMaterial({ map:tex }));
   shot.position.set(0, 5, 0.2); shot.userData.s = s; g.add(shot); screenMeshes.push(shot);
   colliders.push({ x:s.pos[0], z:s.pos[1], w:1.6, d:1.6 });
