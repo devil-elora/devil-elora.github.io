@@ -574,151 +574,36 @@ body.world-on { overflow:hidden; }
 body.world-on .nav { display:none; }
 #w-canvas { display:block; width:100%; height:100%; touch-action:none; outline:none; }
 
-/* ── 로딩 · 시작 화면 — 코어 로프 메모리 이야기 ── */
-.w-gate { position:absolute; inset:0; z-index:6; display:flex; align-items:center; justify-content:center;
-  background:var(--bg); background-image:var(--dots); background-size:4px 4px; padding:1.2rem; overflow-y:auto; }
+/* ── 로딩 · 시작 화면 — 코어 로프를 짜는 3D 장면 위에 얹힙니다 ── */
+.w-gate { position:absolute; inset:0; z-index:6; display:block; background:transparent; pointer-events:none; }
 .w-gate.done { display:none; }
-.w-boot { width:min(880px, 96vw); margin:auto; background:var(--surface); border:var(--border);
-  box-shadow:6px 6px 0 rgba(20,20,20,.3); text-align:left; }
-.w-boot .tb { display:flex; align-items:center; gap:.55rem; padding:.5rem .7rem; background:var(--accent);
-  color:var(--accent-ink); font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; }
-.w-boot .tb .wb { display:flex; gap:4px; }
-.w-boot .tb .wb i { width:11px; height:11px; border:1.5px solid var(--accent-ink); display:block; }
-.w-boot .path { display:flex; gap:.6rem; font-family:var(--mono); font-size:.62rem; letter-spacing:.05em; color:var(--dim);
-  padding:.4rem .7rem; border-bottom:1.5px dashed var(--line); }
-.w-boot .path span { margin-left:auto; }
-.w-boot .bd { padding:.9rem 1.1rem 1.1rem; }
-.w-boot canvas { width:100%; height:auto; display:block; background:var(--paper2); border:1.5px solid var(--line); }
-.w-boot .cap { font-family:var(--mono); font-size:.64rem; letter-spacing:.05em; color:var(--dim); margin-top:.45rem; }
-.w-boot .cap b { color:var(--hot); }
-.w-boot h2 { font-size:clamp(1.15rem,2.8vw,1.6rem); font-weight:800; letter-spacing:-.02em; line-height:1.35; margin-top:.9rem; }
-.w-boot h2 em { font-style:normal; color:var(--hot); }
-.w-boot p { font-size:.9rem; line-height:1.78; margin-top:.5rem; }
-.w-boot .quote { font-size:.82rem; line-height:1.7; color:var(--dim); border-left:3px solid var(--line);
-  padding-left:.7rem; margin-top:.75rem; }
-.w-boot .note { font-size:.74rem; line-height:1.65; color:var(--dim); margin-top:.65rem; }
-.w-boot .bar { height:14px; border:1.5px solid var(--line); background:var(--bg); margin-top:1rem; }
-.w-boot .bar i { display:block; height:100%; width:0%; background:var(--hot); transition:width .3s ease; }
-.w-boot .pct { font-family:var(--mono); font-size:.64rem; letter-spacing:.14em; color:var(--dim); margin-top:.3rem; }
-.w-boot .acts { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:1rem; }
-.w-boot .acts .skip { margin-right:auto; }
-.w-boot .enter { font-family:var(--mono); font-size:.8rem; letter-spacing:.12em; padding:.75rem 1.2rem; cursor:pointer;
-  background:var(--accent); color:var(--accent-ink); border:var(--border); box-shadow:var(--shadow); display:none; }
-.w-boot .enter.quiet { background:var(--surface); color:var(--fg); }
+.w-gate > * { pointer-events:auto; }
+.g-chip { position:absolute; left:1rem; top:1rem; display:flex; align-items:center; gap:.55rem;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; color:#FFF3E4;
+  background:rgba(20,16,22,.72); border:1.5px solid rgba(255,243,228,.35); padding:.5rem .8rem; }
+.g-chip span { font-size:.6rem; letter-spacing:.1em; color:#E0A97A; }
+.g-foot { position:absolute; left:50%; bottom:1.6rem; transform:translateX(-50%); width:min(560px, calc(100vw - 2rem));
+  background:rgba(20,16,22,.78); border:1.5px solid rgba(255,243,228,.32); padding:.85rem .95rem .9rem;
+  backdrop-filter:blur(3px); }
+.g-foot .bar { height:12px; border:1.5px solid rgba(255,243,228,.5); background:rgba(255,243,228,.12); }
+.g-foot .bar i { display:block; height:100%; width:0%; background:#E0A97A; transition:width .3s ease; }
+.g-foot .pct { font-family:var(--mono); font-size:.62rem; letter-spacing:.16em; color:#D8C6B4; margin-top:.35rem; }
+.w-gate.ready .bar, .w-gate.ready .pct { display:none; }
+.g-acts { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:.7rem; }
+.g-acts .skip { margin-right:auto; font-family:var(--mono); font-size:.62rem; letter-spacing:.08em; color:#B9A897;
+  text-decoration:underline; text-underline-offset:3px; background:none; border:0; cursor:pointer; padding:.3rem 0; }
+.g-acts .skip:hover { color:#FFF3E4; }
+.g-acts .enter { font-family:var(--mono); font-size:.76rem; letter-spacing:.1em; padding:.7rem 1.1rem; cursor:pointer;
+  background:#FFF3E4; color:#1B1620; border:1.5px solid #FFF3E4; display:none; }
+.g-acts .enter.quiet { background:transparent; color:#FFF3E4; }
+.g-acts .enter:hover { background:#E0A97A; border-color:#E0A97A; color:#1B1620; }
 .w-gate.ready .enter { display:inline-block; }
 .w-gate.ready .enter[hidden] { display:none; }
-.w-gate.ready .bar, .w-gate.ready .pct { display:none; }
-.w-boot .skip { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; color:var(--dim); text-decoration:underline;
-  text-underline-offset:3px; background:none; border:0; cursor:pointer; padding:.4rem 0; }
-@media(max-width:620px) {
-  .w-boot .quote, .w-boot .note { display:none; }     /* 좁은 화면에서는 핵심만 */
-  .w-boot .acts .skip { margin-right:0; width:100%; text-align:left; }
-  .w-boot .enter { flex:1; text-align:center; padding:.7rem .6rem; font-size:.72rem; }
+@media(max-width:560px) {
+  .g-acts .skip { margin-right:0; width:100%; }
+  .g-acts .enter { flex:1; text-align:center; padding:.65rem .5rem; font-size:.68rem; }
 }
 
-/* ── HUD ── */
-.w-hud { position:absolute; inset:0; pointer-events:none; z-index:4; }
-.w-hud > * { pointer-events:auto; }
-.w-top { position:absolute; top:.7rem; left:.7rem; right:.7rem; display:flex; gap:.5rem; align-items:flex-start; flex-wrap:wrap; }
-.w-chip { font-family:var(--mono); font-size:.64rem; letter-spacing:.1em; background:var(--surface); border:var(--border);
-  box-shadow:var(--shadow); padding:.4rem .7rem; white-space:nowrap; }
-.w-chip.dark { background:var(--accent); color:var(--accent-ink); }
-.w-chip i { font-style:normal; color:var(--hot); }
-.w-top .right { margin-left:auto; display:flex; gap:.5rem; flex-wrap:wrap; justify-content:flex-end; }
-.w-btn { font-family:var(--mono); font-size:.64rem; letter-spacing:.1em; background:var(--surface); color:var(--fg);
-  border:var(--border); box-shadow:var(--shadow); padding:.45rem .75rem; cursor:pointer; }
-.w-btn:hover { background:var(--mint); }
-.w-btn[aria-pressed="true"] { background:var(--mint); }
-.w-btn.hot { background:var(--hot); color:#fff; }
-
-/* 미니맵 */
-.w-map { position:absolute; top:3.1rem; right:.7rem; background:var(--surface); border:var(--border); box-shadow:var(--shadow); padding:4px; }
-.w-map canvas { width:132px; height:132px; display:block; }
-.w-map .cap { font-family:var(--mono); font-size:.54rem; letter-spacing:.1em; text-align:center; color:var(--dim); padding-top:3px; }
-
-/* 할 일(가볼 곳) 목록 */
-.w-quest { position:absolute; left:.7rem; top:3.1rem; background:var(--surface); border:var(--border); box-shadow:var(--shadow);
-  padding:.5rem .6rem; max-width:46vw; }
-.w-quest h3 { font-family:var(--mono); font-size:.58rem; letter-spacing:.14em; color:var(--hot); margin-bottom:.3rem; }
-.w-quest ul { list-style:none; display:grid; gap:.15rem; }
-.w-quest li { font-family:var(--mono); font-size:.6rem; letter-spacing:.04em; color:var(--dim); white-space:nowrap; cursor:pointer; }
-.w-quest li::before { content:"□ "; }
-.w-quest li.done { color:var(--fg); }
-.w-quest li.done::before { content:"■ "; color:var(--hot); }
-.w-quest li:hover { color:var(--hot); }
-
-/* 캐릭터 말풍선 */
-.w-say { position:absolute; left:50%; bottom:6.2rem; transform:translateX(-50%); width:max-content; max-width:min(88vw,560px);
-  background:var(--surface); border:var(--border); box-shadow:var(--shadow); padding:.75rem 1rem .8rem; font-size:.92rem;
-  line-height:1.6; display:none; z-index:5; }
-.w-say.on { display:block; }
-.w-say { overflow-wrap:anywhere; }
-.w-say::after { content:""; position:absolute; left:50%; bottom:-9px; width:14px; height:14px; background:var(--surface);
-  border-right:var(--border); border-bottom:var(--border); transform:translateX(-50%) rotate(45deg); }
-.w-say b { display:block; font-family:var(--mono); font-size:.62rem; letter-spacing:.14em; color:var(--hot); margin-bottom:.3rem; }
-.w-say .acts { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.6rem; }
-.w-say button { font-family:var(--mono); font-size:.64rem; letter-spacing:.1em; padding:.4rem .8rem; cursor:pointer;
-  background:var(--accent); color:var(--accent-ink); border:var(--border); }
-.w-say button.ghost { background:var(--surface); color:var(--fg); }
-@media(max-width:540px) {          /* 버튼이 셋이면 한 줄에 안 들어갑니다 */
-  .w-say .acts { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:.35rem; }
-  .w-say button { min-width:0; font-size:.6rem; letter-spacing:.06em; padding:.45rem .3rem; overflow-wrap:anywhere; }
-}
-
-/* 문 앞 안내 */
-.w-prompt { position:absolute; left:50%; bottom:2.2rem; transform:translateX(-50%); display:none; align-items:center; gap:.5rem;
-  background:var(--accent); color:var(--accent-ink); border:var(--border); box-shadow:var(--shadow); padding:.55rem .9rem;
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; cursor:pointer; z-index:5; }
-.w-prompt.on { display:flex; }
-.w-prompt kbd { background:var(--surface); color:var(--fg); border:1.5px solid var(--line); padding:.1rem .35rem; font-family:inherit; }
-
-/* 조작 (모바일) */
-.w-stick { position:absolute; left:1rem; bottom:1.2rem; width:118px; height:118px; border-radius:50%; border:var(--border);
-  background:rgba(255,253,247,.6); display:none; touch-action:none; z-index:5; }
-.w-stick i { position:absolute; left:50%; top:50%; width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:50%;
-  background:var(--surface); border:var(--border); box-shadow:var(--shadow); }
-.w-act { position:absolute; right:1rem; bottom:1.4rem; width:76px; height:76px; border-radius:50%; border:var(--border);
-  background:var(--hot); color:#fff; font-family:var(--mono); font-size:.66rem; letter-spacing:.06em; display:none; z-index:5;
-  box-shadow:var(--shadow); cursor:pointer; }
-@media(hover:none) and (pointer:coarse) { .w-stick, .w-act { display:block; } .w-keys, .w-prompt { display:none; } }
-@media(max-width:760px) {
-  .w-top .right { margin-left:0; width:100%; justify-content:flex-start; }
-  .w-btn { font-size:.6rem; padding:.4rem .6rem; }
-  .w-quest { top:6.2rem; }
-  .w-map { top:auto; bottom:.6rem; right:.6rem; padding:3px; }
-  .w-map canvas { width:84px; height:84px; }
-  .w-map .cap { display:none; }
-  .w-quest { left:.6rem; right:.6rem; max-width:none; padding:.4rem .5rem; }
-  .w-quest h3 { display:none; }
-  .w-quest ul { display:flex; gap:.35rem; overflow-x:auto; }
-  .w-quest li { background:var(--paper2); border:1px solid var(--line); padding:.18rem .45rem; }
-  .w-say { bottom:9.4rem; max-width:92vw; font-size:.86rem; padding:.6rem .8rem .65rem; }
-  .w-act { width:66px; height:66px; right:.7rem; bottom:6.6rem; }
-  .w-stick { width:104px; height:104px; left:.7rem; bottom:.8rem; }
-}
-.w-keys { position:absolute; left:50%; bottom:.7rem; transform:translateX(-50%); font-family:var(--mono); font-size:.58rem;
-  letter-spacing:.1em; color:var(--dim); white-space:nowrap; }
-
-/* ── 실내: 건물에 들어가면 그 섹션 내용이 여기 열립니다 ── */
-.w-room { position:fixed; inset:0; z-index:210; display:none; background:rgba(20,20,20,.55); }
-.w-room.on { display:block; }
-.w-room .panel { position:absolute; inset:clamp(.5rem,3vw,2.5rem); background:var(--surface); border:var(--border);
-  box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden; }
-.w-room .tb { display:flex; align-items:center; gap:.6rem; padding:.55rem .9rem; border-bottom:var(--border);
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; background:var(--surface); flex:none; }
-.w-room .tb .wb { display:flex; gap:5px; } .w-room .tb .wb i { width:12px; height:12px; border:1.5px solid var(--line); display:block; }
-.w-room .tb .x { margin-left:auto; font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; cursor:pointer;
-  background:var(--hot); color:#fff; border:var(--border); padding:.3rem .7rem; }
-.w-room .scroll { overflow:auto; padding:1.1rem clamp(1rem,3vw,2rem) 2rem; }
-.w-room .scroll .head { display:none; }
-.w-room .scroll section { border:0 !important; box-shadow:none !important; background:transparent !important; margin:0 !important; padding:0 !important; }
-.w-room .scroll section > *:not(.head) { padding-left:0 !important; padding-right:0 !important; }
-.w-room.order .scroll { display:flex; justify-content:center; }
-.w-room.order .window { width:min(560px, 100%); position:static; }
-.w-room.order .chat { max-height:none; }
-.w-room .roomnote { font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; color:var(--dim); margin-bottom:.9rem; }
-
-/* WebGL이 없을 때 */
 .w-nogl { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:.8rem;
   text-align:center; padding:1.5rem; z-index:7; background:var(--bg); }
 #world.nogl .w-nogl { display:flex; }
@@ -989,29 +874,14 @@ body { font-size:16.5px; }
   <canvas id="w-canvas" tabindex="0"></canvas>
 
   <div class="w-gate" id="w-gate">
-    <div class="w-boot">
-      <div class="tb"><span class="wb"><i></i><i></i><i></i></span> ELORA.SYS — 코어 로프 짜는 중…</div>
-      <div class="path">C:\ELORA\WORLD\boot.exe <span>Rope 1 · Weaving · OK</span></div>
-      <div class="bd">
-        <canvas id="w-loom" width="720" height="168" aria-hidden="true"></canvas>
-        <p class="cap" id="w-loom-cap">구리선이 코어를 <b>통과하면 1</b>, <b>비껴가면 0</b></p>
-
-        <h2>코드는 한때, 정말로 <em>짜는</em> 것이었습니다.</h2>
-        <p>1969년 달에 간 <b>아폴로 유도컴퓨터</b>의 프로그램은 구리선을 자기 코어에 손으로 꿰어 만들었습니다.
-          선이 코어를 통과하면 1, 비껴가면 0. 모듈 하나에 800m가 넘는 선이 들어갔고 짜는 데 8주가 걸렸습니다.
-          짠 사람들은 대부분 <b>방직공장에서 온 여성들</b>이었습니다.</p>
-        <p class="quote">“해석기관은 자카르 직조기가 꽃과 잎을 짜듯, 대수의 무늬를 짠다.”<br>
-          — 에이다 러브레이스, 1843</p>
-        <p class="note">※ ‘code’는 라틴어 <b>codex</b>(법전)에서 왔고, 컴퓨터를 가리키는 뜻으로 쓰인 건 1946년부터입니다.
-          코어 로프가 단어의 어원은 아니지만, 코드를 손으로 짜던 시절의 실물입니다.</p>
-
-        <div class="bar"><i id="w-bar"></i></div>
-        <div class="pct" id="w-pct">마을 짓는 중… 0%</div>
-        <div class="acts">
-          <button type="button" class="skip" id="w-skip">3D 없이 평범한 사이트로 보기</button>
-          <button type="button" class="enter quiet" id="w-enter-q">조용히 들어가기</button>
-          <button type="button" class="enter" id="w-enter" hidden>♪ 음악과 함께 들어가기 →</button>
-        </div>
+    <div class="g-chip">ELORA.SYS <span>CORE ROPE · WEAVING</span></div>
+    <div class="g-foot">
+      <div class="bar"><i id="w-bar"></i></div>
+      <div class="pct" id="w-pct">0%</div>
+      <div class="g-acts">
+        <button type="button" class="skip" id="w-skip">3D 없이 평범한 사이트로 보기</button>
+        <button type="button" class="enter quiet" id="w-enter-q">조용히 들어가기</button>
+        <button type="button" class="enter" id="w-enter" hidden>♪ 음악과 함께 들어가기 →</button>
       </div>
     </div>
   </div>
@@ -2319,87 +2189,6 @@ document.querySelectorAll('.js-mail').forEach(a => {
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   코어 로프 짜기 애니메이션 — 시작 화면에서 돕니다.
-   구리선이 자기 코어를 통과하면 1, 비껴가면 0.
-   글자 한 자(8비트)씩 실제로 짜 보여 줍니다: E L O R A
-   ══════════════════════════════════════════════════════════════ */
-{
-  const cv = document.getElementById('w-loom'), cap = document.getElementById('w-loom-cap');
-  const gateEl = document.getElementById('w-gate');
-  if (cv && cv.getContext) {
-    const ctx = cv.getContext('2d');
-    const W = 720, H = 168, N = 8;
-    const X0 = 58, GAP = (W - X0 * 2) / (N - 1), CY = 78, R = 21;
-    const WORD = 'ELORA';
-    let idx = 0, t0 = performance.now(), raf = 0;
-    const bitsOf = ch => ch.charCodeAt(0).toString(2).padStart(8, '0');
-
-    function ring(x, threaded) {                        // 자기 코어 (도넛)
-      ctx.lineWidth = 7; ctx.strokeStyle = threaded ? '#6B4A33' : '#8C7A66';
-      ctx.beginPath(); ctx.arc(x, CY, R, 0, Math.PI * 2); ctx.stroke();
-    }
-    function draw(now) {
-      if (!gateEl || gateEl.classList.contains('done')) { raf = 0; return; }
-      const bits = bitsOf(WORD[idx]);
-      const span = 2600, el = now - t0;
-      let p = Math.min(1, el / span);                   // 선이 나아간 정도
-      ctx.clearRect(0, 0, W, H);
-
-      // 코어 먼저
-      for (let i = 0; i < N; i++) ring(X0 + i * GAP, false);
-
-      // 구리선 — 1이면 코어를 통과, 0이면 위로 비껴감
-      const endX = X0 - 34 + p * (W - (X0 - 34) * 2 + 68);
-      ctx.save();
-      ctx.beginPath(); ctx.rect(0, 0, endX, H); ctx.clip();
-      ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#C97A3A';
-      ctx.beginPath(); ctx.moveTo(0, CY);
-      for (let i = 0; i < N; i++) {
-        const x = X0 + i * GAP;
-        if (bits[i] === '1') { ctx.lineTo(x + R + 10, CY); }        // 그대로 통과
-        else {                                                       // 위로 비껴감
-          ctx.lineTo(x - R - 14, CY);
-          ctx.quadraticCurveTo(x, CY - R - 64, x + R + 14, CY);
-        }
-      }
-      ctx.lineTo(W, CY); ctx.stroke();
-      ctx.restore();
-
-      if (p < 1) {                                     // 짜고 있는 바늘 끝
-        ctx.fillStyle = '#C05A3A';
-        ctx.beginPath(); ctx.arc(endX, CY, 6, 0, Math.PI * 2); ctx.fill();
-      }
-
-      // 이미 지나간 코어는 진하게 + 비트 숫자
-      ctx.font = 'bold 17px "JetBrains Mono", monospace';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      for (let i = 0; i < N; i++) {
-        const x = X0 + i * GAP, done = endX > x + R + 12;
-        if (bits[i] === '1' && done) {                   // 통과한 선 위에 코어 윗부분을 다시 그려 꿴 느낌
-          ring(x, true);
-          ctx.save(); ctx.beginPath(); ctx.rect(x - R - 9, 0, (R + 9) * 2, CY - 2); ctx.clip();
-          ring(x, true); ctx.restore();
-        } else if (done) ring(x, true);
-        ctx.fillStyle = done ? (bits[i] === '1' ? '#C05A3A' : '#8C7A66') : '#CFC4B4';
-        ctx.fillText(bits[i], x, CY + R + 26);
-      }
-
-      // 글자 이름표
-      ctx.font = 'bold 20px "JetBrains Mono", monospace';
-      ctx.fillStyle = '#4A3524'; ctx.textAlign = 'left';
-      ctx.fillText(WORD[idx] + '  =  ' + bits, 14, 22);
-
-      if (p >= 1 && el > span + 700) { idx = (idx + 1) % WORD.length; t0 = now; }
-      raf = requestAnimationFrame(draw);
-    }
-    const start = () => { if (!raf) { t0 = performance.now(); raf = requestAnimationFrame(draw); } };
-    start();
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) start(); });
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
    배경음악 — 마을 BGM.
    · 자동 재생은 브라우저가 막습니다. 반드시 버튼(사용자 동작)으로 시작합니다.
    · 켜고 끈 선택은 브라우저에 기억해 둡니다.
@@ -3354,6 +3143,231 @@ function checkNear() {
   }
 }
 
+/* ── 시작 화면: 본체 앞에 앉아 코어 로프를 짜는 장면 ──────────────────
+   1960년대 컴퓨터의 프로그램은 구리선을 자기 코어에 손으로 꿰어 만들었습니다.
+   선이 코어를 통과하면 1, 비껴가면 0 — 그 작업을 그대로 3D 로 보여 줍니다.
+   마을에 들어가면 이 장면은 정리하고 메모리에서 지웁니다. */
+const gScene = new THREE.Scene();
+const gCam = new THREE.PerspectiveCamera(38, 1, 0.1, 140);
+const gLights = [], gReels = [];
+let gTube = null, gTubeCount = 0, gNeedle = null, gArmL = null, gArmR = null, gHead = null, gSpool = null;
+{
+  gScene.background = new THREE.Color(0x191419);
+  gScene.fog = new THREE.Fog(0x191419, 22, 58);
+  gScene.add(new THREE.HemisphereLight(0x9FB6D8, 0x2A2018, 0.55));
+  const key = new THREE.DirectionalLight(0xFFE2BC, 1.35);
+  key.position.set(7, 13, 9); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.camera.left = -14; key.shadow.camera.right = 14;
+  key.shadow.camera.top = 14; key.shadow.camera.bottom = -14; key.shadow.camera.far = 44;
+  gScene.add(key);
+  const warm = new THREE.PointLight(0xFFC078, 26, 16, 2);
+  warm.position.set(2.2, 4.1, 2.2); gScene.add(warm);
+  gScene.add(new THREE.PointLight(0x7FC9E8, 9, 18, 2).translateX(-5).translateY(4).translateZ(-1));
+
+  const gbox = (w, h, d, color, x, y, z, parent, rough) => {
+    const r = Math.min(w, h, d) * 0.14;
+    const geo = r > 0.02 ? new RoundedBoxGeometry(w, h, d, 2, r) : new THREE.BoxGeometry(w, h, d);
+    const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: rough === undefined ? 0.85 : rough }));
+    m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
+  };
+
+  // 바닥
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80),
+    new THREE.MeshStandardMaterial({ color: 0x2A222A, roughness: 0.95 }));
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; gScene.add(floor);
+  for (let i = -6; i <= 6; i++) {            // 바닥 타일 줄눈
+    const ln = new THREE.Mesh(new THREE.PlaneGeometry(80, 0.06), new THREE.MeshBasicMaterial({ color: 0x3A303A }));
+    ln.rotation.x = -Math.PI / 2; ln.position.set(0, 0.01, i * 3); gScene.add(ln);
+  }
+
+  // ── 컴퓨터 본체 (캐비닛 3연) ──
+  const bay = (bx) => {
+    const g = new THREE.Group(); g.position.set(bx, 0, -4.2); gScene.add(g);
+    gbox(4.2, 7.4, 2.0, 0x4A5560, 0, 3.7, 0, g, 0.55);          // 몸체
+    gbox(4.4, 0.34, 2.2, 0x39424C, 0, 7.5, 0, g, 0.5);          // 윗단
+    gbox(3.5, 2.3, 0.16, 0x1E242B, 0, 5.5, 1.05, g, 0.35);      // 계기판 패널
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 7; c++) {    // 램프
+      const m = new THREE.MeshStandardMaterial({ color: 0xFFD98A, emissive: 0xFFAE3D, emissiveIntensity: 0.2, roughness: 0.5 });
+      const l = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.08), m);
+      l.position.set(-1.44 + c * 0.48, 4.85 + r * 0.62, 1.15); g.add(l);
+      gLights.push(m);
+    }
+    gbox(3.4, 0.9, 0.2, 0x2B333B, 0, 2.6, 1.05, g, 0.5);        // 통풍구
+    for (let v = 0; v < 9; v++) gbox(0.18, 0.7, 0.1, 0x151A1F, -1.45 + v * 0.36, 2.6, 1.17, g, 0.6);
+    return g;
+  };
+  [-5.0, 0, 5.0].forEach(bay);
+
+  // 테이프 릴 두 개 (가운데 캐비닛 위쪽)
+  [-1.05, 1.05].forEach(rx => {
+    const g = new THREE.Group(); g.position.set(rx, 6.1, -3.1); gScene.add(g);
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.16, 28),
+      new THREE.MeshStandardMaterial({ color: 0xE8E2D6, roughness: 0.6 }));
+    disc.rotation.x = Math.PI / 2; disc.castShadow = true; g.add(disc);
+    const tape = new THREE.Mesh(new THREE.CylinderGeometry(0.66, 0.66, 0.2, 28),
+      new THREE.MeshStandardMaterial({ color: 0x3A2C24, roughness: 0.9 }));
+    tape.rotation.x = Math.PI / 2; g.add(tape);
+    for (let k = 0; k < 3; k++) {                 // 살
+      const sp = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.14, 0.2),
+        new THREE.MeshStandardMaterial({ color: 0xB9B0A2, roughness: 0.6 }));
+      sp.rotation.z = k * Math.PI / 3; g.add(sp);
+    }
+    gReels.push(g);
+  });
+
+  // ── 작업대 ──
+  const desk = new THREE.Group(); desk.position.set(0.1, 0, 0.3); gScene.add(desk);
+  gbox(6.4, 0.2, 2.4, 0xA9764C, 0, 1.5, 0, desk, 0.8);
+  [-2.8, 2.8].forEach(lx => [-0.95, 0.95].forEach(lz => gbox(0.2, 1.5, 0.2, 0x7C5636, lx, 0.75, lz, desk, 0.85)));
+  gbox(6.4, 0.1, 0.26, 0x8A6140, 0, 1.35, 1.15, desk, 0.85);
+
+  // 책상 램프
+  {
+    const lp = new THREE.Group(); lp.position.set(2.5, 1.6, -0.25); lp.scale.setScalar(0.62); gScene.add(lp);
+    gbox(0.7, 0.12, 0.7, 0x3E4A54, 0, 0.06, 0, lp, 0.5);
+    const arm = gbox(0.12, 1.5, 0.12, 0x3E4A54, 0, 0.8, 0, lp, 0.5); arm.rotation.z = 0.3;
+    const shade = new THREE.Mesh(new THREE.ConeGeometry(0.52, 0.6, 18, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0xE0453A, roughness: 0.6, side: THREE.DoubleSide }));
+    shade.position.set(-0.45, 1.5, 0); shade.rotation.z = Math.PI + 0.35; lp.add(shade);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.17, 14, 12),
+      new THREE.MeshStandardMaterial({ color: 0xFFF0C4, emissive: 0xFFC078, emissiveIntensity: 1.1, roughness: 0.5 }));
+    bulb.position.set(-0.45, 1.32, 0); lp.add(bulb);
+  }
+
+  // ── 코어 랙: 자기 코어 한 줄 (구멍이 X 축을 향하게) ──
+  const RACK = new THREE.Group(); RACK.position.set(0.55, 1.58, 0.15); RACK.rotation.y = -0.14; gScene.add(RACK);
+  const N = 12, SPAN = 3.4, X0 = -SPAN / 2, STEP = SPAN / (N - 1), CY = 0.5;
+  gbox(SPAN + 0.7, 0.12, 0.5, 0x6E5138, 0, 0.06, 0, RACK, 0.85);            // 받침
+  [-1, 1].forEach(sg => gbox(0.12, 0.8, 0.36, 0x6E5138, sg * (SPAN / 2 + 0.26), 0.42, 0, RACK, 0.85));
+  const BITS = [];
+  const coreMat = new THREE.MeshStandardMaterial({ color: 0x3A2E33, roughness: 0.45, metalness: 0.25 });
+  for (let i = 0; i < N; i++) {
+    BITS.push(Math.random() < 0.5 ? 0 : 1);
+    const t = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.05, 10, 20), coreMat);
+    t.position.set(X0 + i * STEP, CY, 0); t.rotation.y = Math.PI / 2;
+    t.castShadow = true; RACK.add(t);
+  }
+
+  // 구리선: 1이면 코어를 통과, 0이면 위로 비껴갑니다
+  const pts = [new THREE.Vector3(X0 - 0.8, CY, 0)];
+  for (let i = 0; i < N; i++) {
+    const x = X0 + i * STEP;
+    if (BITS[i]) { pts.push(new THREE.Vector3(x - 0.19, CY, 0), new THREE.Vector3(x + 0.19, CY, 0)); }
+    else { pts.push(new THREE.Vector3(x - 0.2, CY, 0.015), new THREE.Vector3(x, CY + 0.42, 0.015), new THREE.Vector3(x + 0.2, CY, 0.015)); }
+  }
+  pts.push(new THREE.Vector3(X0 + SPAN + 0.8, CY, 0));
+  const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.35);
+  const tubeGeo = new THREE.TubeGeometry(curve, 340, 0.04, 8, false);
+  gTube = new THREE.Mesh(tubeGeo, new THREE.MeshStandardMaterial({ color: 0xC97A3A, roughness: 0.35, metalness: 0.55 }));
+  gTube.castShadow = true; RACK.add(gTube);
+  gTubeCount = tubeGeo.index.count;
+  tubeGeo.setDrawRange(0, 0);
+  gTube.userData.curve = curve;
+
+  gNeedle = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.32, 10),
+    new THREE.MeshStandardMaterial({ color: 0xE8E2D6, roughness: 0.3, metalness: 0.6 }));
+  gNeedle.rotation.z = -Math.PI / 2; gNeedle.castShadow = true; RACK.add(gNeedle);
+
+  // 구리선 실패
+  gSpool = new THREE.Group(); gSpool.position.set(2.0, 1.68, 0.75); gScene.add(gSpool);
+  const sp = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.5, 20),
+    new THREE.MeshStandardMaterial({ color: 0xC97A3A, roughness: 0.4, metalness: 0.5 }));
+  sp.rotation.z = Math.PI / 2; sp.castShadow = true; gSpool.add(sp);
+  [-0.3, 0.3].forEach(fx => {
+    const f = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.07, 20),
+      new THREE.MeshStandardMaterial({ color: 0x7C5636, roughness: 0.8 }));
+    f.rotation.z = Math.PI / 2; f.position.x = fx; gSpool.add(f);
+  });
+
+  // ── 앉아서 짜는 사람 ──
+  {
+    const per = new THREE.Group(); per.position.set(-2.1, 0, -1.85); per.rotation.y = 0.34; gScene.add(per);
+    const SKIN = 0xF7D9C4, TOP = 0xC9A7FF, HAIR = 0x3A2A20;
+    gbox(1.3, 0.24, 1.2, 0x7C5636, 0, 1.02, 0, per, 0.85);                  // 의자 앉는 판
+    [-0.5, 0.5].forEach(sx => [-0.45, 0.45].forEach(sz => gbox(0.16, 1.0, 0.16, 0x5E4028, sx, 0.5, sz, per, 0.85)));
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.58, 1.05, 18),
+      new THREE.MeshStandardMaterial({ color: TOP, roughness: 0.9 }));
+    body.position.set(0, 1.72, -0.02); body.castShadow = true; per.add(body);
+    gHead = new THREE.Mesh(new THREE.SphereGeometry(0.44, 22, 18),
+      new THREE.MeshStandardMaterial({ color: SKIN, roughness: 0.9 }));
+    gHead.position.set(0, 2.6, 0.02); gHead.castShadow = true; per.add(gHead);
+    const hair = new THREE.Mesh(new THREE.SphereGeometry(0.46, 22, 18),
+      new THREE.MeshStandardMaterial({ color: HAIR, roughness: 0.95 }));
+    hair.position.set(0, 0.08, -0.06); hair.scale.set(1, 0.8, 1); gHead.add(hair);
+    // 얼굴
+    const dark = new THREE.MeshStandardMaterial({ color: 0x2C2119, roughness: 0.6 });
+    const blush = new THREE.MeshStandardMaterial({ color: 0xF6AFB4, roughness: 0.9 });
+    [-0.15, 0.15].forEach(ex => {
+      const e = new THREE.Mesh(new THREE.SphereGeometry(0.062, 12, 10), dark);
+      e.position.set(ex, 0.03, 0.40); e.scale.set(1, 1.3, 0.6); gHead.add(e);
+    });
+    [-0.29, 0.29].forEach(cx => {
+      const c2 = new THREE.Mesh(new THREE.SphereGeometry(0.095, 12, 10), blush);
+      c2.position.set(cx, -0.1, 0.33); c2.scale.set(1, 0.6, 0.35); gHead.add(c2);
+    });
+    const smile = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.018, 8, 14, Math.PI),
+      new THREE.MeshStandardMaterial({ color: 0xB0503F, roughness: 0.8 }));
+    smile.position.set(0, -0.13, 0.41); smile.rotation.z = Math.PI; gHead.add(smile);
+    const bun = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 14),
+      new THREE.MeshStandardMaterial({ color: HAIR, roughness: 0.95 }));
+    bun.position.set(0, 2.78, -0.42); per.add(bun);
+    // 다리 (앉은 자세)
+    [-0.24, 0.24].forEach(lx => {
+      const th = gbox(0.3, 0.28, 0.86, 0x4C4A57, lx, 1.3, 0.44, per, 0.9);
+      gbox(0.28, 0.8, 0.28, 0x4C4A57, lx, 0.55, 0.78, per, 0.9);
+      return th;
+    });
+    // 팔 — 어깨에서 코어 랙 쪽으로 뻗습니다
+    const armGeo = new RoundedBoxGeometry(0.24, 0.95, 0.24, 3, 0.11);
+    armGeo.translate(0, -0.475, 0);
+    const armMat = new THREE.MeshStandardMaterial({ color: TOP, roughness: 0.9 });
+    gArmL = new THREE.Mesh(armGeo, armMat); gArmL.position.set(-0.55, 2.18, 0); gArmL.castShadow = true; per.add(gArmL);
+    gArmR = new THREE.Mesh(armGeo, armMat); gArmR.position.set(0.55, 2.18, 0); gArmR.castShadow = true; per.add(gArmR);
+    [gArmL, gArmR].forEach(am => {
+      const hand = new THREE.Mesh(new THREE.SphereGeometry(0.16, 14, 12),
+        new THREE.MeshStandardMaterial({ color: SKIN, roughness: 0.9 }));
+      hand.position.set(0, -0.95, 0); am.add(hand);
+    });
+  }
+
+  gCam.position.set(3.0, 5.3, 10.4);
+  gCam.lookAt(-0.7, 2.4, -0.6);
+}
+let gT = 0;
+function gateTick(now, dt) {
+  gT += dt;
+  const loop = 6.5, p = ((gT + 2.2) % loop) / loop;       // 한 바퀴: 선을 다 짜고 처음부터
+  const grow = Math.min(1, Math.max(0, p) / 0.78);
+  if (gTube) gTube.geometry.setDrawRange(0, Math.floor(gTubeCount * grow));
+  if (gNeedle && gTube) {                                 // 바늘은 짜는 끝을 따라갑니다
+    const c = gTube.userData.curve, u = Math.min(0.999, Math.max(0.001, grow));
+    const q = c.getPointAt(u);
+    if (q) { gNeedle.position.copy(q); gNeedle.position.y += 0.12; }
+  }
+  const stitch = Math.sin(gT * 5.4);                       // 손놀림
+  if (gArmR) { gArmR.rotation.x = -1.2 + stitch * 0.18; gArmR.rotation.z = 0.62 + Math.sin(gT * 2.7) * 0.12; }
+  if (gArmL) { gArmL.rotation.x = -1.05 - stitch * 0.14; gArmL.rotation.z = 0.34 - Math.sin(gT * 2.7) * 0.1; }
+  if (gHead) gHead.rotation.z = Math.sin(gT * 1.3) * 0.06;
+  if (gSpool) gSpool.rotation.x -= dt * 1.5;
+  gReels.forEach((r, i) => r.rotation.z += dt * (i ? -0.9 : 0.9));
+  for (let i = 0; i < gLights.length; i++) {               // 계기판 깜빡임
+    const f = Math.sin(gT * (2.2 + (i % 5) * 0.9) + i * 1.7);
+    gLights[i].emissiveIntensity = f > 0.35 ? 1.5 : 0.12;
+  }
+  const a = gT * 0.16;                                     // 카메라가 천천히 돕니다
+  gCam.position.set(3.0 + Math.sin(a) * 1.6, 5.3 + Math.sin(a * 0.7) * 0.4, 10.4 + Math.cos(a) * 0.8);
+  gCam.lookAt(-0.7, 2.4, -0.6);
+
+}
+function disposeGate() {                                   // 들어가면 메모리에서 정리
+  gScene.traverse(o => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+  });
+  gScene.clear(); gTube = null; gNeedle = null;
+}
+
 /* ── 프레임 ── */
 let walk = 0, last = performance.now(), running = false, waveT = 0;
 const camPos = new THREE.Vector3(0, 9, 26);
@@ -3361,7 +3375,14 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 function frame(now) {
   if (worldEl.hidden || document.hidden) { running = false; return; }
   running = true;
-  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
+
+  if (!entered) {                       // 아직 시작 화면 — 코어 로프 짜는 장면
+    gateTick(now, dt);
+    renderer.render(gScene, gCam);
+    requestAnimationFrame(frame);
+    return;
+  }
 
   let ix = 0, iz = 0;
   if (keys.arrowup || keys.w) iz -= 1;
@@ -3456,6 +3477,7 @@ function frame(now) {
 function resize() {
   const w = worldEl.clientWidth, h = worldEl.clientHeight; if (!w || !h) return;
   renderer.setSize(w, h, false); camera.aspect = w / h;
+  gCam.aspect = w / h; gCam.fov = gCam.aspect < 0.9 ? 52 : 38; gCam.updateProjectionMatrix();
   camera.fov = camera.aspect < 0.85 ? 66 : 52;          // 세로 화면에서는 더 넓게
   camera.updateProjectionMatrix();
 }
@@ -3468,7 +3490,7 @@ let loaded = 0, entered = false;
 function progress() {
   loaded++;
   const pct = Math.round(loaded / pending * 100);
-  $('w-bar').style.width = pct + '%'; $('w-pct').textContent = '마을 짓는 중… ' + pct + '%';
+  $('w-bar').style.width = pct + '%'; $('w-pct').textContent = pct + '%';
   if (loaded >= pending) openWhenReady();
 }
 /* 준비되면 들어가기 버튼을 냅니다. (여기서 눌러 주는 덕분에 음악도 켤 수 있습니다 —
@@ -3486,6 +3508,7 @@ yaw = Math.PI;
 setTimeout(openWhenReady, 2400);                      // 이미지가 늦어도 2.4초 뒤엔 들어갑니다
 function enterWorld(greet = true) {
   entered = true;
+  setTimeout(disposeGate, 400);         // 시작 화면 장면은 다시 쓰지 않습니다
   gate.classList.add('done'); hud.hidden = false; canvas.focus({ preventScroll:true });
   if (greet) waveT = 3.4;                              // 손 흔들어 인사
   if (greet) say('ELORA', '안녕하세요, 엘로라예요! 여기가 제 작업들이 모여 있는 마을이에요. 옆에 세워 둔 로봇을 타면 빨리 돌아볼 수 있어요.',
