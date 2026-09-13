@@ -2276,36 +2276,28 @@ let canEnterWorld = false, ready = false, kickFn = null;
 
 /* ── 마을 지도: 건물 = 섹션 ───────────────────────────────── */
 const BUILDINGS = [
-  { key:'about', sec:'about', ko:'소개', name:'ABOUT_ME', board:'어떤 사람인지', color:0xBFEAE0, pos:[-21,-12], size:[10,6,10], face:'x+',
+  { key:'about', sec:'about', t:0.045, ko:'소개', name:'ABOUT_ME', board:'어떤 사람인지', color:0xBFEAE0, size:[10,6.5,9],
     say:'저는 기획서에서 멈추지 않고 배포된 URL까지 만들어 놓는 편이에요. 교육업 실무를 알아서 학원·교육기관 일이 특히 잘 맞습니다.' },
-  { key:'services', sec:'services', ko:'서비스', name:'SERVICES.EXE', board:'무엇을 맡길 수 있나', color:0xF9E8A0, pos:[-21,12], size:[11,7,10], face:'x+',
+  { key:'services', sec:'services', t:0.135, ko:'서비스', name:'SERVICES.EXE', board:'무엇을 맡길 수 있나', color:0xF9E8A0, size:[11,7,9],
     say:'맡기실 수 있는 일 다섯 가지가 여기 있어요. AI 웹앱, 교육 자동화, 사내 도구, 홈페이지, 문서 자동화.' },
-  { key:'apps', sec:'work', group:'own', ko:'내 프로그램', name:'MY APPS · 7', board:'혼자 만든 것 7개', color:0xF6C6CD, pos:[22,-12], size:[12,8,12], face:'x-',
+  { key:'apps', sec:'work', group:'own', t:0.225, ko:'내 프로그램', name:'MY APPS · 7', board:'혼자 만든 것 7개', color:0xF6C6CD, size:[12,7.5,10],
     say:'혼자 만든 제 프로그램들이에요. 기획도, 디자인도, 개발도, 배포랑 운영까지 전부 제가 했어요.' },
-  { key:'client', sec:'work', group:'full', ko:'의뢰 · 전부', name:'CLIENT · ALL', board:'의뢰받아 통째로', color:0xF2A79F, pos:[22,12], size:[10,7,10], face:'x-',
+  { key:'client', sec:'work', group:'full', t:0.335, ko:'의뢰 · 전부', name:'CLIENT · ALL', board:'의뢰받아 통째로', color:0xF2A79F, size:[10,7,9],
     say:'의뢰를 받아 기획부터 개발·배포·운영까지 통째로 맡은 작업이에요. 회사가 매일 쓰는 시스템들입니다.' },
-  { key:'part', sec:'work', group:'part', ko:'의뢰 · 참여', name:'CLIENT · PART', board:'개발·디자인 참여', color:0xE8CDA3, pos:[12,23], size:[9,6,9], face:'z-',
+  { key:'part', sec:'work', group:'part', t:0.415, ko:'의뢰 · 참여', name:'CLIENT · PART', board:'개발·디자인 참여', color:0xE8CDA3, size:[9,6.5,8],
     say:'기획은 의뢰인이 하고 개발이나 디자인처럼 맡은 부분을 수행한 작업이에요. 지금 정리하는 중입니다.' },
-  { key:'process', sec:'process', ko:'진행 방식', name:'HOW_IT_WORKS', board:'어떻게 진행되나', color:0xCBD9F2, pos:[-12,23], size:[10,6,10], face:'z-',
+  { key:'process', sec:'process', t:0.625, ko:'진행 방식', name:'HOW_IT_WORKS', board:'어떻게 진행되나', color:0xCBD9F2, size:[10,6.5,9],
     say:'요구사항 정리 → 완료 기준 합의 → 실제 화면으로 보고 → 납품. 약속 세 가지도 안에 붙여놨어요.' },
-  { key:'faq', sec:'faq', ko:'FAQ', name:'FAQ.TXT', board:'비용·기간 궁금하면', color:0xDED1F0, pos:[-12,-24], size:[9,5.5,9], face:'z+',
+  { key:'faq', sec:'faq', t:0.715, ko:'FAQ', name:'FAQ.TXT', board:'비용·기간 궁금하면', color:0xDED1F0, size:[9,6,8],
     say:'비용은 어떻게 정해지는지, AI 요금 폭탄은 안 나는지 — 자주 받는 질문 일곱 개를 모아뒀어요.' },
-  { key:'contact', sec:'contact', ko:'문의', name:'CONTACT.EXE', board:'여기서 의뢰하기 ♥', color:0xE0453A, pos:[12,-24], size:[9,7,9], face:'z+',
+  { key:'contact', sec:'contact', t:0.815, ko:'문의', name:'CONTACT.EXE', board:'여기서 의뢰하기 ♥', color:0xE0453A, size:[9,7,8],
     say:'만들고 싶은 것 한 줄이면 충분해요. 여기서 바로 문의 메일을 보내실 수 있어요.' },
-];
-const SCREENS = [   // 광장 둘레에 세워 건물 출입구를 가리지 않게 배치
-  { src:'images/lyrics-studio.jpg', title:'작사공방 — AI 가사 작업 도구',      pos:[-6.5,-6.5], rot:  0.785 },
-  { src:'images/eungjing.jpg',      title:'응징 대작전 — P2P 대결 PWA 게임',    pos:[ 6.5,-6.5], rot: -0.785 },
-  { src:'images/malhamyeon.jpg',    title:'말하면 — 음성 일정 관리 앱',        pos:[-6.5, 6.5], rot:  2.356 },
-  { src:'images/moneyup.jpg',       title:'MoneyUp — 판매·세무 통합 관리',     pos:[ 6.5, 6.5], rot: -2.356 },
-  { src:'images/miniapp.jpg',       title:'Mini App — 웹앱 코드 마켓플레이스', pos:[   0, -32], rot:  0 },
 ];
 const LIMIT = 40;
 /* 주문하는 곳 — 마을 남쪽 큰길 끝. 로봇을 타고 들어와 창구 옆에 세우면 주문이 열립니다. */
-const DRIVE = { key:'drive', ko:'드라이브 스루', name:'ELORA DRIVE-THRU',
-  pos:[10.5, 34], size:[9, 7, 9], door:{ x:2.2, z:34.5 },
+const DRIVE = { key:'drive', ko:'드라이브 스루', name:'ELORA DRIVE-THRU', t:0.525, size:[10, 7.5, 9],
   say:'여기가 주문 창구예요. 창문 옆에 세우고 편하게 말씀해 주세요.' };
-const ROBOT_PARK = { x:3.4, z:-13.2 };
+const SPAWN_T = 0.955;                      // 처음 서는 자리 (골목 위)
 
 /* ── 사이트 모드 전환 ─────────────────────────────────────── */
 function toSite(scrollTo) {
@@ -2355,7 +2347,7 @@ const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 220);
   const sky = new THREE.Mesh(new THREE.SphereGeometry(150, 24, 16), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, fog: false }));
   scene.add(sky);
 }
-scene.add(new THREE.HemisphereLight(0xEAF6FF, 0xE3C9A8, 1.5));
+scene.add(new THREE.HemisphereLight(0xEAF6FF, 0xC9B48E, 1.05));
 const sun = new THREE.DirectionalLight(0xFFF4E2, 2.1);
 sun.position.set(26, 38, 18); sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
@@ -2393,47 +2385,71 @@ function box(w, h, d, color, x, y, z, parent = scene) {
   parent.add(m); return m;
 }
 
-/* ── 바닥: 잔디 + 흙길 + 광장 (동물의 숲 톤) ── */
+/* ── 바닥 · 골목길 · 광장 (브레드 이발소 + 동물의 숲 톤) ──────────────
+   길은 마을을 한 바퀴 도는 골목 하나이고, 가게들이 그 길가에 비스듬히 붙습니다. */
+const CREAM = 0xFFF6E8, WOOD = 0xC98F5E, WOOD2 = 0x9A6B45, BRICK = 0xE05A4A;
+
 const grassC = document.createElement('canvas'); grassC.width = grassC.height = 64;
-{ const g = grassC.getContext('2d'); g.fillStyle = '#BFE0A8'; g.fillRect(0, 0, 64, 64);
-  g.fillStyle = '#AED697'; for (let i = 0; i < 26; i++) { const x = Math.random()*64, y = Math.random()*64; g.fillRect(x, y, 3, 2); }
-  g.fillStyle = '#D3EDBE'; for (let i = 0; i < 16; i++) { const x = Math.random()*64, y = Math.random()*64; g.fillRect(x, y, 2, 2); } }
+{ const g = grassC.getContext('2d'); g.fillStyle = '#95C97A'; g.fillRect(0, 0, 64, 64);
+  g.fillStyle = '#83BC69'; for (let i = 0; i < 28; i++) g.fillRect(Math.random()*64, Math.random()*64, 3, 2);
+  g.fillStyle = '#A9D78D'; for (let i = 0; i < 18; i++) g.fillRect(Math.random()*64, Math.random()*64, 2, 2); }
 const grassTex = new THREE.CanvasTexture(grassC); grassTex.wrapS = grassTex.wrapT = THREE.RepeatWrapping; grassTex.repeat.set(30, 30);
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(LIMIT * 2 + 24, LIMIT * 2 + 24), new THREE.MeshLambertMaterial({ map: grassTex }));
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(LIMIT * 2 + 40, LIMIT * 2 + 40), new THREE.MeshLambertMaterial({ map: grassTex }));
 ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 
-const pathMat = mat(0xE9D8B8), pathEdge = mat(0xD9C49B);
-[[11, 92], [92, 11]].forEach(([w, d]) => {
-  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d), pathEdge); r.rotation.x = -Math.PI / 2; r.position.y = 0.01; r.receiveShadow = true; scene.add(r);
-});
-[[9, 92], [92, 9]].forEach(([w, d]) => {
-  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d), pathMat); r.rotation.x = -Math.PI / 2; r.position.y = 0.02; r.receiveShadow = true; scene.add(r);
-});
-// 흙길 위 자갈 무늬
-for (let i = -40; i <= 40; i += 5) {
-  if (Math.abs(i) < 9) continue;
-  [[0.8, 0.5, 1.6, i], [0.5, 0.8, i, 1.6], [0.8, 0.5, -1.6, i], [0.5, 0.8, i, -1.6]].forEach(([w, d, x, z]) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), pathEdge); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.03, z); scene.add(m);
-  });
-}
-const plaza = new THREE.Mesh(new THREE.CircleGeometry(8, 48), mat(0xF6D7DA));
-plaza.rotation.x = -Math.PI / 2; plaza.position.y = 0.04; plaza.receiveShadow = true; scene.add(plaza);
-const plazaRing = new THREE.Mesh(new THREE.RingGeometry(7.5, 8.3, 48), mat(0xFFFDF7));
-plazaRing.rotation.x = -Math.PI / 2; plazaRing.position.y = 0.05; scene.add(plazaRing);
+const ROAD_PTS = [[0,-24],[13,-22],[22,-13],[25,0],[19,13],[6,22],[-8,23],[-20,15],[-25,1],[-19,-13],[-8,-23]];
+const road = new THREE.CatmullRomCurve3(ROAD_PTS.map(q => new THREE.Vector3(q[0], 0, q[1])), true, 'catmullrom', 0.5);
+const ROAD_W = 7.6;
+const roadAt = t => road.getPointAt((t % 1 + 1) % 1);
+const outAt = t => { const p = roadAt(t), l = Math.hypot(p.x, p.z) || 1; return { x: p.x / l, z: p.z / l }; };
 
-// 광장 둘레 울타리
-for (let a = 0; a < Math.PI * 2; a += Math.PI / 14) {
-  const x = Math.cos(a) * 9.2, z = Math.sin(a) * 9.2;
-  if (Math.abs(x) < 5.6 || Math.abs(z) < 5.6) continue;     // 길 쪽은 비워 둔다
-  box(0.28, 1.1, 0.28, 0xC99A6B, x, 0.55, z, scene, true);
+function ribbon(width, y, color) {
+  const N = 300, pos = [], idx = [];
+  for (let i = 0; i <= N; i++) {
+    const u = i / N, p = road.getPointAt(u % 1), tg = road.getTangentAt(u % 1);
+    const nx = tg.z, nz = -tg.x, l = Math.hypot(nx, nz) || 1;
+    pos.push(p.x + nx / l * width / 2, y, p.z + nz / l * width / 2);
+    pos.push(p.x - nx / l * width / 2, y, p.z - nz / l * width / 2);
+  }
+  for (let i = 0; i < N; i++) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  const nrm = new Float32Array(pos.length);
+  for (let i = 1; i < nrm.length; i += 3) nrm[i] = 1;
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nrm, 3));
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color, roughness: 0.95, side: THREE.DoubleSide }));
+  m.receiveShadow = true; scene.add(m); return m;
 }
-// 가운데 분수
+ribbon(ROAD_W + 1.8, 0.012, 0xCDAE7E);       // 길 가장자리
+ribbon(ROAD_W, 0.024, 0xEBD3A8);             // 길바닥
+// 길가 자갈
+for (let i = 0; i < 120; i++) {
+  const u = i / 120, p = road.getPointAt(u), tg = road.getTangentAt(u);
+  const nx = tg.z, nz = -tg.x, l = Math.hypot(nx, nz) || 1, sg = i % 2 ? 1 : -1;
+  const r = new THREE.Mesh(new THREE.CircleGeometry(0.26 + Math.random() * 0.16, 6), mat(0xCBAE80));
+  r.rotation.x = -Math.PI / 2;
+  r.position.set(p.x + nx / l * sg * (ROAD_W / 2 - 0.5), 0.03, p.z + nz / l * sg * (ROAD_W / 2 - 0.5));
+  scene.add(r);
+}
+
+// 가운데 광장 + 분수
+const plaza = new THREE.Mesh(new THREE.CircleGeometry(9, 48), mat(0xF6D7DA));
+plaza.rotation.x = -Math.PI / 2; plaza.position.y = 0.04; plaza.receiveShadow = true; scene.add(plaza);
+const plazaRing = new THREE.Mesh(new THREE.RingGeometry(8.6, 9.4, 48), mat(CREAM));
+plazaRing.rotation.x = -Math.PI / 2; plazaRing.position.y = 0.05; scene.add(plazaRing);
+// 광장에서 골목으로 나가는 샛길 넷
+[0.12, 0.37, 0.62, 0.87].forEach(t => {
+  const p = roadAt(t), l = Math.hypot(p.x, p.z) || 1, ux = p.x / l, uz = p.z / l;
+  const len = l - 8.4;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(3.4, len), mat(0xE3C99C));
+  m.rotation.x = -Math.PI / 2; m.rotation.z = -Math.atan2(ux, uz);
+  m.position.set(ux * (8.4 + len / 2), 0.02, uz * (8.4 + len / 2)); m.receiveShadow = true; scene.add(m);
+});
 const fountain = new THREE.Group(); scene.add(fountain);
 {
   const rim = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.7, 0.75, 24), mat(0xF3EAD8));
   rim.position.y = 0.38; rim.castShadow = true; rim.receiveShadow = true; fountain.add(rim);
-  const inner = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 2.1, 0.7, 24), mat(0xE6D9C2));
-  inner.position.y = 0.42; fountain.add(inner);
   const water = new THREE.Mesh(new THREE.CircleGeometry(2.05, 28), new THREE.MeshStandardMaterial({
     color: 0x8FD3E8, roughness: 0.18, metalness: 0.1 }));
   water.rotation.x = -Math.PI / 2; water.position.y = 0.68; fountain.add(water);
@@ -2446,131 +2462,129 @@ const drop = new THREE.Mesh(new THREE.SphereGeometry(0.34, 14, 12), new THREE.Me
   color: 0x8FD3E8, roughness: 0.15 }));
 drop.position.set(0, 2.9, 0); drop.castShadow = true; fountain.add(drop);
 
-// 잔디에 꽃 흩뿌리기
+// 잔디 꽃
 const FLOWER = [0xF6A6AE, 0xF9E8A0, 0xFFFDF7, 0xC9A7FF];
-for (let i = 0; i < 150; i++) {
-  const x = (Math.random() - 0.5) * (LIMIT * 2), z = (Math.random() - 0.5) * (LIMIT * 2);
-  if (Math.abs(x) < 8 || Math.abs(z) < 8) continue;                 // 길 위에는 안 심는다
-  if (Math.hypot(x, z) < 11) continue;
+for (let i = 0; i < 220; i++) {
+  const a = Math.random() * Math.PI * 2, r = 10 + Math.random() * 32;
+  const x = Math.cos(a) * r, z = Math.sin(a) * r;
+  const rp = Math.hypot(x, z), rr = Math.hypot(roadAt(Math.atan2(z, x) / (Math.PI * 2)).x, 0);
+  if (Math.abs(rp - 23) < 7) continue;                    // 길 위에는 안 심는다
   const f = new THREE.Mesh(new THREE.CircleGeometry(0.34, 6), mat(FLOWER[i % FLOWER.length]));
   f.rotation.x = -Math.PI / 2; f.position.set(x, 0.06, z); scene.add(f);
 }
 
-/* ── 건물 ── */
-const colliders = [], signs = [], doors = [], boards = [];
-BUILDINGS.forEach(b => {
-  const [w, h, d] = b.size, [x, z] = b.pos;
-  const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
-  const body = box(w, h, d, b.color, 0, h / 2, 0, g, true);
-  box(w + 0.9, 0.45, d + 0.9, 0xFFFDF7, 0, h + 0.22, 0, g, true);    // 처마
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.78, 3.2, 4),
-    mat(new THREE.Color(b.color).multiplyScalar(0.62).getHex()));
-  roof.position.set(0, h + 2.05, 0); roof.rotation.y = Math.PI / 4; g.add(roof); edge(roof);
-  // 창문
-  const winMat = mat(0x8FC6DE);
-  for (let iy = 0; iy < Math.max(1, Math.floor(h / 2.6)); iy++)
-    for (let ix = -1; ix <= 1; ix++) {
-      if (ix === 0 && iy === 0) continue;
-      const wx = ix * (w / 3.2), wy = 1.6 + iy * 2.4;
-      const f = b.face[0] === 'x' ? 1 : 0;
-      const m = new THREE.Mesh(new THREE.BoxGeometry(f ? 0.15 : 1.3, 1.1, f ? 1.3 : 0.15), winMat);
-      const s = b.face[1] === '+' ? 1 : -1;
-      if (f) m.position.set(s * (w / 2 + 0.05), wy, ix * (d / 3.2)); else m.position.set(wx, wy, s * (d / 2 + 0.05));
-      g.add(m);
-    }
-  // 문
-  const isX = b.face[0] === 'x', sgn = b.face[1] === '+' ? 1 : -1;
-  const dw = 2.6, dh = 3.2;
-  const frame = box(isX ? 0.3 : dw + 0.5, dh + 0.45, isX ? dw + 0.5 : 0.3, 0xC99A6B,
-    isX ? sgn * (w / 2 + 0.12) : 0, (dh + 0.45) / 2, isX ? 0 : sgn * (d / 2 + 0.12), g);
-  const door = box(isX ? 0.34 : dw, dh, isX ? dw : 0.34, 0x9A6B45,
-    isX ? sgn * (w / 2 + 0.2) : 0, dh / 2, isX ? 0 : sgn * (d / 2 + 0.2), g);
-  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 10), mat(0xF2D9A6));
-  knob.position.set(isX ? sgn * (w / 2 + 0.42) : (dw / 2 - 0.45), dh / 2, isX ? (dw / 2 - 0.45) : sgn * (d / 2 + 0.42));
-  g.add(knob);
-  const lantern = new THREE.Mesh(new THREE.SphereGeometry(0.3, 14, 12), new THREE.MeshStandardMaterial({
-    color: 0xFFF0BE, emissive: 0xFFD98A, emissiveIntensity: 0.7, roughness: 0.6 }));
-  lantern.position.set(isX ? sgn * (w / 2 + 0.45) : 0, dh + 0.75, isX ? 0 : sgn * (d / 2 + 0.45));
-  g.add(lantern);
-  // 간판
-  const sw = Math.max(w * 0.8, 5);
-  const signG = new THREE.Group();
-  signG.position.set(isX ? sgn * (w / 2 + 0.32) : 0, h + 1.5, isX ? 0 : sgn * (d / 2 + 0.32));
-  if (isX) signG.rotation.y = sgn * Math.PI / 2; else if (sgn < 0) signG.rotation.y = Math.PI;
-  const plank = box(sw, sw / 4 + 0.35, 0.3, 0xC99A6B, 0, 0, 0, signG);        // 나무 테두리
-  const face = new THREE.Mesh(new THREE.PlaneGeometry(sw - 0.45, sw / 4 - 0.12),
-    new THREE.MeshBasicMaterial({ map: labelTex(b.name, '#FFF7E8', '#4A3524') }));
-  face.position.z = 0.17; signG.add(face);
-  g.add(signG); signs.push(face);
-  // 문 앞 자리 · 충돌 상자
-  b.door = { x: x + (isX ? sgn * (w / 2 + 2.6) : 0), z: z + (isX ? 0 : sgn * (d / 2 + 2.6)) };
-  b.out = { x: isX ? sgn : 0, z: isX ? 0 : sgn };          // 건물에서 바깥쪽(광장 쪽) 방향
-  // 문 앞 나무 팻말 — "여기서 뭘 맡길 수 있는지" 한 줄
-  if (b.board) {
-    const post = new THREE.Group();
-    post.position.set(b.door.x + b.out.x * 0.2 - b.out.z * 3, 0, b.door.z + b.out.z * 0.2 + b.out.x * 3);
-    post.rotation.y = Math.atan2(b.out.x, b.out.z);
-    box(0.22, 1.9, 0.22, 0xC99A6B, 0, 0.95, 0, post);
-    const plank = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.1),
-      new THREE.MeshBasicMaterial({ map: labelTex(b.board, '#FFFDF7', '#141414', 512, 156) }));
-    plank.position.set(0, 2.3, 0.09); post.add(plank);
-    box(3.7, 1.2, 0.12, 0xF0DCC0, 0, 2.3, 0, post, true);
-    scene.add(post); boards.push({ post, plank, b });
-  }
-  // 문 양옆 꽃 화분 (동화마을 느낌)
-  [-1, 1].forEach(sgn2 => {
-    const px = b.door.x - b.out.x * 1.9 + b.out.z * 2.1 * sgn2;
-    const pz = b.door.z - b.out.z * 1.9 - b.out.x * 2.1 * sgn2;
-    const pot = new THREE.Group(); pot.position.set(px, 0, pz); scene.add(pot);
-    box(1.1, 0.85, 1.1, 0xE0A98B, 0, 0.42, 0, pot);
-    box(1.25, 0.2, 1.25, 0xC98F5E, 0, 0.88, 0, pot);
-    [[0, 0], [0.3, 0.25], [-0.28, -0.22]].forEach(([fx, fz], k) => {
-      const st = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.7, 6), mat(0x86C98F));
-      st.position.set(fx, 1.25, fz); pot.add(st);
-      const fl = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 10), mat([0xF6A6AE, 0xF9E8A0, 0xFFFDF7][k]));
-      fl.position.set(fx, 1.62, fz); fl.castShadow = true; pot.add(fl);
-    });
-  });
-  b.mesh = body; b.node = g;          // 3D 그룹 (데이터 필드 b.group 과 겹치지 않게)
-  colliders.push({ x, z, w: w / 2 + 0.6, d: d / 2 + 0.6 });
-  doors.push(b);
-});
-
-/* ── 전광판 ── */
+/* ── 서비스 화면 텍스처 (가게 진열창에 씁니다) ── */
 const loader = new THREE.TextureLoader();
-
-/* 히어로 슬라이드가 받아 둔 그 이미지를 전광판 텍스처로 그대로 씁니다(SHOT_IMG).
-   전에는 같은 캡처 5장을 슬라이드용·전광판용으로 따로 받아 전송량이 두 배였어요.
-   슬라이드가 없는 경우(구조가 바뀐 경우)에만 예전처럼 직접 받습니다. */
 function shotTexture(src, done) {
   const el = window.SHOT_IMG && window.SHOT_IMG.get(src);
   if (!el) return loader.load(src, t => { t.colorSpace = THREE.SRGBColorSpace; done(); }, undefined, done);
   const tex = new THREE.Texture(el);
   tex.colorSpace = THREE.SRGBColorSpace;
   const ready = () => { tex.needsUpdate = true; done(); };
-  // 다 받은 뒤 decode() 까지 기다렸다가 GPU에 올립니다(안전).
-  // 기다리는 김에 done() 도 다음 차례로 밀립니다 —
-  // 여기서 바로 부르면 아직 선언 전인 로딩 카운터를 건드려 터집니다.
   const upload = () => { el.decode ? el.decode().then(ready, ready) : queueMicrotask(ready); };
   if (el.complete && el.naturalWidth) upload();
-  else {
-    el.addEventListener('load', upload, { once:true });
-    el.addEventListener('error', done, { once:true });
-  }
+  else { el.addEventListener('load', upload, { once:true }); el.addEventListener('error', done, { once:true }); }
   return tex;
 }
+const SHOTS = {
+  apps:    { src:'images/lyrics-studio.jpg', title:'작사공방 — AI 가사 작업 도구' },
+  client:  { src:'images/moneyup.jpg',       title:'MoneyUp — 판매·세무 통합 관리' },
+  services:{ src:'images/miniapp.jpg',       title:'Mini App — 웹앱 코드 마켓플레이스' },
+  process: { src:'images/malhamyeon.jpg',    title:'말하면 — 음성 일정 관리 앱' },
+  faq:     { src:'images/eungjing.jpg',      title:'응징 대작전 — P2P 대결 PWA 게임' },
+};
+let pending = Object.keys(SHOTS).length;
 
-let pending = SCREENS.length;
-const screenMeshes = [];
-SCREENS.forEach(s => {
-  const g = new THREE.Group(); g.position.set(s.pos[0], 0, s.pos[1]); g.rotation.y = s.rot; scene.add(g);
-  box(0.4, 3, 0.4, 0xC99A6B, -2.4, 1.5, 0, g, true); box(0.4, 3, 0.4, 0xC99A6B, 2.4, 1.5, 0, g, true);
-  box(6.2, 4, 0.35, 0xFFFDF7, 0, 5, 0, g, true);
-  box(6.6, 0.5, 0.5, 0xC99A6B, 0, 7.2, 0, g, true);      // 차양
-  const tex = shotTexture(s.src, progress);
-  const shot = new THREE.Mesh(new THREE.PlaneGeometry(5.7, 3.5), new THREE.MeshBasicMaterial({ map:tex }));
-  shot.position.set(0, 5, 0.2); shot.userData.s = s; g.add(shot); screenMeshes.push(shot);
-  colliders.push({ x:s.pos[0], z:s.pos[1], w:1.6, d:1.6 });
+/* ── 가게: 차양 · 진열창 · 매단 간판 (브레드 이발소풍 앞모습) ── */
+const colliders = [], signs = [], doors = [], boards = [], screenMeshes = [];
+function placeOnRoad(b) {
+  const p = roadAt(b.t), n = outAt(b.t), d = b.size[2];
+  b.pos = [p.x + n.x * (ROAD_W / 2 + d / 2 + 1.4), p.z + n.z * (ROAD_W / 2 + d / 2 + 1.4)];
+  b.rot = Math.atan2(-n.x, -n.z);                       // 길 쪽을 바라봅니다
+  b.out = { x:-n.x, z:-n.z };                           // 가게에서 길 쪽
+  b.door = { x: b.pos[0] + b.out.x * (d / 2 + 2.4), z: b.pos[1] + b.out.z * (d / 2 + 2.4) };
+}
+BUILDINGS.forEach(b => {
+  placeOnRoad(b);
+  const [w, h, d] = b.size, g = new THREE.Group();
+  g.position.set(b.pos[0], 0, b.pos[1]); g.rotation.y = b.rot; scene.add(g);
+
+  const body = box(w, h, d, CREAM, 0, h / 2, 0, g);                       // 크림색 몸체
+  box(w + 0.4, h * 0.42, d + 0.4, b.color, 0, h * 0.21, 0, g);            // 아래쪽 색 띠
+  box(w + 0.7, 0.4, d + 0.7, CREAM, 0, h * 0.43, 0, g);                   // 허리 몰딩
+  box(w + 0.9, 0.5, d + 0.9, CREAM, 0, h + 0.24, 0, g);                   // 처마
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.8, 3.2, 4),
+    mat(new THREE.Color(b.color).multiplyScalar(0.72).getHex()));
+  roof.position.set(0, h + 2.1, 0); roof.rotation.y = Math.PI / 4; roof.castShadow = true; g.add(roof);
+  box(1.0, 2.0, 1.0, WOOD, w * 0.28, h + 2.2, -d * 0.28, g);              // 굴뚝
+
+  const F = d / 2;                                                        // 앞면 z
+  // 줄무늬 차양
+  const aw = new THREE.Group(); aw.position.set(0, h * 0.5, F + 0.1); aw.rotation.x = -0.42; g.add(aw);
+  const cols = Math.max(6, Math.round(w / 0.9));
+  for (let i = 0; i < cols; i++) {
+    const sw = (w - 0.4) / cols;
+    box(sw, 0.16, 2.2, i % 2 ? CREAM : BRICK, -(w - 0.4) / 2 + sw * (i + 0.5), 0, 0, aw);
+  }
+  box(w - 0.2, 0.3, 0.3, WOOD, 0, 0.06, 1.15, aw);                        // 차양 앞테
+  // 진열창 (있으면 실제 서비스 화면)
+  const winW = Math.min(w * 0.52, 4.6), winH = 2.5;
+  box(winW + 0.5, winH + 0.5, 0.3, WOOD, -w * 0.2, 2.1, F + 0.08, g);
+  const shot = SHOTS[b.key];
+  if (shot) {
+    const tex = shotTexture(shot.src, progress);
+    const pane = new THREE.Mesh(new THREE.PlaneGeometry(winW, winH), new THREE.MeshBasicMaterial({ map: tex }));
+    pane.position.set(-w * 0.2, 2.1, F + 0.25); pane.userData.s = shot; g.add(pane); screenMeshes.push(pane);
+  } else {
+    const pane = new THREE.Mesh(new THREE.PlaneGeometry(winW, winH), new THREE.MeshStandardMaterial({
+      color: 0xFFF3D2, emissive: 0xFFD98A, emissiveIntensity: 0.5, roughness: 0.7 }));
+    pane.position.set(-w * 0.2, 2.1, F + 0.25); g.add(pane);
+  }
+  // 문 + 등 + 손잡이
+  const dw = 2.4, dh = 3.4, dx = w * 0.28;
+  box(dw + 0.5, dh + 0.4, 0.3, WOOD, dx, (dh + 0.4) / 2, F + 0.08, g);
+  box(dw, dh, 0.28, WOOD2, dx, dh / 2, F + 0.2, g);
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 10), mat(0xF2D9A6));
+  knob.position.set(dx + dw / 2 - 0.4, dh / 2, F + 0.36); g.add(knob);
+  const lantern = new THREE.Mesh(new THREE.SphereGeometry(0.3, 14, 12), new THREE.MeshStandardMaterial({
+    color: 0xFFF0BE, emissive: 0xFFD98A, emissiveIntensity: 0.8, roughness: 0.6 }));
+  lantern.position.set(dx, dh + 0.75, F + 0.32); g.add(lantern);
+  // 매단 간판
+  const sw2 = Math.max(w * 0.62, 4.4);
+  const signG = new THREE.Group(); signG.position.set(0, h + 1.5, F + 0.3); g.add(signG);
+  box(sw2, sw2 / 4.2 + 0.35, 0.3, WOOD, 0, 0, 0, signG);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(sw2 - 0.45, sw2 / 4.2 - 0.12),
+    new THREE.MeshBasicMaterial({ map: labelTex(b.name, '#FFF7E8', '#4A3524') }));
+  face.position.z = 0.17; signG.add(face); signs.push(face);
+  // 문 앞 팻말
+  if (b.board) {
+    const post = new THREE.Group();
+    post.position.set(b.door.x - b.out.z * 2.6, 0, b.door.z + b.out.x * 2.6);
+    post.rotation.y = Math.atan2(b.out.x, b.out.z);
+    box(0.22, 1.9, 0.22, WOOD, 0, 0.95, 0, post);
+    const plank = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.1),
+      new THREE.MeshBasicMaterial({ map: labelTex(b.board, '#FFFDF7', '#141414', 512, 156) }));
+    plank.position.set(0, 2.3, 0.09); post.add(plank);
+    box(3.7, 1.2, 0.12, 0xF0DCC0, 0, 2.3, 0, post);
+    scene.add(post); boards.push({ post, plank, b });
+  }
+  // 문 옆 화분 두 개
+  [-1, 1].forEach(sg => {
+    const pot = new THREE.Group();
+    pot.position.set(b.door.x + b.out.x * -1.2 + b.out.z * 2.0 * sg, 0, b.door.z + b.out.z * -1.2 - b.out.x * 2.0 * sg);
+    scene.add(pot);
+    box(1.0, 0.8, 1.0, 0xE0A98B, 0, 0.4, 0, pot);
+    box(1.15, 0.18, 1.15, WOOD, 0, 0.84, 0, pot);
+    [[0, 0], [0.28, 0.22], [-0.26, -0.2]].forEach(([fx, fz], k) => {
+      const st2 = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.66, 6), mat(0x86C98F));
+      st2.position.set(fx, 1.18, fz); pot.add(st2);
+      const fl = new THREE.Mesh(new THREE.SphereGeometry(0.23, 12, 10), mat(FLOWER[k]));
+      fl.position.set(fx, 1.54, fz); fl.castShadow = true; pot.add(fl);
+    });
+  });
+  b.mesh = body; b.node = g;
+  colliders.push({ x:b.pos[0], z:b.pos[1], w: w / 2 + 0.6, d: d / 2 + 0.6 });
+  doors.push(b);
 });
 
 /* ── 소품: 나무 · 가로등 · 벤치 ── */
@@ -2607,10 +2621,25 @@ function bench(x, z, rot = 0) {
   box(2.8, 0.9, 0.2, 0xC98F5E, 0, 1.4, -0.4, g, true);
   box(0.25, 0.9, 0.9, 0x141414, -1.2, 0.45, 0, g); box(0.25, 0.9, 0.9, 0x141414, 1.2, 0.45, 0, g);
 }
-[[-30,-30],[30,-30],[-30,30],[30,30],[-34,-8],[34,-8],[-34,8],[34,8],
- [-6.2,-21],[6.2,-21],[-6.2,21],[6.2,21],[-6.2,-30],[6.2,-30],[-6.2,30],[6.2,30]].forEach(p => tree(p[0], p[1]));
-[[-6.6,-9],[6.6,-9],[-6.6,9],[6.6,9]].forEach(p => lamp(p[0], p[1]));
-bench(-6.9, 0, Math.PI / 2); bench(6.9, 0, -Math.PI / 2);   // 로봇이 지나갈 길을 비워 둡니다
+// 마을 바깥을 나무로 빙 둘러 시선을 가둡니다
+for (let i = 0; i < 54; i++) {
+  const a2 = (i / 54) * Math.PI * 2 + Math.random() * 0.08;
+  const r2 = 33 + Math.random() * 12;
+  tree(Math.cos(a2) * r2, Math.sin(a2) * r2);
+}
+// 골목 안쪽(광장과 길 사이)에도 드문드문
+for (let i = 0; i < 14; i++) {
+  const t2 = i / 14 + 0.03, p2 = roadAt(t2), l2 = Math.hypot(p2.x, p2.z) || 1;
+  const r2 = 11.5 + Math.random() * 3.5;
+  tree(p2.x / l2 * r2, p2.z / l2 * r2);
+}
+// 가로등은 길가를 따라
+for (let i = 0; i < 12; i++) {
+  const t2 = i / 12 + 0.04, p2 = roadAt(t2), n2 = outAt(t2);
+  lamp(p2.x - n2.x * (ROAD_W / 2 + 1.1), p2.z - n2.z * (ROAD_W / 2 + 1.1));
+}
+bench(-6.6, 0, Math.PI / 2); bench(6.6, 0, -Math.PI / 2);
+bench(0, -6.6, Math.PI); bench(0, 6.6, 0);
 
 /* ── 동화마을 소품: 구름 · 가랜드 · 버섯 · 연못 · 나비 · 풍차 · 우체통 ──
    길과 광장, 건물 자리는 비워 두고 잔디 쪽에만 놓습니다. */
@@ -2709,11 +2738,11 @@ for (let i = 0; i < 8; i++) {
     box(1.1, 3.2, 0.12, 0xF9E8A0, 0.55, 2.6, -0.12, arm);
   }
   colliders.push({ x:33, z:29, w:2.6, d:2.6 });
-  tree(26, 34); tree(38, 22);
+  tree(30, 31);
 }
 
-/* ── 드라이브 스루: 아치 · 차선 · 메뉴판 · 차양 · 주문 창구 ──────────────
-   가게는 길 동쪽, 차선은 큰길 그대로입니다. 메뉴판 글자는 화면의 메뉴(A1~A5)를 그대로 읽어 그립니다. */
+/* ── 드라이브 스루: 골목 한쪽에 차양을 걸치고 서 있는 큰 가게 ──────────
+   길을 따라 들어오면 차양 아래를 지나 창구 옆에 서게 됩니다. */
 function menuTex() {
   const c = document.createElement('canvas'); c.width = 512; c.height = 384;
   const g = c.getContext('2d');
@@ -2736,66 +2765,82 @@ function menuTex() {
 }
 let menuFace = null, driveSign = null, winSign = null;
 {
-  const [dx, dz] = DRIVE.pos, [dw, dh, dd] = DRIVE.size;
-  const g = new THREE.Group(); g.position.set(dx, 0, dz); scene.add(g);
+  placeOnRoad(DRIVE);
+  const [dw, dh, dd] = DRIVE.size;
+  const n = outAt(DRIVE.t), tg = road.getTangentAt(DRIVE.t);
+  DRIVE.door = { x: roadAt(DRIVE.t).x + n.x * 1.3, z: roadAt(DRIVE.t).z + n.z * 1.3 };
 
-  // 가게 본체 + 처마 + 뾰족 지붕 + 굴뚝 (마을 건물과 같은 모양새)
-  box(dw, dh, dd, 0xFFF0E2, 0, dh / 2, 0, g);
-  box(dw + 0.9, 0.45, dd + 0.9, 0xFFFDF7, 0, dh + 0.22, 0, g);
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(dw, dd) * 0.78, 3.2, 4), mat(0xF2A79F));
-  roof.position.set(0, dh + 2.05, 0); roof.rotation.y = Math.PI / 4; roof.castShadow = true; g.add(roof);
-  box(1.0, 2.4, 1.0, 0xE8CDA3, dw * 0.24, dh + 2.5, dd * 0.24, g);
+  const g = new THREE.Group(); g.position.set(DRIVE.pos[0], 0, DRIVE.pos[1]); g.rotation.y = DRIVE.rot; scene.add(g);
+  box(dw, dh, dd, CREAM, 0, dh / 2, 0, g);
+  box(dw + 0.4, dh * 0.4, dd + 0.4, 0xF2A79F, 0, dh * 0.2, 0, g);
+  box(dw + 0.9, 0.5, dd + 0.9, CREAM, 0, dh + 0.24, 0, g);
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(dw, dd) * 0.8, 3.4, 4), mat(0xD4756B));
+  roof.position.set(0, dh + 2.2, 0); roof.rotation.y = Math.PI / 4; roof.castShadow = true; g.add(roof);
+  box(1.0, 2.2, 1.0, WOOD, dw * 0.3, dh + 2.3, -dd * 0.3, g);
 
-  // 주문 창구 (서쪽 벽 — 차선 쪽)
-  const wx = -dw / 2;
-  box(0.3, 2.9, 3.7, 0xC99A6B, wx - 0.1, 2.7, 0, g);                       // 창틀
-  const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.1, 2.3), new THREE.MeshStandardMaterial({
-    color: 0xFFF3D2, emissive: 0xFFD98A, emissiveIntensity: 0.8, roughness: 0.7 }));
-  glow.position.set(wx - 0.27, 2.7, 0); glow.rotation.y = -Math.PI / 2; g.add(glow);
-  box(1.2, 0.24, 3.9, 0xF0DCC0, wx - 0.65, 1.42, 0, g);                    // 선반
-  const awn = box(2.0, 0.3, 4.6, 0xE0453A, wx - 1.0, 4.3, 0, g); awn.rotation.z = 0.26;   // 차양
+  const F = dd / 2;
+  // 주문 창구 (길을 향한 앞면)
+  box(3.9, 3.1, 0.3, WOOD, -dw * 0.16, 2.7, F + 0.08, g);
+  const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.3, 2.5), new THREE.MeshStandardMaterial({
+    color: 0xFFF3D2, emissive: 0xFFD98A, emissiveIntensity: 0.85, roughness: 0.7 }));
+  glow.position.set(-dw * 0.16, 2.7, F + 0.26); g.add(glow);
+  box(4.2, 0.26, 1.2, 0xF0DCC0, -dw * 0.16, 1.35, F + 0.6, g);          // 선반
+  const awn = box(4.6, 0.3, 2.0, BRICK, -dw * 0.16, 4.5, F + 0.95, g); awn.rotation.x = -0.34;
   winSign = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9),
     new THREE.MeshBasicMaterial({ map: labelTex('주문 창구', '#FFF7E8', '#4A3524') }));
-  winSign.position.set(wx - 0.36, 5.15, 0); winSign.rotation.y = -Math.PI / 2; g.add(winSign);
-  colliders.push({ x:dx, z:dz, w:dw / 2 + 0.6, d:dd / 2 + 0.6 });
+  winSign.position.set(-dw * 0.16, 5.3, F + 0.32); g.add(winSign);
+  // 매단 간판
+  driveSign = new THREE.Mesh(new THREE.PlaneGeometry(7.6, 1.2),
+    new THREE.MeshBasicMaterial({ map: labelTex('ELORA 드라이브 스루', '#FFF7E8', '#4A3524', 768, 128) }));
+  box(8.0, 1.6, 0.3, WOOD, 0, dh + 1.5, F + 0.2, g);
+  driveSign.position.set(0, dh + 1.5, F + 0.38); g.add(driveSign);
+  colliders.push({ x:DRIVE.pos[0], z:DRIVE.pos[1], w: dw / 2 + 0.6, d: dd / 2 + 0.6 });
 
-  // 차선 포장 · 차선 점선 · 정지선
-  const lane = new THREE.Mesh(new THREE.PlaneGeometry(9, 20), mat(0xE4D8C6));
-  lane.rotation.x = -Math.PI / 2; lane.position.set(0, 0.06, dz - 2); lane.receiveShadow = true; scene.add(lane);
-  for (let z0 = dz - 11; z0 <= dz + 7; z0 += 2.4) {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 1.2), mat(0xFFFDF7));
-    m.rotation.x = -Math.PI / 2; m.position.set(-2.6, 0.07, z0); scene.add(m);
-  }
-  const stopLine = new THREE.Mesh(new THREE.PlaneGeometry(6.4, 0.55), mat(0xFFFDF7));
-  stopLine.rotation.x = -Math.PI / 2; stopLine.position.set(0.4, 0.07, DRIVE.door.z + 2.2); scene.add(stopLine);
-
-  // 입구 아치 간판
-  const arch = new THREE.Group(); arch.position.set(0, 0, dz - 10.5); scene.add(arch);
-  box(0.7, 8.4, 0.7, 0xFFFDF7, -5.6, 4.2, 0, arch); box(0.7, 8.4, 0.7, 0xFFFDF7, 5.6, 4.2, 0, arch);
-  box(12.4, 1.3, 0.7, 0xF2A79F, 0, 8.7, 0, arch);
-  driveSign = new THREE.Mesh(new THREE.PlaneGeometry(10.6, 1.0),
-    new THREE.MeshBasicMaterial({ map: labelTex('ELORA 드라이브 스루', '#FFF7E8', '#4A3524', 768, 110) }));
-  driveSign.position.set(0, 8.7, 0.4); arch.add(driveSign);
-  colliders.push({ x:-5.6, z:dz - 10.5, w:0.9, d:0.9 }); colliders.push({ x:5.6, z:dz - 10.5, w:0.9, d:0.9 });
-
-  // 차선 위 차양 (기둥 4개 + 지붕)
-  const can = new THREE.Group(); can.position.set(0, 0, dz - 1); scene.add(can);
-  [[-5.2, -4.6], [-5.2, 4.6], [5.2, -4.6], [5.2, 4.6]].forEach(([px, pz]) => {
-    box(0.6, 6.0, 0.6, 0xFFFDF7, px, 3.0, pz, can);
-    colliders.push({ x:px, z:dz - 1 + pz, w:0.8, d:0.8 });
+  // 길 위에 걸친 차양 (안쪽 기둥 두 개)
+  const rp = roadAt(DRIVE.t);
+  const can = new THREE.Group();
+  can.position.set(rp.x + n.x * 0.4, 0, rp.z + n.z * 0.4);
+  can.rotation.y = Math.atan2(tg.x, tg.z); scene.add(can);
+  box(ROAD_W + 3.4, 0.5, 9.5, CREAM, -1.2, 6.4, 0, can);
+  box(ROAD_W + 3.8, 0.55, 0.6, BRICK, -1.2, 6.05, -4.8, can);
+  box(ROAD_W + 3.8, 0.55, 0.6, BRICK, -1.2, 6.05, 4.8, can);
+  [-4.3, 4.3].forEach(pz => {
+    box(0.6, 6.2, 0.6, CREAM, -(ROAD_W / 2 + 1.6), 3.1, pz, can);
+    colliders.push({ x: can.position.x - Math.cos(can.rotation.y) * (ROAD_W / 2 + 1.6) + Math.sin(can.rotation.y) * pz,
+                     z: can.position.z + Math.sin(can.rotation.y) * (ROAD_W / 2 + 1.6) + Math.cos(can.rotation.y) * pz,
+                     w:0.9, d:0.9 });
   });
-  box(12.4, 0.5, 11.4, 0xFFFDF7, 0, 6.3, 0, can);
-  box(12.8, 0.55, 0.6, 0xE0453A, 0, 5.95, -5.8, can);      // 빨간 띠
-  box(12.8, 0.55, 0.6, 0xE0453A, 0, 5.95, 5.8, can);
 
-  // 메뉴판 (창구 앞, 차선을 바라봅니다)
-  const mb = new THREE.Group(); mb.position.set(5.0, 0, dz - 6.5); mb.rotation.y = -Math.PI / 2 - 0.3; scene.add(mb);
-  box(0.45, 3.0, 0.45, 0xC99A6B, -2.0, 1.5, 0, mb); box(0.45, 3.0, 0.45, 0xC99A6B, 2.0, 1.5, 0, mb);
+  // 들어오는 쪽 메뉴판
+  const mt = (DRIVE.t - 0.035 + 1) % 1, mp = roadAt(mt), mn = outAt(mt);
+  const mb = new THREE.Group();
+  mb.position.set(mp.x + mn.x * (ROAD_W / 2 + 1.2), 0, mp.z + mn.z * (ROAD_W / 2 + 1.2));
+  mb.rotation.y = Math.atan2(-mn.x, -mn.z); scene.add(mb);
+  box(0.45, 3.0, 0.45, WOOD, -2.0, 1.5, 0, mb); box(0.45, 3.0, 0.45, WOOD, 2.0, 1.5, 0, mb);
   box(5.4, 4.2, 0.4, 0x2B2230, 0, 4.4, 0, mb);
   menuFace = new THREE.Mesh(new THREE.PlaneGeometry(4.9, 3.7), new THREE.MeshBasicMaterial({ map: menuTex() }));
   menuFace.position.set(0, 4.4, 0.23); mb.add(menuFace);
   box(5.8, 0.5, 0.6, 0xF2A79F, 0, 6.8, 0, mb);
-  colliders.push({ x:5.0, z:dz - 6.5, w:1.4, d:1.4 });
+  colliders.push({ x:mb.position.x, z:mb.position.z, w:1.4, d:1.4 });
+}
+
+/* ── 길 위 길찾기: 골목을 따라 가는 점들을 만듭니다 ── */
+function nearestT(x, z) {
+  let best = 0, bd = Infinity;
+  for (let i = 0; i < 160; i++) {
+    const u = i / 160, q = road.getPointAt(u), d2 = (q.x - x) ** 2 + (q.z - z) ** 2;
+    if (d2 < bd) { bd = d2; best = u; }
+  }
+  return best;
+}
+function routeAlong(fromT, toT) {
+  const fwd = ((toT - fromT) % 1 + 1) % 1;
+  const steps = Math.max(4, Math.round(fwd * 46)), pts = [];
+  for (let i = 1; i <= steps; i++) {
+    const q = road.getPointAt((fromT + fwd * i / steps) % 1);
+    pts.push({ x:q.x, z:q.z });
+  }
+  return pts;
 }
 
 /* ── 로봇 (탈것) — 마을을 돌아다니고 드라이브 스루까지 태워다 줍니다 ── */
@@ -2831,10 +2876,16 @@ const wheelSpin = [];
     new THREE.MeshBasicMaterial({ map: labelTex('ELORA', '#FFF7E8', '#4A3524', 256, 84) }));
   plate.position.set(0, 0.92, -2.09); robot.add(plate);
 }
-robot.position.set(ROBOT_PARK.x, 0, ROBOT_PARK.z); robot.rotation.y = -0.35;
+{
+  const rt = (SPAWN_T + 0.012) % 1, rp = roadAt(rt), rn = outAt(rt), rg = road.getTangentAt(rt);
+  robot.position.set(rp.x + rn.x * 1.9, 0, rp.z + rn.z * 1.9);
+  robot.rotation.y = Math.atan2(rg.x, rg.z);
+}
 
 /* ── 캐릭터 (둥글둥글한 비율 — 실제 3D 캐릭터가 오면 이 그룹만 교체) ── */
-const hero = new THREE.Group(); hero.position.set(0, 0, -12); scene.add(hero);
+const hero = new THREE.Group(); scene.add(hero);
+{ const sp = roadAt(SPAWN_T), sg = road.getTangentAt(SPAWN_T);
+  hero.position.set(sp.x, 0, sp.z); hero.rotation.y = Math.atan2(sg.x, sg.z); }
 const SKIN = 0xF7D9C4, SHIRT = 0x7FC9B9, HAIR = 0x4A3327, PANTS = 0x4C4A57, SHOE = 0xE8A0A8;
 function rball(r, color, x, y, z, parent, sx = 1, sy = 1, sz = 1) {
   const m = new THREE.Mesh(new THREE.SphereGeometry(r, 22, 18), mat(color));
@@ -3034,13 +3085,15 @@ function setRide(on) {
 function driveRoute(pts, onEnd) { autoQ = { pts, i:0, onEnd }; target = pts[0]; }
 function goDrive(fromName) {
   stopTour(); setRide(true);
-  hero.position.set(0, 0, -22); hero.rotation.y = 0; yaw = Math.PI;
-  camera.position.set(0, 8.5, -22 - dist);
+  const st0 = (DRIVE.t - 0.33 + 1) % 1, sp0 = roadAt(st0), tg0 = road.getTangentAt(st0);
+  hero.position.set(sp0.x, 0, sp0.z);
+  hero.rotation.y = Math.atan2(tg0.x, tg0.z); yaw = hero.rotation.y + Math.PI;
+  camera.position.set(sp0.x - Math.sin(hero.rotation.y) * dist, 8.5, sp0.z - Math.cos(hero.rotation.y) * dist);
   say('ELORA', (fromName ? '「' + fromName + '」 보고 오셨군요! ' : '') + '로봇 타고 드라이브 스루로 모실게요. 꽉 잡으세요!');
-  driveRoute([{ x:0, z:-14 }, { x:4.1, z:-6 }, { x:4.1, z:6 },     // 광장 분수는 옆으로 돌아갑니다
-               { x:0, z:14 }, { x:0, z:24 }, { x:1.2, z:30 }, { x:DRIVE.door.x, z:DRIVE.door.z }], () => {
-    hero.rotation.y = Math.PI / 2;               // 창구 쪽(동쪽)을 바라봅니다
-    yaw = -0.42;                                 // 카메라는 비스듬히 — 로봇과 창구가 같이 보이게
+  driveRoute(routeAlong(st0, DRIVE.t).concat([{ x:DRIVE.door.x, z:DRIVE.door.z }]), () => {
+    const dn = outAt(DRIVE.t), dg = road.getTangentAt(DRIVE.t);
+    hero.rotation.y = Math.atan2(dn.x, dn.z);    // 창구 쪽을 바라봅니다
+    yaw = Math.atan2(-dg.x, -dg.z) + 0.5;        // 카메라는 들어온 길 뒤쪽에서 비스듬히
     say('ELORA', '도착했어요! 창구에서 주문 도와드릴게요.', [{ label:'주문하기 →', fn:enterOrder }]);
     setTimeout(() => { if (!roomOpen) enterOrder(); }, 1100);
     if (fromName && window.driveThru) setTimeout(() => window.driveThru.orderLike(fromName), 1500);
@@ -3101,15 +3154,15 @@ const mm = $('w-minimap'), mg = mm.getContext('2d'), MM = mm.width, SC = MM / (L
 const toMap = v => MM / 2 + v * SC;
 function drawMap() {
   mg.fillStyle = '#CFE7BE'; mg.fillRect(0, 0, MM, MM);
-  mg.fillStyle = '#E9D8B8';
-  mg.fillRect(toMap(-4.5), 0, 9 * SC, MM); mg.fillRect(0, toMap(-4.5), MM, 9 * SC);
-  mg.fillStyle = '#F6D7DA'; mg.beginPath(); mg.arc(toMap(0), toMap(0), 8 * SC, 0, 7); mg.fill();
+  mg.strokeStyle = '#E9D8B8'; mg.lineWidth = ROAD_W * SC; mg.beginPath();
+  for (let i = 0; i <= 80; i++) { const q = road.getPointAt(i / 80 % 1);
+    if (i) mg.lineTo(toMap(q.x), toMap(q.z)); else mg.moveTo(toMap(q.x), toMap(q.z)); }
+  mg.closePath(); mg.stroke();
+  mg.fillStyle = '#F6D7DA'; mg.beginPath(); mg.arc(toMap(0), toMap(0), 9 * SC, 0, 7); mg.fill();
   BUILDINGS.forEach(b => {
     mg.fillStyle = visited.has(b.key) ? '#E0453A' : '#141414';
     mg.fillRect(toMap(b.pos[0] - b.size[0] / 2), toMap(b.pos[1] - b.size[2] / 2), b.size[0] * SC, b.size[2] * SC);
   });
-  mg.fillStyle = '#7FC9B9';
-  SCREENS.forEach(s => mg.fillRect(toMap(s.pos[0]) - 3, toMap(s.pos[1]) - 3, 6, 6));
   mg.fillStyle = '#E0453A';                       // 주문하는 곳
   mg.fillRect(toMap(DRIVE.pos[0] - DRIVE.size[0] / 2), toMap(DRIVE.pos[1] - DRIVE.size[2] / 2),
     DRIVE.size[0] * SC, DRIVE.size[2] * SC);
@@ -3136,11 +3189,7 @@ function checkNear() {
       if (tour) tour.wait = 4.5;
     } else { promptEl.classList.remove('on'); whereEl.textContent = '플라자'; if (!tour) hideSay(); }
   }
-  if (!near) {
-    let sc = null;
-    for (const s of SCREENS) if (Math.hypot(hero.position.x - s.pos[0], hero.position.z - s.pos[1]) < 5) { sc = s; break; }
-    if (sc) whereEl.textContent = '전광판 · ' + sc.title.split(' — ')[0];
-  }
+
 }
 
 /* ── 시작 화면: 본체 앞에 앉아 코어 로프를 짜는 장면 ──────────────────
@@ -3533,8 +3582,12 @@ $('w-enter-q').addEventListener('click', () => enterWorld(true));
     setTimeout(() => goDrive(null), 60);
   } else if (go === 'drive') {                  // ?go=drive — 창구 앞에 세워 둔 채로 시작
     toWorld(); setRide(true);
-    hero.position.set(DRIVE.door.x, 0, DRIVE.door.z); hero.rotation.y = Math.PI / 2;
-    yaw = -0.42; camera.position.set(DRIVE.door.x - 8, 9, DRIVE.door.z + 18);
+    const dn2 = outAt(DRIVE.t), dg2 = road.getTangentAt(DRIVE.t);
+    hero.position.set(DRIVE.door.x, 0, DRIVE.door.z);
+    hero.rotation.y = Math.atan2(dn2.x, dn2.z);           // 창구 쪽
+    yaw = Math.atan2(-dg2.x, -dg2.z) + 0.5;               // 카메라는 들어온 길 뒤쪽에서 비스듬히
+    camera.position.set(DRIVE.door.x + Math.sin(yaw) * dist, 4.5 + dist * 0.38,
+                        DRIVE.door.z + Math.cos(yaw) * dist);
     enterWorld(false); setTimeout(() => checkNear(), 60);
   } else if (q.get('enter') === '1' || go) {
     toWorld();
