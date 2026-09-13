@@ -624,6 +624,7 @@ body.world-on .nav { display:none; }
   background:var(--surface); border:var(--border); box-shadow:var(--shadow); padding:.75rem 1rem .8rem; font-size:.92rem;
   line-height:1.6; display:none; z-index:5; }
 .w-say.on { display:block; }
+.w-say { overflow-wrap:anywhere; }
 .w-say::after { content:""; position:absolute; left:50%; bottom:-9px; width:14px; height:14px; background:var(--surface);
   border-right:var(--border); border-bottom:var(--border); transform:translateX(-50%) rotate(45deg); }
 .w-say b { display:block; font-family:var(--mono); font-size:.62rem; letter-spacing:.14em; color:var(--hot); margin-bottom:.3rem; }
@@ -631,6 +632,10 @@ body.world-on .nav { display:none; }
 .w-say button { font-family:var(--mono); font-size:.64rem; letter-spacing:.1em; padding:.4rem .8rem; cursor:pointer;
   background:var(--accent); color:var(--accent-ink); border:var(--border); }
 .w-say button.ghost { background:var(--surface); color:var(--fg); }
+@media(max-width:540px) {          /* 버튼이 셋이면 한 줄에 안 들어갑니다 */
+  .w-say .acts { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:.35rem; }
+  .w-say button { min-width:0; font-size:.6rem; letter-spacing:.06em; padding:.45rem .3rem; overflow-wrap:anywhere; }
+}
 
 /* 문 앞 안내 */
 .w-prompt { position:absolute; left:50%; bottom:2.2rem; transform:translateX(-50%); display:none; align-items:center; gap:.5rem;
@@ -680,6 +685,9 @@ body.world-on .nav { display:none; }
 .w-room .scroll .head { display:none; }
 .w-room .scroll section { border:0 !important; box-shadow:none !important; background:transparent !important; margin:0 !important; padding:0 !important; }
 .w-room .scroll section > *:not(.head) { padding-left:0 !important; padding-right:0 !important; }
+.w-room.order .scroll { display:flex; justify-content:center; }
+.w-room.order .window { width:min(560px, 100%); position:static; }
+.w-room.order .chat { max-height:none; }
 .w-room .roomnote { font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; color:var(--dim); margin-bottom:.9rem; }
 
 /* WebGL이 없을 때 */
@@ -967,6 +975,7 @@ body { font-size:16.5px; }
       <span class="w-chip dark">ELORA WORLD</span>
       <span class="w-chip" id="w-where">플라자</span>
       <span class="right">
+        <button type="button" class="w-btn" id="w-ride">🤖 로봇 타기</button>
         <button type="button" class="w-btn" id="w-tour" aria-pressed="false">▶ 따라오세요</button>
         <button type="button" class="w-btn" id="w-voice" hidden>🎤 말로 이동</button>
         <button type="button" class="w-btn hot" id="w-exit">사이트 모드 ↓</button>
@@ -2234,6 +2243,9 @@ document.querySelectorAll('.js-mail').forEach(a => {
   function toOrder(s) {
     if (s) drawRoute(s);
     setTimeout(() => {
+      if (window.eloraWorld && window.eloraWorld.driveThru) {   // 마을이 열려 있으면 로봇 타고 3D로
+        window.eloraWorld.driveThru(s ? s.name : ''); return;
+      }
       const win = document.getElementById('chat') || document.getElementById('top');
       if (win) win.scrollIntoView({ behavior:'smooth', block:'center' });
       if (s && window.driveThru) window.driveThru.orderLike(s.name);
@@ -2279,7 +2291,7 @@ const worldEl = $('world'), canvas = $('w-canvas'), gate = $('w-gate'), hud = $(
 const sayEl = $('w-say'), promptEl = $('w-prompt'), whereEl = $('w-where'), questUl = $('w-quests');
 const roomEl = $('w-room'), roomBody = $('w-room-body'), roomTitle = $('w-room-t');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let canEnterWorld = false;
+let canEnterWorld = false, ready = false, kickFn = null;
 
 /* ── 마을 지도: 건물 = 섹션 ───────────────────────────────── */
 const BUILDINGS = [
@@ -2308,6 +2320,11 @@ const SCREENS = [   // 광장 둘레에 세워 건물 출입구를 가리지 않
   { src:'images/miniapp.jpg',       title:'Mini App — 웹앱 코드 마켓플레이스', pos:[   0, -32], rot:  0 },
 ];
 const LIMIT = 40;
+/* 주문하는 곳 — 마을 남쪽 큰길 끝. 로봇을 타고 들어와 창구 옆에 세우면 주문이 열립니다. */
+const DRIVE = { key:'drive', ko:'드라이브 스루', name:'ELORA DRIVE-THRU',
+  pos:[10.5, 34], size:[9, 7, 9], door:{ x:2.2, z:34.5 },
+  say:'여기가 주문 창구예요. 창문 옆에 세우고 편하게 말씀해 주세요.' };
+const ROBOT_PARK = { x:3.4, z:-13.2 };
 
 /* ── 사이트 모드 전환 ─────────────────────────────────────── */
 function toSite(scrollTo) {
@@ -2318,6 +2335,7 @@ function toSite(scrollTo) {
 function toWorld() {
   worldEl.hidden = false; document.body.classList.add('world-on'); document.body.classList.remove('site-mode');
   scrollTo(0, 0); canvas.focus({ preventScroll:true });
+  if (ready && kickFn) kickFn();              // 준비 전(초기화 중)에는 맨 아래 kick() 이 돌립니다
 }
 $('w-skip').addEventListener('click', () => toSite('top'));
 $('w-nogl-go').addEventListener('click', () => toSite('top'));
@@ -2331,7 +2349,7 @@ catch (e) { /* WebGL 불가 */ }
 if (!renderer) { worldEl.hidden = true; }
 else {
 canEnterWorld = true;
-document.body.classList.add('site-mode');     // 기본 화면은 드라이브 스루 주문 (월드는 버튼으로)
+toWorld();                                    // 첫 화면은 마을 (WebGL 이 될 때만 여기까지 옵니다)
 const goWorldBtn = $('go-world'); if (goWorldBtn) goWorldBtn.addEventListener('click', toWorld);
 
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -2515,6 +2533,20 @@ BUILDINGS.forEach(b => {
     box(3.7, 1.2, 0.12, 0xF0DCC0, 0, 2.3, 0, post, true);
     scene.add(post); boards.push({ post, plank, b });
   }
+  // 문 양옆 꽃 화분 (동화마을 느낌)
+  [-1, 1].forEach(sgn2 => {
+    const px = b.door.x - b.out.x * 1.9 + b.out.z * 2.1 * sgn2;
+    const pz = b.door.z - b.out.z * 1.9 - b.out.x * 2.1 * sgn2;
+    const pot = new THREE.Group(); pot.position.set(px, 0, pz); scene.add(pot);
+    box(1.1, 0.85, 1.1, 0xE0A98B, 0, 0.42, 0, pot);
+    box(1.25, 0.2, 1.25, 0xC98F5E, 0, 0.88, 0, pot);
+    [[0, 0], [0.3, 0.25], [-0.28, -0.22]].forEach(([fx, fz], k) => {
+      const st = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.7, 6), mat(0x86C98F));
+      st.position.set(fx, 1.25, fz); pot.add(st);
+      const fl = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 10), mat([0xF6A6AE, 0xF9E8A0, 0xFFFDF7][k]));
+      fl.position.set(fx, 1.62, fz); fl.castShadow = true; pot.add(fl);
+    });
+  });
   b.mesh = body; b.node = g;          // 3D 그룹 (데이터 필드 b.group 과 겹치지 않게)
   colliders.push({ x, z, w: w / 2 + 0.6, d: d / 2 + 0.6 });
   doors.push(b);
@@ -2594,10 +2626,231 @@ function bench(x, z, rot = 0) {
 [[-30,-30],[30,-30],[-30,30],[30,30],[-34,-8],[34,-8],[-34,8],[34,8],
  [-6.2,-21],[6.2,-21],[-6.2,21],[6.2,21],[-6.2,-30],[6.2,-30],[-6.2,30],[6.2,30]].forEach(p => tree(p[0], p[1]));
 [[-6.6,-9],[6.6,-9],[-6.6,9],[6.6,9]].forEach(p => lamp(p[0], p[1]));
-bench(-5.4, 0, Math.PI / 2); bench(5.4, 0, -Math.PI / 2);
+bench(-6.9, 0, Math.PI / 2); bench(6.9, 0, -Math.PI / 2);   // 로봇이 지나갈 길을 비워 둡니다
+
+/* ── 동화마을 소품: 구름 · 가랜드 · 버섯 · 연못 · 나비 · 풍차 · 우체통 ──
+   길과 광장, 건물 자리는 비워 두고 잔디 쪽에만 놓습니다. */
+const clouds = [], flutter = [];
+let windBlades = null;
+
+// 하늘에 뭉게구름
+for (let i = 0; i < 11; i++) {
+  const c = new THREE.Group();
+  c.position.set((Math.random() - 0.5) * 130, 24 + Math.random() * 12, (Math.random() - 0.5) * 130);
+  c.userData.v = 0.35 + Math.random() * 0.5;
+  const white = new THREE.MeshStandardMaterial({ color: 0xFFFDF7, roughness: 1 });
+  [[3.4, 0, 0, 0], [2.5, 3.1, -0.5, 0.6], [2.2, -3.0, -0.6, -0.5], [1.9, 1.2, 1.4, 0.8]].forEach(([r, x, y, z]) => {
+    const m = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), white);
+    m.position.set(x, y, z); m.rotation.set(Math.random(), Math.random(), Math.random()); c.add(m);
+  });
+  c.scale.setScalar(0.8 + Math.random() * 0.7); scene.add(c); clouds.push(c);
+}
+
+// 광장 가로등 사이 가랜드(깃발 줄)
+{
+  const BUNT = [0xF6A6AE, 0xF9E8A0, 0x7FC9B9, 0xC9A7FF, 0xFFFDF7];
+  const posts = [[-6.6, -9], [6.6, -9], [6.6, 9], [-6.6, 9]];
+  posts.forEach((a, i) => {
+    const b = posts[(i + 1) % posts.length];
+    const n = 9;
+    for (let k = 1; k < n; k++) {
+      const t = k / n;
+      const x = a[0] + (b[0] - a[0]) * t, z = a[1] + (b[1] - a[1]) * t;
+      const sag = Math.sin(t * Math.PI) * 0.9;
+      const f = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.62, 3), mat(BUNT[k % BUNT.length]));
+      f.position.set(x, 4.6 - sag, z); f.rotation.x = Math.PI; f.castShadow = true; scene.add(f);
+    }
+  });
+}
+
+// 잔디 위 버섯
+for (let i = 0; i < 26; i++) {
+  const x = (Math.random() - 0.5) * (LIMIT * 2 - 6), z = (Math.random() - 0.5) * (LIMIT * 2 - 6);
+  if (Math.abs(x) < 8 || Math.abs(z) < 8 || Math.hypot(x, z) < 12) continue;
+  if (x > 2 && z > 20) continue;                       // 드라이브 스루 자리는 비워 둡니다
+  const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+  const h = 0.42 + Math.random() * 0.3;
+  box(0.26, h, 0.26, 0xFFF6E6, 0, h / 2, 0, g);
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
+    mat(i % 3 ? 0xF08A80 : 0xF9E8A0));
+  cap.position.y = h; cap.castShadow = true; g.add(cap);
+}
+
+// 연못 + 수련잎 + 돌
+{
+  const g = new THREE.Group(); g.position.set(-29, 0, 27); scene.add(g);
+  const sand = new THREE.Mesh(new THREE.CircleGeometry(7.2, 36), mat(0xEADBC0));
+  sand.rotation.x = -Math.PI / 2; sand.position.y = 0.02; sand.receiveShadow = true; g.add(sand);
+  const water = new THREE.Mesh(new THREE.CircleGeometry(6.2, 36), new THREE.MeshStandardMaterial({
+    color: 0x8FD3E8, roughness: 0.2, metalness: 0.08 }));
+  water.rotation.x = -Math.PI / 2; water.position.y = 0.05; g.add(water);
+  [[-2.2, 1.4, 1.0], [1.8, -1.6, 0.85], [2.6, 2.2, 0.7]].forEach(([lx, lz, r]) => {
+    const pad = new THREE.Mesh(new THREE.CircleGeometry(r, 14), mat(0x86C98F));
+    pad.rotation.x = -Math.PI / 2; pad.position.set(lx, 0.07, lz); g.add(pad);
+    const fl = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 10), mat(0xF6A6AE));
+    fl.position.set(lx + r * 0.3, 0.2, lz); g.add(fl);
+  });
+  [[-5.4, -3.2, 0.8], [4.8, 3.6, 0.65], [-1.2, 5.4, 0.5]].forEach(([rx, rz, r]) => {
+    const rock = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), mat(0xBDB3A6));
+    rock.position.set(rx, r * 0.55, rz); rock.castShadow = true; g.add(rock);
+  });
+  colliders.push({ x:-29, z:27, w:6.4, d:6.4 });
+}
+
+// 나비
+for (let i = 0; i < 8; i++) {
+  const b = new THREE.Group();
+  b.userData = { x:(Math.random() - 0.5) * 60, y:1.6 + Math.random() * 1.6, z:(Math.random() - 0.5) * 60 };
+  const c = [0xF9E8A0, 0xF6A6AE, 0xFFFDF7, 0xC9A7FF][i % 4];
+  [-1, 1].forEach(sgn => {
+    const w = new THREE.Mesh(new THREE.CircleGeometry(0.3, 8, 0, Math.PI), new THREE.MeshStandardMaterial({
+      color:c, roughness:0.85, side:THREE.DoubleSide }));
+    w.position.x = sgn * 0.06; b.add(w);
+  });
+  scene.add(b); flutter.push(b);
+}
+
+// 풍차
+{
+  const g = new THREE.Group(); g.position.set(33, 0, 29); scene.add(g);
+  const tower = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 2.4, 7.5, 14), mat(0xFFF0E2));
+  tower.position.y = 3.75; tower.castShadow = true; tower.receiveShadow = true; g.add(tower);
+  const top = new THREE.Mesh(new THREE.ConeGeometry(2.2, 2.4, 14), mat(0xF2A79F));
+  top.position.y = 8.5; top.castShadow = true; g.add(top);
+  box(1.2, 2.2, 0.2, 0xC99A6B, 0, 1.1, 2.32, g);                      // 문
+  windBlades = new THREE.Group(); windBlades.position.set(0, 6.6, 2.5); g.add(windBlades);
+  for (let k = 0; k < 4; k++) {
+    const arm = new THREE.Group(); arm.rotation.z = k * Math.PI / 2; windBlades.add(arm);
+    box(0.24, 4.6, 0.18, 0xFFFDF7, 0, 2.3, 0, arm);
+    box(1.1, 3.2, 0.12, 0xF9E8A0, 0.55, 2.6, -0.12, arm);
+  }
+  colliders.push({ x:33, z:29, w:2.6, d:2.6 });
+  tree(26, 34); tree(38, 22);
+}
+
+/* ── 드라이브 스루: 아치 · 차선 · 메뉴판 · 차양 · 주문 창구 ──────────────
+   가게는 길 동쪽, 차선은 큰길 그대로입니다. 메뉴판 글자는 화면의 메뉴(A1~A5)를 그대로 읽어 그립니다. */
+function menuTex() {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 384;
+  const g = c.getContext('2d');
+  g.fillStyle = '#2B2230'; g.fillRect(0, 0, 512, 384);
+  g.strokeStyle = '#FFC8A2'; g.lineWidth = 7; g.strokeRect(9, 9, 494, 366);
+  g.textAlign = 'left'; g.textBaseline = 'middle';
+  g.fillStyle = '#FFF3E4'; g.font = 'bold 30px "DungGeunMo", monospace';
+  g.fillText('MENU · 무엇을 만들어 드릴까요?', 28, 48);
+  const items = [...document.querySelectorAll('.item2[data-code]')].slice(0, 5);
+  items.forEach((el, i) => {
+    const y = 108 + i * 54;
+    g.fillStyle = '#FFC8A2'; g.font = 'bold 27px "DungGeunMo", monospace';
+    g.fillText(el.dataset.code, 30, y);
+    g.fillStyle = '#FFF3E4'; g.font = '25px "DungGeunMo", monospace';
+    g.fillText(el.dataset.name, 96, y);
+  });
+  if (!items.length) { g.fillStyle = '#FFF3E4'; g.font = '26px "DungGeunMo", monospace';
+    g.fillText('창구에서 알려 드릴게요', 30, 130); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+let menuFace = null, driveSign = null, winSign = null;
+{
+  const [dx, dz] = DRIVE.pos, [dw, dh, dd] = DRIVE.size;
+  const g = new THREE.Group(); g.position.set(dx, 0, dz); scene.add(g);
+
+  // 가게 본체 + 처마 + 뾰족 지붕 + 굴뚝 (마을 건물과 같은 모양새)
+  box(dw, dh, dd, 0xFFF0E2, 0, dh / 2, 0, g);
+  box(dw + 0.9, 0.45, dd + 0.9, 0xFFFDF7, 0, dh + 0.22, 0, g);
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(dw, dd) * 0.78, 3.2, 4), mat(0xF2A79F));
+  roof.position.set(0, dh + 2.05, 0); roof.rotation.y = Math.PI / 4; roof.castShadow = true; g.add(roof);
+  box(1.0, 2.4, 1.0, 0xE8CDA3, dw * 0.24, dh + 2.5, dd * 0.24, g);
+
+  // 주문 창구 (서쪽 벽 — 차선 쪽)
+  const wx = -dw / 2;
+  box(0.3, 2.9, 3.7, 0xC99A6B, wx - 0.1, 2.7, 0, g);                       // 창틀
+  const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.1, 2.3), new THREE.MeshStandardMaterial({
+    color: 0xFFF3D2, emissive: 0xFFD98A, emissiveIntensity: 0.8, roughness: 0.7 }));
+  glow.position.set(wx - 0.27, 2.7, 0); glow.rotation.y = -Math.PI / 2; g.add(glow);
+  box(1.2, 0.24, 3.9, 0xF0DCC0, wx - 0.65, 1.42, 0, g);                    // 선반
+  const awn = box(2.0, 0.3, 4.6, 0xE0453A, wx - 1.0, 4.3, 0, g); awn.rotation.z = 0.26;   // 차양
+  winSign = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.9),
+    new THREE.MeshBasicMaterial({ map: labelTex('주문 창구', '#FFF7E8', '#4A3524') }));
+  winSign.position.set(wx - 0.36, 5.15, 0); winSign.rotation.y = -Math.PI / 2; g.add(winSign);
+  colliders.push({ x:dx, z:dz, w:dw / 2 + 0.6, d:dd / 2 + 0.6 });
+
+  // 차선 포장 · 차선 점선 · 정지선
+  const lane = new THREE.Mesh(new THREE.PlaneGeometry(9, 20), mat(0xE4D8C6));
+  lane.rotation.x = -Math.PI / 2; lane.position.set(0, 0.06, dz - 2); lane.receiveShadow = true; scene.add(lane);
+  for (let z0 = dz - 11; z0 <= dz + 7; z0 += 2.4) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 1.2), mat(0xFFFDF7));
+    m.rotation.x = -Math.PI / 2; m.position.set(-2.6, 0.07, z0); scene.add(m);
+  }
+  const stopLine = new THREE.Mesh(new THREE.PlaneGeometry(6.4, 0.55), mat(0xFFFDF7));
+  stopLine.rotation.x = -Math.PI / 2; stopLine.position.set(0.4, 0.07, DRIVE.door.z + 2.2); scene.add(stopLine);
+
+  // 입구 아치 간판
+  const arch = new THREE.Group(); arch.position.set(0, 0, dz - 10.5); scene.add(arch);
+  box(0.7, 8.4, 0.7, 0xFFFDF7, -5.6, 4.2, 0, arch); box(0.7, 8.4, 0.7, 0xFFFDF7, 5.6, 4.2, 0, arch);
+  box(12.4, 1.3, 0.7, 0xF2A79F, 0, 8.7, 0, arch);
+  driveSign = new THREE.Mesh(new THREE.PlaneGeometry(10.6, 1.0),
+    new THREE.MeshBasicMaterial({ map: labelTex('ELORA 드라이브 스루', '#FFF7E8', '#4A3524', 768, 110) }));
+  driveSign.position.set(0, 8.7, 0.4); arch.add(driveSign);
+  colliders.push({ x:-5.6, z:dz - 10.5, w:0.9, d:0.9 }); colliders.push({ x:5.6, z:dz - 10.5, w:0.9, d:0.9 });
+
+  // 차선 위 차양 (기둥 4개 + 지붕)
+  const can = new THREE.Group(); can.position.set(0, 0, dz - 1); scene.add(can);
+  [[-5.2, -4.6], [-5.2, 4.6], [5.2, -4.6], [5.2, 4.6]].forEach(([px, pz]) => {
+    box(0.6, 6.0, 0.6, 0xFFFDF7, px, 3.0, pz, can);
+    colliders.push({ x:px, z:dz - 1 + pz, w:0.8, d:0.8 });
+  });
+  box(12.4, 0.5, 11.4, 0xFFFDF7, 0, 6.3, 0, can);
+  box(12.8, 0.55, 0.6, 0xE0453A, 0, 5.95, -5.8, can);      // 빨간 띠
+  box(12.8, 0.55, 0.6, 0xE0453A, 0, 5.95, 5.8, can);
+
+  // 메뉴판 (창구 앞, 차선을 바라봅니다)
+  const mb = new THREE.Group(); mb.position.set(5.0, 0, dz - 6.5); mb.rotation.y = -Math.PI / 2 - 0.3; scene.add(mb);
+  box(0.45, 3.0, 0.45, 0xC99A6B, -2.0, 1.5, 0, mb); box(0.45, 3.0, 0.45, 0xC99A6B, 2.0, 1.5, 0, mb);
+  box(5.4, 4.2, 0.4, 0x2B2230, 0, 4.4, 0, mb);
+  menuFace = new THREE.Mesh(new THREE.PlaneGeometry(4.9, 3.7), new THREE.MeshBasicMaterial({ map: menuTex() }));
+  menuFace.position.set(0, 4.4, 0.23); mb.add(menuFace);
+  box(5.8, 0.5, 0.6, 0xF2A79F, 0, 6.8, 0, mb);
+  colliders.push({ x:5.0, z:dz - 6.5, w:1.4, d:1.4 });
+}
+
+/* ── 로봇 (탈것) — 마을을 돌아다니고 드라이브 스루까지 태워다 줍니다 ── */
+const robot = new THREE.Group(); scene.add(robot);
+const wheelSpin = [];
+{
+  box(2.3, 1.5, 3.4, 0xF6C6CD, 0, 1.15, -0.1, robot);                     // 몸통
+  box(1.8, 0.4, 1.6, 0x7FC9B9, 0, 1.98, 0.05, robot);                     // 안장
+  box(2.5, 1.1, 0.6, 0xFFFDF7, 0, 1.55, -1.75, robot);                    // 얼굴판
+  [-0.58, 0.58].forEach(ex => {
+    const e = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 12), mat(0x2C2119));
+    e.position.set(ex, 1.7, -2.0); robot.add(e);
+    const w = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), mat(0xFFFFFF));
+    w.position.set(ex - 0.09, 1.84, -2.16); robot.add(w);
+  });
+  box(0.9, 0.22, 0.22, 0x4C4A57, -0.85, 1.95, -1.0, robot);               // 손잡이
+  box(0.9, 0.22, 0.22, 0x4C4A57, 0.85, 1.95, -1.0, robot);
+  const wheel = (wx, wz, r) => {
+    const gw = new THREE.Group(); gw.position.set(wx, r, wz); robot.add(gw); wheelSpin.push(gw);
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.44, 18), mat(0x4C4A57));
+    t.rotation.z = Math.PI / 2; t.castShadow = true; gw.add(t);
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.42, r * 0.42, 0.5, 12), mat(0xF9E8A0));
+    hub.rotation.z = Math.PI / 2; gw.add(hub);
+    const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.52, r * 1.3, 0.14), mat(0xFFFDF7));
+    gw.add(spoke);
+  };
+  wheel(-1.3, 1.2, 0.66); wheel(1.3, 1.2, 0.66); wheel(-1.15, -1.35, 0.54); wheel(1.15, -1.35, 0.54);
+  box(0.14, 1.2, 0.14, 0xFFFDF7, 0, 2.7, -1.25, robot);                   // 안테나
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(0.26, 14, 12), new THREE.MeshStandardMaterial({
+    color:0xE0453A, emissive:0xE0453A, emissiveIntensity:0.6, roughness:0.6 }));
+  ball.position.set(0, 3.35, -1.25); robot.add(ball);
+  const plate = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.48),
+    new THREE.MeshBasicMaterial({ map: labelTex('ELORA', '#FFF7E8', '#4A3524', 256, 84) }));
+  plate.position.set(0, 0.92, -2.09); robot.add(plate);
+}
+robot.position.set(ROBOT_PARK.x, 0, ROBOT_PARK.z); robot.rotation.y = -0.35;
 
 /* ── 캐릭터 (둥글둥글한 비율 — 실제 3D 캐릭터가 오면 이 그룹만 교체) ── */
-const hero = new THREE.Group(); hero.position.set(0, 0, 11); scene.add(hero);
+const hero = new THREE.Group(); hero.position.set(0, 0, -12); scene.add(hero);
 const SKIN = 0xF7D9C4, SHIRT = 0x7FC9B9, HAIR = 0x4A3327, PANTS = 0x4C4A57, SHOE = 0xE8A0A8;
 function rball(r, color, x, y, z, parent, sx = 1, sy = 1, sz = 1) {
   const m = new THREE.Mesh(new THREE.SphereGeometry(r, 22, 18), mat(color));
@@ -2669,14 +2922,31 @@ function markVisited(id) {
   visited.add(id);
   const li = questUl.querySelector('[data-id="' + id + '"]'); if (li) li.classList.add('done');
   if (visited.size === BUILDINGS.length)
-    say('ELORA', '여섯 군데 다 보셨어요! 마음에 드는 게 있으면 문의 건물에서 한 줄만 남겨 주세요.',
-      [{ label:'문의하러 가기', fn:() => walkTo(BUILDINGS[5].door.x, BUILDINGS[5].door.z) }], 9000);
+    say('ELORA', '마을 구경 다 하셨네요! 맡기고 싶은 게 있으면 드라이브 스루에서 바로 주문하실 수 있어요.',
+      [{ label:'🚗 주문하러 가기', fn:() => goDrive(null) }], 9000);
 }
 
 /* ── 실내: 섹션 내용을 그대로 복제해 보여줍니다 ── */
 let roomOpen = false;
+/* 드라이브 스루 주문 창구는 복제하지 않고 "옮겨" 옵니다.
+   대화(말풍선·선택지)가 붙어 있는 살아 있는 요소라서 복제하면 동작하지 않습니다. */
+const orderWin = document.querySelector('.drive .window');
+const orderHome = orderWin && orderWin.parentNode;
+function returnOrderWin() {
+  if (orderWin && orderHome && orderWin.parentNode === roomBody) orderHome.appendChild(orderWin);
+}
+function enterOrder() {
+  if (!orderWin) { toSite('top'); return; }        // 주문 창구가 없는 구조면 사이트로
+  roomTitle.textContent = 'ELORA DRIVE-THRU';
+  roomBody.innerHTML = '';
+  const note = document.createElement('div'); note.className = 'roomnote';
+  note.textContent = '🚗 주문 창구 · ESC 를 누르면 마을로 돌아갑니다';
+  roomBody.appendChild(note); roomBody.appendChild(orderWin);
+  roomEl.classList.add('on', 'order'); roomOpen = true; roomBody.scrollTop = 0;
+}
 function enterRoom(b) {
   const src = document.getElementById(b.sec); if (!src) return;
+  returnOrderWin();
   roomTitle.textContent = b.name;
   roomBody.innerHTML = '';
   const note = document.createElement('div'); note.className = 'roomnote';
@@ -2701,7 +2971,11 @@ function enterRoom(b) {
   roomEl.classList.add('on'); roomOpen = true;
   markVisited(b.key);
 }
-function exitRoom() { roomEl.classList.remove('on'); roomOpen = false; canvas.focus({ preventScroll:true }); }
+function exitRoom() {
+  returnOrderWin();
+  roomEl.classList.remove('on', 'order'); roomOpen = false; canvas.focus({ preventScroll:true });
+}
+function enterNear() { if (!near) return; if (near === DRIVE) enterOrder(); else enterRoom(near); }
 $('w-room-x').addEventListener('click', exitRoom);
 roomEl.addEventListener('click', e => { if (e.target === roomEl) exitRoom(); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && roomOpen) exitRoom(); });
@@ -2712,7 +2986,7 @@ addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (worldEl.hidden || roomOpen) return;
   if (['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' ','shift'].includes(k)) { e.preventDefault(); keys[k] = true; stopTour(); }
-  if (k === 'e' && near) { enterRoom(near); }
+  if (k === 'e' && near) { enterNear(); }
 });
 addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
@@ -2756,13 +3030,58 @@ function moveStick(e) {
   stick = { x:dx, y:dy }; target = null;
   knob.style.transform = 'translate(' + (dx * 34) + 'px,' + (dy * 34) + 'px)';
 }
-$('w-act').addEventListener('click', () => { if (near) enterRoom(near); });
-promptEl.addEventListener('click', () => { if (near) enterRoom(near); });
+$('w-act').addEventListener('click', enterNear);
+promptEl.addEventListener('click', enterNear);
+
+/* ── 로봇 타기 · 자동 주행 ────────────────────────────────────────
+   타면 캐릭터가 안장에 앉고 더 빨리 달립니다. 주행 중에는 카메라가 뒤를 따라옵니다. */
+let riding = false, autoQ = null;
+const rideBtn = $('w-ride');
+function setRide(on) {
+  riding = on;
+  if (!on) {                                     // 내리면 로봇을 옆에 세웁니다
+    robot.position.set(hero.position.x - Math.cos(hero.rotation.y) * 2.3, 0,
+                       hero.position.z + Math.sin(hero.rotation.y) * 2.3);
+    robot.rotation.y = hero.rotation.y; hero.position.y = 0;
+  }
+  if (rideBtn) rideBtn.textContent = on ? '🚶 로봇에서 내리기' : '🤖 로봇 타기';
+}
+/* 길을 따라 순서대로 이동합니다. 사용자가 직접 조작하면 stopTour() 가 취소합니다. */
+function driveRoute(pts, onEnd) { autoQ = { pts, i:0, onEnd }; target = pts[0]; }
+function goDrive(fromName) {
+  stopTour(); setRide(true);
+  hero.position.set(0, 0, -22); hero.rotation.y = 0; yaw = Math.PI;
+  camera.position.set(0, 8.5, -22 - dist);
+  say('ELORA', (fromName ? '「' + fromName + '」 보고 오셨군요! ' : '') + '로봇 타고 드라이브 스루로 모실게요. 꽉 잡으세요!');
+  driveRoute([{ x:0, z:-14 }, { x:4.1, z:-6 }, { x:4.1, z:6 },     // 광장 분수는 옆으로 돌아갑니다
+               { x:0, z:14 }, { x:0, z:24 }, { x:1.2, z:30 }, { x:DRIVE.door.x, z:DRIVE.door.z }], () => {
+    hero.rotation.y = Math.PI / 2;               // 창구 쪽(동쪽)을 바라봅니다
+    yaw = -0.42;                                 // 카메라는 비스듬히 — 로봇과 창구가 같이 보이게
+    say('ELORA', '도착했어요! 창구에서 주문 도와드릴게요.', [{ label:'주문하기 →', fn:enterOrder }]);
+    setTimeout(() => { if (!roomOpen) enterOrder(); }, 1100);
+    if (fromName && window.driveThru) setTimeout(() => window.driveThru.orderLike(fromName), 1500);
+  });
+}
+if (rideBtn) rideBtn.addEventListener('click', () => {
+  if (riding) { setRide(false); say('ELORA', '로봇에서 내렸어요. 걸어서 둘러보셔도 돼요.', [], 3000); return; }
+  const far = Math.hypot(hero.position.x - robot.position.x, hero.position.z - robot.position.z) > 4;
+  if (!far) {
+    setRide(true);
+    say('ELORA', '로봇에 탔어요! 훨씬 빨라요. 바로 주문하러 갈까요?',
+      [{ label:'🚗 드라이브 스루로', fn:() => goDrive(null) }, { label:'혼자 둘러볼게요', fn:hideSay, ghost:true }]);
+  } else {
+    stopTour(); say('ELORA', '로봇 있는 곳으로 갈게요.', [], 3000);
+    driveRoute([{ x:robot.position.x, z:robot.position.z }], () => {
+      setRide(true); say('ELORA', '탔어요! 이제 더 빨리 달려요.',
+        [{ label:'🚗 드라이브 스루로', fn:() => goDrive(null) }, { label:'혼자 둘러볼게요', fn:hideSay, ghost:true }]);
+    });
+  }
+});
 
 /* ── 안내 투어 ── */
 const tourBtn = $('w-tour');
 function startTour() { tour = { i:0, wait:0 }; tourBtn.setAttribute('aria-pressed', 'true'); tourBtn.textContent = '■ 안내 멈추기'; nextTour(true); }
-function stopTour() { if (!tour) return; tour = null; tourBtn.setAttribute('aria-pressed', 'false'); tourBtn.textContent = '▶ 따라오세요'; }
+function stopTour() { autoQ = null; if (!tour) return; tour = null; tourBtn.setAttribute('aria-pressed', 'false'); tourBtn.textContent = '▶ 따라오세요'; }
 function nextTour(first) {
   const b = BUILDINGS[tour.i];
   walkTo(b.door.x, b.door.z);
@@ -2807,6 +3126,12 @@ function drawMap() {
   });
   mg.fillStyle = '#7FC9B9';
   SCREENS.forEach(s => mg.fillRect(toMap(s.pos[0]) - 3, toMap(s.pos[1]) - 3, 6, 6));
+  mg.fillStyle = '#E0453A';                       // 주문하는 곳
+  mg.fillRect(toMap(DRIVE.pos[0] - DRIVE.size[0] / 2), toMap(DRIVE.pos[1] - DRIVE.size[2] / 2),
+    DRIVE.size[0] * SC, DRIVE.size[2] * SC);
+  if (!riding) { mg.fillStyle = '#F6C6CD'; mg.beginPath();
+    mg.arc(toMap(robot.position.x), toMap(robot.position.z), 4, 0, 7); mg.fill();
+    mg.strokeStyle = '#141414'; mg.lineWidth = 1.5; mg.stroke(); }
   mg.save(); mg.translate(toMap(hero.position.x), toMap(hero.position.z)); mg.rotate(-hero.rotation.y);
   mg.fillStyle = '#E0453A'; mg.beginPath(); mg.moveTo(0, -9); mg.lineTo(6, 7); mg.lineTo(-6, 7); mg.closePath(); mg.fill();
   mg.strokeStyle = '#141414'; mg.lineWidth = 2; mg.stroke(); mg.restore();
@@ -2816,12 +3141,14 @@ function drawMap() {
 function checkNear() {
   let found = null;
   for (const b of BUILDINGS) if (Math.hypot(hero.position.x - b.door.x, hero.position.z - b.door.z) < 3.4) { found = b; break; }
+  if (!found && Math.hypot(hero.position.x - DRIVE.door.x, hero.position.z - DRIVE.door.z) < 4.4) found = DRIVE;
   if (found !== near) {
     near = found;
     if (near) {
-      promptEl.classList.add('on'); $('w-prompt-t').textContent = near.ko + ' 들어가기';
+      const isDrive = near === DRIVE;
+      promptEl.classList.add('on'); $('w-prompt-t').textContent = isDrive ? '주문하기' : near.ko + ' 들어가기';
       whereEl.textContent = near.name;
-      say(near.ko, near.say, [{ label:'들어가기 →', fn:() => enterRoom(near) }]);
+      say(near.ko, near.say, [{ label:isDrive ? '주문하기 →' : '들어가기 →', fn:enterNear }]);
       if (tour) tour.wait = 4.5;
     } else { promptEl.classList.remove('on'); whereEl.textContent = '플라자'; if (!tour) hideSay(); }
   }
@@ -2858,7 +3185,7 @@ function frame(now) {
     if (dd < 0.35) target = null; else { vx = dx / dd; vz = dz / dd; if (dd > 9) run = true; }
   }
   const moving = !!(vx || vz);
-  const speed = run ? 11 : 6.2;
+  const speed = riding ? (run ? 21 : 13) : (run ? 11 : 6.2);
   if (moving) {
     hero.position.x = clamp(hero.position.x + vx * speed * dt, -LIMIT, LIMIT);
     hero.position.z = clamp(hero.position.z + vz * speed * dt, -LIMIT, LIMIT);
@@ -2873,15 +3200,48 @@ function frame(now) {
       }
     }
   }
-  const sw = moving ? Math.sin(walk) * (run ? 0.95 : 0.7) : Math.sin(now / 900) * 0.05;
-  legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * 0.85; armR.rotation.x = sw * 0.85;
-  hero.position.y = moving ? Math.abs(Math.sin(walk)) * 0.1 : 0;
-  drop.position.y = 2.4 + Math.sin(now / 500) * 0.12; drop.rotation.y += dt;
+  // 다음 목적지로 (자동 주행)
+  if (autoQ && !target) {
+    if (++autoQ.i < autoQ.pts.length) target = autoQ.pts[autoQ.i];
+    else { const done = autoQ.onEnd; autoQ = null; if (done) done(); }
+  }
 
-  const cd = camera.aspect < 0.85 ? dist * 1.28 : dist;   // 세로 화면에서는 좀 더 뒤에서
-  camPos.set(hero.position.x + Math.sin(yaw) * cd, 4.5 + cd * 0.38, hero.position.z + Math.cos(yaw) * cd);
+  if (riding) {                          // 로봇에 앉은 모습
+    robot.position.set(hero.position.x, 0, hero.position.z);
+    robot.rotation.y = hero.rotation.y;
+    hero.position.y = 1.18 + (moving ? Math.sin(now / 70) * 0.025 : 0);
+    legL.rotation.x = legR.rotation.x = -1.3;
+    armL.rotation.x = armR.rotation.x = -1.05;
+    if (moving) wheelSpin.forEach(w => w.rotation.x -= speed * dt * 1.5);
+    blob.visible = false;
+  } else {
+    const sw = moving ? Math.sin(walk) * (run ? 0.95 : 0.7) : Math.sin(now / 900) * 0.05;
+    legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * 0.85; armR.rotation.x = sw * 0.85;
+    hero.position.y = moving ? Math.abs(Math.sin(walk)) * 0.1 : 0;
+    blob.visible = true;
+  }
+  drop.position.y = 2.4 + Math.sin(now / 500) * 0.12; drop.rotation.y += dt;
+  if (!reduce) {                                  // 구름 · 나비 · 풍차
+    clouds.forEach(c => { c.position.x += dt * c.userData.v; if (c.position.x > 72) c.position.x = -72; });
+    flutter.forEach((b, i) => {
+      const t = now / 1000 + i * 1.7, u = b.userData;
+      b.position.set(u.x + Math.cos(t * 0.55) * 3.4, u.y + Math.sin(t * 1.6) * 0.55, u.z + Math.sin(t * 0.48) * 3.4);
+      b.rotation.y = -t * 0.55;
+      const f = 0.55 + Math.sin(t * 11) * 0.5;
+      b.children[0].rotation.y = f; b.children[1].rotation.y = -f;
+    });
+    if (windBlades) windBlades.rotation.z += dt * 0.75;
+  }
+
+  if (autoQ) {                           // 주행 중에는 카메라가 저절로 뒤로 돌아갑니다
+    let d0 = ((hero.rotation.y + Math.PI - yaw + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
+    yaw += d0 * Math.min(1, dt * 2.4);
+  }
+  const cd = (camera.aspect < 0.85 ? dist * 1.28 : dist) * (riding ? 1.14 : 1);   // 세로 화면·탑승 시 좀 더 뒤에서
+  camPos.set(hero.position.x + Math.sin(yaw) * cd, (riding ? 3.9 : 4.5) + cd * (riding ? 0.33 : 0.38),
+             hero.position.z + Math.cos(yaw) * cd);
   camera.position.lerp(camPos, reduce ? 1 : 0.12);
-  camera.lookAt(hero.position.x, 3.1, hero.position.z);
+  camera.lookAt(hero.position.x, riding ? 3.4 : 3.1, hero.position.z);
 
   checkNear();
   if (tour && !target && tour.wait > 0) { tour.wait -= dt; if (tour.wait <= 0) { tour.i = (tour.i + 1) % BUILDINGS.length; nextTour(false); } }
@@ -2896,7 +3256,7 @@ function resize() {
   camera.updateProjectionMatrix();
 }
 addEventListener('resize', resize); resize();
-const kick = () => { if (!running) { last = performance.now(); requestAnimationFrame(frame); } };
+function kick() { if (!running) { last = performance.now(); requestAnimationFrame(frame); } }
 document.addEventListener('visibilitychange', () => { if (!document.hidden && !worldEl.hidden) kick(); });
 
 /* ── 시작 화면(로딩 → 들어가기) ── */
@@ -2907,19 +3267,30 @@ function progress() {
   $('w-bar').style.width = pct + '%'; $('w-pct').textContent = '마을 짓는 중… ' + pct + '%';
   if (loaded >= pending) gate.classList.add('ready');
 }
-camera.position.set(0, 15, 29);
+camera.position.set(0, 12, -30);   // 뒤(북)에서 마을을 내려다봅니다
+yaw = Math.PI;
 setTimeout(() => gate.classList.add('ready'), 4000);   // 이미지가 늦어도 4초 뒤엔 들어갈 수 있게
 function enterWorld(greet = true) {
   gate.classList.add('done'); hud.hidden = false; canvas.focus({ preventScroll:true });
-  if (greet) say('ELORA', '안녕하세요, 엘로라예요! 여기가 제 작업들이 모여 있는 마을이에요. 보고 싶은 건물로 데려다 드릴까요?',
-    [{ label:'▶ 따라오세요', fn:startTour }, { label:'혼자 둘러볼게요', fn:hideSay, ghost:true }]);
+  if (greet) say('ELORA', '안녕하세요, 엘로라예요! 여기가 제 작업들이 모여 있는 마을이에요. 옆에 세워 둔 로봇을 타면 빨리 돌아볼 수 있어요.',
+    [{ label:'🤖 로봇 타기', fn:() => rideBtn.click() },
+     { label:'🚗 바로 주문하러', fn:() => goDrive(null) },
+     { label:'▶ 따라오세요', fn:startTour, ghost:true }]);
 }
 $('w-enter').addEventListener('click', () => enterWorld(true));
 
 /* 주소로 바로 들어가기 — ?enter=1 (시작 화면 건너뜀) · ?go=work (그 건물 앞에서 시작) */
 {
   const q = new URLSearchParams(location.search), go = q.get('go');
-  if (q.get('enter') === '1' || go) {
+  if (q.get('drive') === '1') {                 // ?drive=1 — 들어오자마자 로봇 타고 주문하러
+    toWorld(); gate.classList.add('ready', 'done'); hud.hidden = false;
+    setTimeout(() => goDrive(null), 60);
+  } else if (go === 'drive') {                  // ?go=drive — 창구 앞에 세워 둔 채로 시작
+    toWorld(); setRide(true);
+    hero.position.set(DRIVE.door.x, 0, DRIVE.door.z); hero.rotation.y = Math.PI / 2;
+    yaw = -0.42; camera.position.set(DRIVE.door.x - 8, 9, DRIVE.door.z + 18);
+    enterWorld(false); setTimeout(() => checkNear(), 60);
+  } else if (q.get('enter') === '1' || go) {
     toWorld();
     const b = BUILDINGS.find(x => x.key === go);
     if (b) {
@@ -2936,14 +3307,24 @@ document.fonts.ready.then(() => {   // 픽셀 서체가 늦게 오면 글자만 
   BUILDINGS.forEach((b, i) => { signs[i].material.map = labelTex(b.name, '#FFF7E8', '#4A3524'); signs[i].material.needsUpdate = true; });
   boards.forEach(({ plank, b }) => { plank.material.map = labelTex(b.board, '#FFFDF7', '#141414', 512, 156); plank.material.needsUpdate = true; });
   tag.material.map = labelTex('ELORA', '#FFF7E8', '#4A3524', 512, 150); tag.material.needsUpdate = true;
+  if (driveSign) { driveSign.material.map = labelTex('ELORA 드라이브 스루', '#FFF7E8', '#4A3524', 768, 128); driveSign.material.needsUpdate = true; }
+  if (winSign) { winSign.material.map = labelTex('주문 창구', '#FFF7E8', '#4A3524'); winSign.material.needsUpdate = true; }
+  if (menuFace) { menuFace.material.map = menuTex(); menuFace.material.needsUpdate = true; }
 });
 /* 콘솔/자동화용 — eloraWorld.goto('work') 처럼 쓸 수 있습니다 */
+ready = true; kickFn = kick;
 window.eloraWorld = {
   list: () => BUILDINGS.map(b => b.key),
   goto(id) { const b = BUILDINGS.find(x => x.key === id); if (!b) return false; stopTour(); walkTo(b.door.x, b.door.z); return true; },
   warp(id) { const b = BUILDINGS.find(x => x.key === id); if (!b) return false; stopTour(); target = null; hero.position.set(b.door.x, 0, b.door.z); checkNear(); return true; },
   enter(id) { const b = BUILDINGS.find(x => x.key === id); if (!b) return false; enterRoom(b); return true; },
   pos: () => ({ x: +hero.position.x.toFixed(2), z: +hero.position.z.toFixed(2), near: near && near.key }),
+  ride: on => setRide(on !== false),
+  /* 2D 지도의 "주문하러 가기"가 부르는 문 — 마을을 열고 로봇으로 드라이브 스루까지 갑니다 */
+  driveThru(fromName) {
+    toWorld(); gate.classList.add('ready', 'done'); hud.hidden = false;
+    goDrive(fromName || null); return true;
+  },
   cam: () => ({ x:+camera.position.x.toFixed(2), y:+camera.position.y.toFixed(2), z:+camera.position.z.toFixed(2),
                 fov:camera.fov, aspect:+camera.aspect.toFixed(2), yaw:+yaw.toFixed(2), dist }),
 };
