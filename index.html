@@ -553,8 +553,8 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
 [data-theme="retro"] .sw { width:18px; height:18px; border:1.5px solid var(--line); }
 @media(max-width:760px) {
   [data-theme="retro"] .nav-links { display:flex; }
-  [data-theme="retro"] .nav-links a { width:52px; font-size:.55rem; }
-  [data-theme="retro"] .nav-links a::before { width:28px; height:28px; font-size:.85rem; }
+  [data-theme="retro"] .nav-links a { width:45px; font-size:.52rem; letter-spacing:.04em; }
+  [data-theme="retro"] .nav-links a::before { width:26px; height:26px; font-size:.8rem; }
   [data-theme="retro"] .swatches { display:none; }
 }
 
@@ -822,6 +822,124 @@ body.site-mode .backworld { display:block; }
 /* 읽기 편하게 — 본문 글자·줄간격을 키웁니다 */
 body { font-size:16.5px; }
 .bd p, .svc p, .steps p, .qa .a { font-size:.95rem; line-height:1.78; }
+
+/* ══════════════════════════════════════════════════════════════
+   17. 동네 지도 — 지도 앱처럼 생긴 포트폴리오
+   ── 왼쪽은 검색 결과 목록, 오른쪽은 지도.
+      핀을 누르면 목록 자리에 "가게 정보"(플레이스 카드)가 열립니다.
+   ══════════════════════════════════════════════════════════════ */
+.nmap { border:var(--border); box-shadow:var(--shadow); background:var(--surface); overflow:hidden; }
+
+/* ── 상단 검색 바 ── */
+.nm-bar { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap;
+  padding:.6rem .7rem; border-bottom:var(--border); background:var(--paper2); }
+.nm-logo { font-family:var(--mono); font-size:.74rem; letter-spacing:.1em; background:var(--accent);
+  color:var(--accent-ink); padding:.4rem .6rem; white-space:nowrap; }
+.nm-search { flex:1; min-width:190px; display:flex; align-items:center; gap:.45rem; font-size:.86rem;
+  background:var(--surface); border:1.5px solid var(--line); padding:.42rem .6rem; color:var(--dim); }
+.nm-search b { color:var(--hot); }
+.nm-cats { display:flex; gap:.3rem; flex-wrap:wrap; }
+.nm-cats button { font-family:var(--mono); font-size:.68rem; letter-spacing:.04em; cursor:pointer;
+  background:var(--surface); color:var(--dim); border:1.5px solid var(--line); padding:.4rem .6rem; }
+.nm-cats button:hover { background:var(--mint); color:var(--fg); }
+.nm-cats button.on { background:var(--hot); border-color:var(--hot); color:#fff; }
+
+/* ── 본문: 목록 | 지도 ── */
+.nm-body { display:grid; grid-template-columns:326px minmax(0,1fr); align-items:stretch; }
+.nm-side { border-right:var(--border); background:var(--surface); min-width:0;
+  max-height:620px; overflow-y:auto; overscroll-behavior:contain; }
+
+/* 검색 결과 한 줄 */
+.nm-row { display:grid; grid-template-columns:1.7rem minmax(0,1fr) auto; gap:.6rem; width:100%; text-align:left;
+  align-items:start; cursor:pointer; background:none; border:0; border-bottom:1px dashed var(--line);
+  padding:.75rem .8rem; color:var(--fg); font:inherit; }
+.nm-row:hover { background:var(--paper2); }
+.nm-row.on { background:var(--butter); }
+.nm-row .no { font-family:var(--mono); font-size:.72rem; color:#fff; background:var(--accent);
+  width:1.45rem; height:1.45rem; display:grid; place-items:center; }
+.nm-row.on .no { background:var(--hot); }
+.nm-row .rn { display:block; font-size:1rem; font-weight:700; letter-spacing:-.01em; }
+.nm-row .rs { display:block; }
+.nm-row .rc { font-family:var(--mono); font-size:.62rem; letter-spacing:.05em; color:var(--dim); margin-left:.35rem; }
+.nm-row .rs { font-size:.82rem; line-height:1.55; color:var(--dim); margin-top:.15rem; }
+.nm-row .rt { display:flex; flex-wrap:wrap; gap:.3rem; margin-top:.4rem; }
+.nm-row .rt span { font-family:var(--mono); font-size:.58rem; letter-spacing:.05em; color:var(--dim);
+  border:1px solid var(--line); padding:.15rem .35rem; }
+.nm-row .rt .live { color:#1F7A45; border-color:#1F7A45; }
+.nm-row .rth { width:56px; height:56px; object-fit:cover; object-position:top; border:1.5px solid var(--line); }
+.nm-none { padding:1.6rem .9rem; text-align:center; font-size:.86rem; color:var(--dim); }
+
+/* ── 지도 그림 ── */
+.nm-canvas { position:relative; background:#F2F0EA; min-width:0; }
+.nm-canvas svg { display:block; width:100%; height:100%; min-height:440px; touch-action:none; cursor:grab; }
+.nm-canvas svg.drag { cursor:grabbing; }
+.nm-pin { cursor:pointer; }
+.nm-pin text { pointer-events:none; }
+.nm-lab { font-family:var(--mono); font-weight:700; paint-order:stroke; stroke:#FFFDF7; stroke-width:3.5;
+  stroke-linejoin:round; fill:#2A2620; }
+.nm-pin.on .nm-lab { fill:var(--hot); }
+.nm-pin.on .body { fill:var(--hot); stroke-width:3; }
+.nm-pin.on .ring { opacity:.75; }
+.nm-pin:hover .body { stroke-width:3; }
+
+/* 지도 위 조작 버튼 */
+.nm-ui { position:absolute; right:.6rem; top:.6rem; display:grid; gap:.35rem; }
+.nm-ui button { width:2rem; height:2rem; display:grid; place-items:center; cursor:pointer; font-family:var(--mono);
+  font-size:.9rem; background:var(--surface); color:var(--fg); border:1.5px solid var(--line); box-shadow:var(--shadow); }
+.nm-ui button:hover { background:var(--mint); }
+.nm-tip { position:absolute; left:.6rem; bottom:.6rem; font-family:var(--mono); font-size:.62rem; letter-spacing:.05em;
+  color:var(--dim); background:rgba(255,253,247,.92); border:1.5px solid var(--line); padding:.35rem .55rem; }
+.nm-bar2 { position:absolute; right:.6rem; bottom:.6rem; display:flex; align-items:flex-end; gap:.35rem;
+  font-family:var(--mono); font-size:.6rem; color:var(--dim); background:rgba(255,253,247,.92);
+  border:1.5px solid var(--line); padding:.3rem .5rem; }
+.nm-bar2 i { display:block; width:38px; height:5px; border:1.5px solid var(--line); border-top:0; }
+
+/* ── 가게 정보(플레이스 카드) ── */
+.nm-place { display:none; }
+.nm-side.card .nm-place { display:block; }
+.nm-side.card .nm-list { display:none; }
+.nm-back { position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:.4rem; width:100%; cursor:pointer; font:inherit;
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; color:var(--fg);
+  background:var(--paper2); border:0; border-bottom:var(--border); padding:.55rem .8rem; }
+.nm-back:hover { background:var(--mint); }
+.nm-ph { display:flex; gap:.3rem; overflow-x:auto; background:#2B2230; }
+.nm-ph img { height:140px; width:auto; display:block; flex:none; }
+.nm-ph.none { height:78px; align-items:center; justify-content:center; color:#C9AFC2; font-family:var(--mono);
+  font-size:.66rem; letter-spacing:.08em; }
+.nm-pb { padding:.85rem .85rem 1rem; }
+.nm-pb h3 { font-size:1.32rem; font-weight:800; letter-spacing:-.02em; line-height:1.25; }
+.nm-pb .cat { font-family:var(--mono); font-size:.64rem; letter-spacing:.06em; color:var(--dim); margin-top:.2rem; display:block; }
+.nm-open { display:inline-flex; align-items:center; gap:.35rem; margin-top:.5rem; font-family:var(--mono);
+  font-size:.64rem; letter-spacing:.06em; color:#1F7A45; border:1.5px solid #1F7A45; padding:.24rem .45rem; }
+.nm-open i { font-style:normal; width:7px; height:7px; border-radius:50%; background:#2FA45E; display:inline-block; }
+.nm-one { font-size:.92rem; line-height:1.6; margin-top:.6rem; box-shadow:inset 0 -.5em 0 var(--butter); display:inline-block; }
+.nm-info { margin-top:.85rem; border-top:1px dashed var(--line); }
+.nm-info > div { display:grid; grid-template-columns:4.4rem minmax(0,1fr); gap:.5rem; padding:.5rem 0;
+  border-bottom:1px dashed var(--line); font-size:.84rem; line-height:1.55; }
+.nm-info dt { font-family:var(--mono); font-size:.6rem; letter-spacing:.08em; color:var(--dim); padding-top:.15rem; }
+.nm-desc { font-size:.89rem; line-height:1.75; color:var(--fg); margin-top:.85rem; }
+.nm-menu { list-style:none; margin-top:.4rem; display:grid; gap:.3rem; }
+.nm-menu li { display:grid; grid-template-columns:auto minmax(0,1fr); gap:.45rem; font-size:.85rem; line-height:1.6;
+  color:var(--dim); border-bottom:1px dotted var(--line); padding-bottom:.3rem; }
+.nm-menu li::before { content:"—"; color:var(--hot); }
+.nm-menu li b { color:var(--fg); }
+.nm-mtitle { font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; color:var(--dim); margin-top:.9rem; }
+.nm-acts { position:sticky; bottom:-1rem; z-index:2; display:grid; gap:.4rem; margin-top:1rem;
+  padding:.6rem 0 1rem; background:var(--surface); box-shadow:0 -10px 14px -10px rgba(20,20,20,.35); }
+.nm-acts .go { font-family:var(--mono); font-size:.8rem; letter-spacing:.08em; cursor:pointer; padding:.85rem;
+  background:var(--hot); color:#fff; border:var(--border); box-shadow:var(--shadow); transition:transform .15s ease; }
+.nm-acts .go:hover { transform:translateY(-2px); }
+.nm-acts .more { text-align:center; font-size:.8rem; padding:.55rem; border:1.5px solid var(--line);
+  background:var(--surface); color:var(--fg); text-decoration:none; }
+.nm-acts .more:hover { background:var(--mint); }
+
+@media(max-width:860px) {
+  .nm-body { grid-template-columns:minmax(0,1fr); }
+  .nm-body .nm-canvas { order:-1; border-bottom:var(--border); }
+  .nm-canvas svg { min-height:0; aspect-ratio:1/1; height:auto; }
+  .nm-side { border-right:0; max-height:none; }
+  .nm-pin:not(.drive) .nm-lab { display:none; }   /* 번호만 — 이름은 아래 목록에서 */
+}
 </style>
 </head>
 <body>
@@ -887,6 +1005,7 @@ body { font-size:16.5px; }
   <nav class="nav-links" aria-label="사이트 섹션">
     <a href="#about"    data-ico="☺" style="--tile:var(--mint)">소개</a>
     <a href="#services" data-ico="♪" style="--tile:var(--butter)">서비스</a>
+    <a href="#map"      data-ico="◎" style="--tile:#CFE8C8">지도</a>
     <a href="#work"     data-ico="▤" style="--tile:#F6C6CD">작업 9</a>
     <a href="#process"  data-ico="✎" style="--tile:#CBD9F2">진행방식</a>
     <a href="#faq"      data-ico="?" style="--tile:#DED1F0">FAQ</a>
@@ -1066,8 +1185,143 @@ body { font-size:16.5px; }
     </section>
 
     <!-- ══ 프로젝트 ══ -->
+    <!-- ══ 동네 지도: 지도 앱처럼 보고, 가게처럼 고릅니다 ══ -->
+    <section id="map">
+      <div class="head"><span class="num">(02)</span><h2>Map</h2><span class="file">map — 9 shops</span></div>
+      <p class="lead">제가 만든 서비스들을 동네 가게처럼 지도에 놓았습니다. 핀을 누르면 가게 정보가 열리고,
+        마음에 들면 거기서 바로 <b>주문하러 가기</b>를 누르시면 됩니다.</p>
+
+      <div class="nmap rise">
+        <div class="nm-bar">
+          <span class="nm-logo">🗺 ELORA 지도</span>
+          <div class="nm-search">🔍 <span>이 동네에서 운영 중인 서비스 <b>9곳</b></span></div>
+          <div class="nm-cats" id="nm-cats">
+            <button type="button" class="on" data-cat="all">전체</button>
+            <button type="button" data-cat="own">내 프로그램</button>
+            <button type="button" data-cat="full">의뢰 · 전부</button>
+            <button type="button" data-cat="part">의뢰 · 참여</button>
+          </div>
+        </div>
+
+        <div class="nm-body">
+          <aside class="nm-side" id="nm-side">
+            <div class="nm-list" id="nm-list"></div>
+            <div class="nm-place" id="nm-place"></div>
+          </aside>
+
+          <div class="nm-canvas">
+            <svg id="nm-svg" viewBox="0 0 1000 720" role="img"
+                 aria-label="제가 만든 서비스 9곳이 가게로 표시된 동네 지도">
+              <g id="nm-world">
+                <!-- 땅 -->
+                <rect x="-400" y="-400" width="1800" height="1520" fill="#F2F0EA"/>
+
+                <!-- 공원 · 숲 · 호수 -->
+                <rect x="16" y="16" width="136" height="98" rx="10" fill="#D6E9C2" stroke="#C0DCA6" stroke-width="2"/>
+                <rect x="898" y="150" width="88" height="350" rx="10" fill="#D6E9C2" stroke="#C0DCA6" stroke-width="2"/>
+                <ellipse cx="86" cy="596" rx="70" ry="43" fill="#BEDDF2" stroke="#A2CAE6" stroke-width="2"/>
+
+                <!-- 건물 블록 -->
+                <g fill="#E5E2D9">
+                  <rect x="182" y="20" width="60" height="38"/><rect x="182" y="66" width="60" height="44"/>
+                  <rect x="368" y="20" width="56" height="38"/><rect x="368" y="66" width="56" height="44"/>
+                  <rect x="445" y="20" width="70" height="42"/><rect x="525" y="20" width="60" height="42"/>
+                  <rect x="595" y="20" width="85" height="42"/><rect x="445" y="72" width="110" height="40"/>
+                  <rect x="565" y="72" width="60" height="40"/><rect x="635" y="72" width="45" height="40"/>
+                  <rect x="705" y="20" width="70" height="42"/><rect x="785" y="20" width="85" height="42"/>
+                  <rect x="705" y="72" width="60" height="40"/><rect x="775" y="72" width="95" height="40"/>
+                  <rect x="895" y="18" width="90" height="50"/><rect x="895" y="78" width="90" height="44"/>
+
+                  <rect x="18" y="150" width="60" height="50"/><rect x="88" y="150" width="60" height="50"/>
+                  <rect x="18" y="272" width="130" height="42"/>
+                  <rect x="182" y="148" width="52" height="44"/><rect x="350" y="148" width="68" height="44"/>
+                  <rect x="182" y="200" width="56" height="48"/><rect x="350" y="200" width="68" height="48"/>
+                  <rect x="182" y="258" width="110" height="56"/><rect x="302" y="258" width="116" height="56"/>
+                  <rect x="442" y="148" width="48" height="44"/><rect x="608" y="148" width="72" height="44"/>
+                  <rect x="442" y="200" width="48" height="50"/><rect x="608" y="200" width="72" height="50"/>
+                  <rect x="442" y="260" width="110" height="54"/><rect x="562" y="260" width="118" height="54"/>
+                  <rect x="702" y="148" width="80" height="40"/><rect x="792" y="148" width="78" height="40"/>
+                  <rect x="702" y="258" width="80" height="56"/><rect x="792" y="258" width="78" height="56"/>
+
+                  <rect x="18" y="348" width="130" height="46"/><rect x="18" y="466" width="130" height="48"/>
+                  <rect x="182" y="348" width="110" height="46"/><rect x="302" y="348" width="116" height="46"/>
+                  <rect x="182" y="404" width="60" height="48"/><rect x="360" y="404" width="58" height="48"/>
+                  <rect x="182" y="470" width="236" height="44"/>
+                  <rect x="442" y="348" width="110" height="48"/><rect x="562" y="348" width="118" height="48"/>
+                  <rect x="442" y="406" width="60" height="50"/><rect x="620" y="406" width="60" height="50"/>
+                  <rect x="442" y="468" width="238" height="46"/>
+                  <rect x="702" y="348" width="80" height="48"/><rect x="792" y="348" width="78" height="48"/>
+                  <rect x="702" y="466" width="168" height="48"/>
+
+                  <rect x="182" y="548" width="110" height="42"/><rect x="302" y="548" width="116" height="42"/>
+                  <rect x="182" y="600" width="236" height="44"/>
+                  <rect x="442" y="548" width="110" height="42"/><rect x="562" y="548" width="118" height="42"/>
+                  <rect x="442" y="600" width="80" height="44"/>
+                  <rect x="702" y="548" width="78" height="42"/><rect x="702" y="600" width="78" height="44"/>
+                  <rect x="895" y="548" width="90" height="44"/><rect x="895" y="600" width="90" height="44"/>
+
+                  <rect x="18" y="676" width="150" height="34"/><rect x="182" y="676" width="236" height="34"/>
+                  <rect x="442" y="676" width="238" height="34"/><rect x="702" y="676" width="168" height="34"/>
+                  <rect x="895" y="676" width="90" height="34"/>
+                </g>
+
+                <!-- 도로: 바깥 테두리 → 안쪽 면 -->
+                <g stroke="#DFDBD1" fill="none" stroke-linecap="square">
+                  <path d="M170 -400V1120M690 -400V1120M880 -400V1120" stroke-width="22"/>
+                  <path d="M-400 130H1400M-400 530H1400M-400 660H1400" stroke-width="22"/>
+                  <path d="M430 -400V1120" stroke-width="34"/>
+                  <path d="M-400 330H1400" stroke-width="34"/>
+                </g>
+                <g stroke="#FFFFFF" fill="none" stroke-linecap="square">
+                  <path d="M170 -400V1120M690 -400V1120M880 -400V1120" stroke-width="16"/>
+                  <path d="M-400 130H1400M-400 530H1400M-400 660H1400" stroke-width="16"/>
+                </g>
+                <g stroke="#FFF6D8" fill="none" stroke-linecap="square">
+                  <path d="M430 -400V1120" stroke-width="27"/>
+                  <path d="M-400 330H1400" stroke-width="27"/>
+                </g>
+                <g stroke="#EBD79A" fill="none" stroke-width="1.6" stroke-dasharray="12 12">
+                  <path d="M430 -400V1120"/><path d="M-400 330H1400"/>
+                </g>
+
+                <!-- 길 이름 · 동네 이름 -->
+                <g font-family="'JetBrains Mono', monospace" font-size="13" fill="#9A9488"
+                   paint-order="stroke" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round">
+                  <text x="196" y="334">엘로라대로</text>
+                  <text x="742" y="334">엘로라대로</text>
+                  <text x="196" y="534">런치길</text>
+                  <text x="452" y="126">코드로</text>
+                  <text x="452" y="656">코드로</text>
+                  <text x="702" y="126">배포로</text>
+                </g>
+                <g font-family="'JetBrains Mono', monospace" font-size="12.5" text-anchor="middle"
+                   paint-order="stroke" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round">
+                  <text x="84" y="70" fill="#5F8A45">리팩터 공원</text>
+                  <text x="86" y="600" fill="#4A7FA5">데이터 호수</text>
+                  <text x="942" y="330" fill="#5F8A45" transform="rotate(-90 942 330)">빌드 숲</text>
+                </g>
+
+                <!-- 길찾기 경로(가게 → 드라이브 스루) -->
+                <path id="nm-route" fill="none" stroke="none"/>
+                <!-- 가게 핀 -->
+                <g id="nm-pins"></g>
+              </g>
+            </svg>
+
+            <div class="nm-ui">
+              <button type="button" id="nm-in"  aria-label="확대">＋</button>
+              <button type="button" id="nm-out" aria-label="축소">－</button>
+              <button type="button" id="nm-home" aria-label="전체 보기">⌂</button>
+            </div>
+            <div class="nm-tip" id="nm-tip">핀을 누르면 가게 정보가 열려요 · 끌어서 이동</div>
+            <div class="nm-bar2"><i></i> 100m</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="work">
-      <div class="head"><span class="num">(02)</span><h2>Work</h2><span class="file">work — 9 items</span></div>
+      <div class="head"><span class="num">(03)</span><h2>Work</h2><span class="file">work — 9 items</span></div>
       <p class="lead">전부 실제로 운영 중인 서비스입니다. 항목을 열면 실제 화면과 기능 설명이 나옵니다.</p>
       <div class="rise">
         <div class="workgroup" data-group="own">
@@ -1261,7 +1515,7 @@ body { font-size:16.5px; }
 
     <!-- ══ 진행 방식 ══ -->
     <section id="process">
-      <div class="head"><span class="num">(03)</span><h2>Process</h2><span class="file">how_it_works.txt</span></div>
+      <div class="head"><span class="num">(04)</span><h2>Process</h2><span class="file">how_it_works.txt</span></div>
       <p class="lead">애매하게 시작해서 늘어지는 일이 없도록, 순서를 정해 두고 일합니다.</p>
       <ol class="steps rise">
         <li><h3>요구사항 정리</h3><p>10분 통화나 채팅으로 핵심 3가지를 확인합니다. 기획이 없어도 됩니다 — 정리부터 같이 합니다.</p></li>
@@ -1281,7 +1535,7 @@ body { font-size:16.5px; }
 
     <!-- ══ 소개 ══ -->
     <section id="about">
-      <div class="head"><span class="num">(04)</span><h2>About</h2><span class="file">about_me.txt</span></div>
+      <div class="head"><span class="num">(05)</span><h2>About</h2><span class="file">about_me.txt</span></div>
       <div class="about rise">
         <div>
           <p class="lede">기획서에서 멈추지 않고, 배포된 URL까지 만들어 놓는 편입니다.</p>
@@ -1303,7 +1557,7 @@ body { font-size:16.5px; }
 
     <!-- ══ FAQ ══ -->
     <section id="faq">
-      <div class="head"><span class="num">(05)</span><h2>FAQ</h2><span class="file">faq.txt</span></div>
+      <div class="head"><span class="num">(06)</span><h2>FAQ</h2><span class="file">faq.txt</span></div>
       <div class="rise">
         <details class="qa"><summary>기획이 없는데 의뢰해도 되나요?</summary><div class="a">네. 요구사항 정리부터 같이 합니다. 10분 통화(또는 채팅)로 핵심 3가지만 확인하면 견적을 확정해 드릴 수 있어요.</div></details>
         <details class="qa"><summary>비용은 어떻게 정해지나요?</summary><div class="a">범위를 확인한 뒤 기간과 비용을 먼저 범위로 알려 드리고, 완료 기준을 문서로 합의한 뒤 확정합니다. 확정 전에는 비용이 발생하지 않습니다.</div></details>
@@ -1317,7 +1571,7 @@ body { font-size:16.5px; }
 
     <!-- ══ 경력 ══ -->
     <section id="path">
-      <div class="head"><span class="num">(06)</span><h2>Path</h2><span class="file">career.log</span></div>
+      <div class="head"><span class="num">(07)</span><h2>Path</h2><span class="file">career.log</span></div>
       <div class="path rise">
       <div class="stop">
         <div class="when">2026 — NOW</div>
@@ -1364,7 +1618,7 @@ body { font-size:16.5px; }
 
     <!-- ══ 기술 ══ -->
     <section id="skills">
-      <div class="head"><span class="num">(07)</span><h2>Skills</h2><span class="file">stack.cfg</span></div>
+      <div class="head"><span class="num">(08)</span><h2>Skills</h2><span class="file">stack.cfg</span></div>
       <div class="skills rise">
       <div class="sk" style="--c:#FFD84D">
         <h3>Frontend</h3>
@@ -1383,7 +1637,7 @@ body { font-size:16.5px; }
 
     <!-- ══ 연락처 ══ -->
     <section id="contact">
-      <div class="head"><span class="num">(08)</span><h2>Contact</h2><span class="file">contact.exe</span></div>
+      <div class="head"><span class="num">(09)</span><h2>Contact</h2><span class="file">contact.exe</span></div>
       <div class="contact-grid rise">
         <div>
           <p style="color:var(--dim);max-width:32rem">만들고 싶은 것이 있다면 편하게 보내주세요. 한 줄이면 충분합니다 — 기획이 흐릿해도 요구사항 정리부터 같이 합니다.</p>
@@ -1594,7 +1848,7 @@ document.querySelectorAll('.js-mail').forEach(a => {
   const chat = document.getElementById('chat');
   const bar = document.getElementById('chat-in');
   const picked = [];                                  // [{code, name, el}]
-  const order = { budget:'', when:'', memo:'' };
+  const order = { budget:'', when:'', memo:'', ref:'' };   // ref = 지도에서 보고 온 작업
 
   const scrollChat = () => { chat.scrollTop = chat.scrollHeight; };
   function her(html) {
@@ -1690,6 +1944,7 @@ document.querySelectorAll('.js-mail').forEach(a => {
     const items = picked.length ? menuNames() : ['(상담하면서 정하기)'];
     d.innerHTML = '<b>주문 확인해 드릴게요</b><ul>' +
       items.map(t => '<li>' + t + '</li>').join('') +
+      (order.ref ? '<li>보고 온 곳 · ' + order.ref + '</li>' : '') +
       '<li>예산 · ' + (order.budget || '미정') + '</li>' +
       '<li>시기 · ' + (order.when || '미정') + '</li>' +
       (order.memo ? '<li>' + order.memo.replace(/</g, '&lt;') + '</li>' : '') +
@@ -1699,22 +1954,297 @@ document.querySelectorAll('.js-mail').forEach(a => {
     ask([
       { label:'주문서 보내기 →', go:true, fn:send },
       { label:'처음부터 다시', fn:() => { picked.splice(0).forEach(x => { x.el.classList.remove('picked'); x.el.querySelector('.add').textContent = '＋ 담기'; });
-        order.budget = order.when = order.memo = ''; start(); } },
+        order.budget = order.when = order.memo = order.ref = ''; start(); } },
     ]);
   }
   function send() {
     const lines = ['[ELORA 드라이브 스루 주문서]', '', '주문한 메뉴:'];
     if (picked.length) menuNames().forEach(t => lines.push('  · ' + t));
     else lines.push('  · (상담하면서 정하고 싶습니다)');
+    if (order.ref) lines.push('', '보고 온 작업: ' + order.ref + ' (지도에서)');
     lines.push('', '예산: ' + (order.budget || '미정'), '희망 시기: ' + (order.when || '미정'), '',
       '만들고 싶은 것:', order.memo || '  (통화로 설명할게요)', '', '연락 편한 방법/시간: ', '');
-    const subject = '[의뢰] ' + (picked.length ? picked.map(x => x.name).join(' + ') : '프로젝트 상담');
+    const subject = '[의뢰] ' + (picked.length ? picked.map(x => x.name).join(' + ')
+      : (order.ref ? order.ref + ' 같은 작업 상담' : '프로젝트 상담'));
     location.href = 'mailto:devil.elora@gmail.com?subject=' + encodeURIComponent(subject)
       + '&body=' + encodeURIComponent(lines.join('\n'));
     her('감사합니다! 메일 앱이 열렸어요. 보내주시면 확인하고 답장 드릴게요. 🚗');
   }
+  /* 지도에서 "이런 거 주문하러 가기"를 누르면 여기로 들어옵니다 */
+  function orderLike(name) {
+    order.ref = name;
+    me(name + ' 같은 걸 만들고 싶어요');
+    her('좋아요, <b>' + name.replace(/</g, '&lt;') + '</b> 보고 오셨군요.<br>'
+      + '비슷한 결로 만들어 드릴 수 있어요. 몇 가지만 여쭤볼게요.');
+    stepBudget();
+  }
+  window.driveThru = { orderLike };
+
   start();
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   동네 지도 — 작업 목록(#work)을 그대로 읽어 지도 위 "가게"로 놓습니다.
+   이름·설명·사진·기능은 작업 목록에 적힌 내용 그대로입니다.
+   (지도에서 따로 쓰는 건 좌표뿐 — 내용이 두 군데로 갈라지지 않게)
+   ══════════════════════════════════════════════════════════════ */
+(() => {
+  const SPOT = {                                 // 지도 위 자리 (여기서 정하는 건 이것뿐)
+    'rainbow-post':[290,200], 'lyrics':[300,78],   'junan':[110,425],
+    'calendar':[300,445],     'moneyup':[545,205], 'mini-app':[560,440],
+    'language':[120,235],     'dblv':[765,225],    'operations':[790,430],
+  };
+  const DRIVE = [835, 600];                        // 드라이브 스루 자리
+  const SOON  = [585, 615];                        // "준비 중" 자리
+  const ROAD_V = [170, 430, 690, 880];             // 세로 도로 (길찾기에 씁니다)
+
+  const svg   = document.getElementById('nm-svg');
+  const world = document.getElementById('nm-world');
+  const pinsG = document.getElementById('nm-pins');
+  const route = document.getElementById('nm-route');
+  const side  = document.getElementById('nm-side');
+  const listEl  = document.getElementById('nm-list');
+  const placeEl = document.getElementById('nm-place');
+  const tip   = document.getElementById('nm-tip');
+  if (!svg || !listEl) return;                     // 지도가 없는 테마면 조용히 넘어갑니다
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (t, a) => { const e = document.createElementNS(NS, t);
+    for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const txt = (n, d) => (n && n.textContent.trim()) || d || '';
+
+  /* ── 1. 작업 목록에서 가게 정보를 그대로 가져옵니다 ── */
+  const shops = [...document.querySelectorAll('#work details.item')].map((item, i) => {
+    const g = item.closest('.workgroup');
+    return {
+      item, id: item.dataset.id, n: i + 1,
+      name:  txt(item.querySelector('.nm')),
+      cat:   txt(item.querySelector('.tg')),
+      one:   txt(item.querySelector('.sb')),
+      color: (item.style.getPropertyValue('--c') || '#F6C6CD').trim(),
+      group: g ? g.dataset.group : 'own',
+      gname: g ? txt(g.querySelector('.group')) : '',
+      gnote: g ? txt(g.querySelector('.gnote')) : '',
+      desc:  txt(item.querySelector('.bd > p')),
+      feats: [...item.querySelectorAll('.feat li')].map(li => li.innerHTML),
+      pics:  [...item.querySelectorAll('.gal img')].map(im => ({ src: im.getAttribute('src'), alt: im.alt })),
+      pos:   SPOT[item.dataset.id] || [500, 360],
+    };
+  });
+
+  /* ── 2. 지도 핀 ── */
+  const PIN_D = 'M0,0C-9,-13 -13,-18 -13,-25A13,13 0 1,1 13,-25C13,-18 9,-13 0,0Z';
+  const nodes = new Map();
+  const narrow = matchMedia('(max-width:860px)');
+  const scale = () => narrow.matches ? 2.4 : 1;           // 좁은 화면에선 핀을 키웁니다
+  const place = pos => `translate(${pos[0]},${pos[1]}) scale(${scale()})`;
+  function relayout() {
+    nodes.forEach((g, id) => {
+      const s = shops.find(x => x.id === id); if (s) g.setAttribute('transform', place(s.pos));
+    });
+    soonG.setAttribute('transform', place(SOON));
+    dg.setAttribute('transform', place(DRIVE));
+    dl.textContent = narrow.matches ? '주문하는 곳' : 'ELORA 드라이브 스루';  // 좁으면 이름이 잘려서
+  }
+  narrow.addEventListener('change', relayout);
+
+  function makePin(s) {
+    const g = el('g', { class:'nm-pin', transform:place(s.pos),
+      tabindex:'0', role:'button', 'aria-label':`${s.name} — ${s.one}` });
+    g.appendChild(el('ellipse', { cx:0, cy:2.5, rx:9, ry:3.4, fill:'rgba(20,20,20,.20)' }));
+    g.appendChild(el('circle', { class:'ring', cx:0, cy:-25, r:20, fill:'none',
+      stroke:'#E0453A', 'stroke-width':2.5, opacity:0 }));
+    g.appendChild(el('path', { class:'body', d:PIN_D, fill:s.color, stroke:'#141414', 'stroke-width':2 }));
+    g.appendChild(el('circle', { cx:0, cy:-25, r:8.6, fill:'#141414' }));
+    const num = el('text', { x:0, y:-20.8, 'text-anchor':'middle', fill:'#FFFDF7',
+      'font-family':"'JetBrains Mono', monospace", 'font-size':11.5, 'font-weight':'700' });
+    num.textContent = s.n; g.appendChild(num);
+    const lab = el('text', { class:'nm-lab', x:0, y:18, 'text-anchor':'middle', 'font-size':15 });
+    lab.textContent = s.name; g.appendChild(lab);
+    const hit = () => select(s.id);
+    g.addEventListener('click', hit);
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hit(); } });
+    pinsG.appendChild(g); nodes.set(s.id, g);
+  }
+  shops.forEach(makePin);
+
+  /* 준비 중 자리 — 작업 목록의 "의뢰 · 참여"가 아직 비어 있어서 표시만 해 둡니다 */
+  const soonG = el('g', { class:'nm-pin soon', transform:place(SOON), 'aria-hidden':'true' });
+  soonG.appendChild(el('path', { d:PIN_D, fill:'#F2F0EA', stroke:'#9A9488', 'stroke-width':2, 'stroke-dasharray':'5 4' }));
+  const soonT = el('text', { x:0, y:-20.5, 'text-anchor':'middle', fill:'#9A9488',
+    'font-family':"'JetBrains Mono', monospace", 'font-size':12 });
+  soonT.textContent = '…'; soonG.appendChild(soonT);
+  const soonL = el('text', { class:'nm-lab', x:0, y:18, 'text-anchor':'middle', 'font-size':13, fill:'#9A9488' });
+  soonL.textContent = '준비 중'; soonG.appendChild(soonL);
+  pinsG.appendChild(soonG);
+
+  /* 드라이브 스루 — 주문받는 곳 */
+  const dg = el('g', { class:'nm-pin drive', transform:place(DRIVE),
+    tabindex:'0', role:'button', 'aria-label':'ELORA 드라이브 스루 — 주문하는 곳' });
+  dg.appendChild(el('ellipse', { cx:0, cy:3, rx:12, ry:4.2, fill:'rgba(20,20,20,.22)' }));
+  dg.appendChild(el('path', { d:PIN_D, fill:'#E0453A', stroke:'#141414', 'stroke-width':2.4, transform:'scale(1.28)' }));
+  const dt = el('text', { x:0, y:-27, 'text-anchor':'middle', 'font-size':15 });
+  dt.textContent = '🚗'; dg.appendChild(dt);
+  const dl = el('text', { class:'nm-lab', x:0, y:22, 'text-anchor':'middle', 'font-size':14 });
+  dl.textContent = narrow.matches ? '주문하는 곳' : 'ELORA 드라이브 스루'; dg.appendChild(dl);
+  dg.addEventListener('click', () => toOrder());
+  dg.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toOrder(); } });
+  pinsG.appendChild(dg);
+
+  /* ── 3. 왼쪽 검색 결과 목록 ── */
+  function drawList(cat) {
+    listEl.innerHTML = '';
+    const shown = shops.filter(s => cat === 'all' || s.group === cat);
+    if (!shown.length) {
+      const d = document.createElement('div'); d.className = 'nm-none';
+      d.textContent = cat === 'part'
+        ? '이 분류에 들어갈 작업을 정리하는 중입니다.' : '결과가 없습니다.';
+      listEl.appendChild(d); return;
+    }
+    shown.forEach(s => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'nm-row'; b.dataset.id = s.id;
+      b.innerHTML =
+        `<span class="no">${s.n}</span>` +
+        `<span><span class="rn">${esc(s.name)}<span class="rc">${esc(s.cat)}</span></span>` +
+        `<span class="rs">${esc(s.one)}</span>` +
+        `<span class="rt"><span class="live">영업 중</span><span>${esc(s.gname.split('—')[0].trim())}</span></span></span>` +
+        (s.pics[0] ? `<img class="rth" src="${s.pics[0].src}" alt="" loading="lazy">` : '<span></span>');
+      b.addEventListener('click', () => select(s.id));
+      listEl.appendChild(b);
+    });
+  }
+
+  /* ── 4. 가게 정보(플레이스 카드) ── */
+  function openPlace(s) {
+    const pics = s.pics.length
+      ? `<div class="nm-ph">${s.pics.map(p =>
+          `<img src="${p.src}" alt="${esc(p.alt)}" loading="lazy">`).join('')}</div>`
+      : '<div class="nm-ph none">화면 준비 중</div>';
+    const menu = s.feats.length
+      ? `<div class="nm-mtitle">대표 기능</div><ul class="nm-menu">${
+          s.feats.map(f => `<li><span>${f}</span></li>`).join('')}</ul>`
+      : '';
+    placeEl.innerHTML =
+      `<button type="button" class="nm-back">← 검색 결과로</button>` + pics +
+      `<div class="nm-pb">
+         <h3>${esc(s.name)}</h3><span class="cat">${esc(s.cat)}</span>
+         <span class="nm-open"><i></i>영업 중 · 실제 운영</span>
+         <p><span class="nm-one">${esc(s.one)}</span></p>
+         <dl class="nm-info">
+           <div><dt>동네</dt><dd>${esc(s.gname)}</dd></div>
+           <div><dt>맡은 범위</dt><dd>${esc(s.gnote)}</dd></div>
+           <div><dt>문의</dt><dd>devil.elora@gmail.com</dd></div>
+         </dl>
+         <p class="nm-desc">${esc(s.desc)}</p>${menu}
+         <div class="nm-acts">
+           <button type="button" class="go">🚗 이런 거 주문하러 가기</button>
+           <a class="more" href="#work">작업 목록에서 자세히 보기</a>
+         </div>
+       </div>`;
+    placeEl.querySelector('.nm-back').addEventListener('click', closePlace);
+    placeEl.querySelector('.go').addEventListener('click', () => toOrder(s));
+    placeEl.querySelector('.more').addEventListener('click', e => {
+      e.preventDefault(); s.item.open = true;
+      s.item.scrollIntoView({ behavior:'smooth', block:'center' });
+    });
+    side.classList.add('card'); side.scrollTop = 0;
+  }
+  function closePlace() {
+    side.classList.remove('card');
+    nodes.forEach(g => g.classList.remove('on'));
+    listEl.querySelectorAll('.nm-row.on').forEach(r => r.classList.remove('on'));
+    route.setAttribute('stroke', 'none');
+    tip.textContent = '핀을 누르면 가게 정보가 열려요 · 끌어서 이동';
+  }
+
+  /* ── 5. 고르기 ── */
+  function select(id) {
+    const s = shops.find(x => x.id === id); if (!s) return;
+    nodes.forEach((g, k) => g.classList.toggle('on', k === id));
+    const node = nodes.get(id);
+    if (node) pinsG.appendChild(node);                       // 고른 핀을 맨 위로
+    listEl.querySelectorAll('.nm-row').forEach(r => r.classList.toggle('on', r.dataset.id === id));
+    openPlace(s); drawRoute(s);
+  }
+
+  /* ── 6. 길찾기: 가게 → 큰길 → 드라이브 스루 ── */
+  const near = (arr, v) => arr.reduce((a, b) => Math.abs(b - v) < Math.abs(a - v) ? b : a);
+  function drawRoute(s) {
+    const [px, py] = s.pos, vx = near(ROAD_V, px);
+    const pts = [[px, py], [vx, py], [vx, 530], [880, 530], [880, 600], DRIVE];
+    const d = 'M' + pts.filter((p, i) => i === 0 || p[0] !== pts[i - 1][0] || p[1] !== pts[i - 1][1])
+      .map(p => p.join(',')).join('L');
+    route.setAttribute('d', d);
+    route.setAttribute('stroke', '#E0453A');
+    route.setAttribute('stroke-width', 5);
+    route.setAttribute('stroke-linecap', 'round');
+    route.setAttribute('stroke-linejoin', 'round');
+    route.setAttribute('stroke-dasharray', '11 9');
+    route.setAttribute('opacity', '.92');
+    tip.textContent = '🚗 여기서 드라이브 스루까지 — 주문하러 가기';
+  }
+
+  /* ── 7. 확대 · 축소 · 끌어서 이동 ── */
+  let k = 1, tx = 0, ty = 0;
+  const W = 1000, H = 720;
+  const clamp = () => { tx = Math.min(0, Math.max(W - W * k, tx)); ty = Math.min(0, Math.max(H - H * k, ty)); };
+  const apply = () => world.setAttribute('transform', `translate(${tx},${ty}) scale(${k})`);
+  function zoom(nk, cx = W / 2, cy = H / 2) {
+    nk = Math.max(1, Math.min(3, nk));
+    tx = cx - (cx - tx) * (nk / k); ty = cy - (cy - ty) * (nk / k); k = nk; clamp(); apply();
+  }
+  function focus(x, y) {                                     // 고른 곳을 화면 가운데로
+    k = Math.max(k, 1.55); tx = W / 2 - x * k; ty = H / 2 - y * k; clamp(); apply();
+  }
+  document.getElementById('nm-in').addEventListener('click', () => zoom(k * 1.5));
+  document.getElementById('nm-out').addEventListener('click', () => zoom(k / 1.5));
+  document.getElementById('nm-home').addEventListener('click', () => { k = 1; tx = ty = 0; apply(); });
+
+  let drag = null;
+  svg.addEventListener('pointerdown', e => {
+    if (e.target.closest('.nm-pin')) return;
+    drag = { x:e.clientX, y:e.clientY, tx, ty, moved:false };
+    svg.classList.add('drag'); svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const r = svg.getBoundingClientRect(), u = W / r.width;
+    tx = drag.tx + (e.clientX - drag.x) * u; ty = drag.ty + (e.clientY - drag.y) * u;
+    drag.moved = true; clamp(); apply();
+  });
+  const stop = () => { drag = null; svg.classList.remove('drag'); };
+  svg.addEventListener('pointerup', stop);
+  svg.addEventListener('pointercancel', stop);
+
+  /* ── 8. 분류 버튼 ── */
+  document.getElementById('nm-cats').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    document.querySelectorAll('#nm-cats button').forEach(x => x.classList.toggle('on', x === b));
+    const cat = b.dataset.cat;
+    shops.forEach(s => { const g = nodes.get(s.id);
+      if (g) g.style.display = (cat === 'all' || s.group === cat) ? '' : 'none'; });
+    soonG.style.display = (cat === 'all' || cat === 'part') ? '' : 'none';
+    closePlace(); drawList(cat);
+  });
+
+  /* ── 9. 주문하러 가기 — 경로를 보여 주고 주문 창구로 ── */
+  function toOrder(s) {
+    if (s) drawRoute(s);
+    setTimeout(() => {
+      const win = document.getElementById('chat') || document.getElementById('top');
+      if (win) win.scrollIntoView({ behavior:'smooth', block:'center' });
+      if (s && window.driveThru) window.driveThru.orderLike(s.name);
+    }, s ? 620 : 0);
+  }
+
+  drawList('all');
+  const want = new URLSearchParams(location.search).get('shop');
+  if (want && shops.some(s => s.id === want)) select(want);  // 예: ?shop=lyrics
+  window.eloraMap = { select, shops, zoom, focus };          // 손볼 때 쓰는 문
+})();
 
 /* 서울 시각 · 오늘 날짜 칩 */
 const clock = document.getElementById('clock');
