@@ -565,6 +565,8 @@ footer { padding:1.5rem var(--pad); border-top:var(--border); display:flex;
       건물에 들어가면 그 섹션 내용이 "실내"로 열립니다.
       [사이트 모드]를 누르면 아래의 평범한 페이지로 내려갑니다.
    ══════════════════════════════════════════════════════════════ */
+/* 마을이 뜨기 전 한 장면: 본문을 잠깐 감춰 2D 페이지가 비치지 않게 합니다 */
+html.boot main, html.boot .nav, html.boot .backworld { visibility:hidden; }
 #world { position:fixed; inset:0; z-index:200; background:var(--bg); overflow:hidden;
   background-image:var(--dots); background-size:4px 4px; }
 #world[hidden] { display:none; }
@@ -951,6 +953,10 @@ body { font-size:16.5px; }
 </style>
 </head>
 <body>
+<script>
+  document.documentElement.classList.add('boot');
+  setTimeout(function () { document.documentElement.classList.remove('boot'); }, 3500);
+</script>
 
 <!-- ══ ELORA WORLD — 사이트 전체가 3D 마을. 스크립트는 문서 맨 끝 module ══ -->
 <div id="world" hidden aria-label="ELORA WORLD — 3D 마을에서 캐릭터가 안내합니다">
@@ -2333,6 +2339,7 @@ function toSite(scrollTo) {
   if (scrollTo) { const t = $(scrollTo); if (t) t.scrollIntoView({ behavior:'auto' }); }
 }
 function toWorld() {
+  document.documentElement.classList.remove('boot');
   worldEl.hidden = false; document.body.classList.add('world-on'); document.body.classList.remove('site-mode');
   scrollTo(0, 0); canvas.focus({ preventScroll:true });
   if (ready && kickFn) kickFn();              // 준비 전(초기화 중)에는 맨 아래 kick() 이 돌립니다
@@ -2346,7 +2353,7 @@ $('w-exit').addEventListener('click', () => toSite('top'));
 let renderer = null;
 try { renderer = new THREE.WebGLRenderer({ canvas, antialias:true, powerPreference:'high-performance' }); }
 catch (e) { /* WebGL 불가 */ }
-if (!renderer) { worldEl.hidden = true; }
+if (!renderer) { worldEl.hidden = true; document.documentElement.classList.remove('boot'); }
 else {
 canEnterWorld = true;
 toWorld();                                    // 첫 화면은 마을 (WebGL 이 될 때만 여기까지 옵니다)
@@ -3160,7 +3167,7 @@ function checkNear() {
 }
 
 /* ── 프레임 ── */
-let walk = 0, last = performance.now(), running = false;
+let walk = 0, last = performance.now(), running = false, waveT = 0;
 const camPos = new THREE.Vector3(0, 9, 26);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 function frame(now) {
@@ -3220,6 +3227,15 @@ function frame(now) {
     hero.position.y = moving ? Math.abs(Math.sin(walk)) * 0.1 : 0;
     blob.visible = true;
   }
+  if (waveT > 0) {                                     // 인사 손 흔들기 (움직이면 바로 멈춥니다)
+    if (moving) { waveT = 0; armR.rotation.z = 0; }
+    else {
+      waveT -= dt;
+      hero.rotation.y = yaw;                           // 보는 사람 쪽으로 돌아서서 인사합니다
+      armR.rotation.x = 0; armR.rotation.z = 2.35 + Math.sin(now / 110) * 0.32;
+      if (waveT <= 0) armR.rotation.z = 0;             // 인사가 끝나도 이쪽을 보고 기다립니다
+    }
+  }
   drop.position.y = 2.4 + Math.sin(now / 500) * 0.12; drop.rotation.y += dt;
   if (!reduce) {                                  // 구름 · 나비 · 풍차
     clouds.forEach(c => { c.position.x += dt * c.userData.v; if (c.position.x > 72) c.position.x = -72; });
@@ -3260,18 +3276,25 @@ function kick() { if (!running) { last = performance.now(); requestAnimationFram
 document.addEventListener('visibilitychange', () => { if (!document.hidden && !worldEl.hidden) kick(); });
 
 /* ── 시작 화면(로딩 → 들어가기) ── */
-let loaded = 0;
+let loaded = 0, entered = false;
 function progress() {
   loaded++;
   const pct = Math.round(loaded / pending * 100);
   $('w-bar').style.width = pct + '%'; $('w-pct').textContent = '마을 짓는 중… ' + pct + '%';
-  if (loaded >= pending) gate.classList.add('ready');
+  if (loaded >= pending) openWhenReady();
+}
+/* 준비되면 버튼을 누를 필요 없이 바로 들어갑니다 (인사는 캐릭터가 합니다) */
+function openWhenReady() {
+  gate.classList.add('ready');
+  setTimeout(() => { if (!entered) enterWorld(true); }, 240);
 }
 camera.position.set(0, 12, -30);   // 뒤(북)에서 마을을 내려다봅니다
 yaw = Math.PI;
-setTimeout(() => gate.classList.add('ready'), 4000);   // 이미지가 늦어도 4초 뒤엔 들어갈 수 있게
+setTimeout(openWhenReady, 2400);                      // 이미지가 늦어도 2.4초 뒤엔 들어갑니다
 function enterWorld(greet = true) {
+  entered = true;
   gate.classList.add('done'); hud.hidden = false; canvas.focus({ preventScroll:true });
+  if (greet) waveT = 3.4;                              // 손 흔들어 인사
   if (greet) say('ELORA', '안녕하세요, 엘로라예요! 여기가 제 작업들이 모여 있는 마을이에요. 옆에 세워 둔 로봇을 타면 빨리 돌아볼 수 있어요.',
     [{ label:'🤖 로봇 타기', fn:() => rideBtn.click() },
      { label:'🚗 바로 주문하러', fn:() => goDrive(null) },
