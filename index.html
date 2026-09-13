@@ -574,21 +574,47 @@ body.world-on { overflow:hidden; }
 body.world-on .nav { display:none; }
 #w-canvas { display:block; width:100%; height:100%; touch-action:none; outline:none; }
 
-/* ── 로딩 · 시작 화면 ── */
-.w-gate { position:absolute; inset:0; z-index:6; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:1rem; text-align:center; background:var(--bg); background-image:var(--dots); background-size:4px 4px; padding:1.2rem; }
+/* ── 로딩 · 시작 화면 — 코어 로프 메모리 이야기 ── */
+.w-gate { position:absolute; inset:0; z-index:6; display:flex; align-items:center; justify-content:center;
+  background:var(--bg); background-image:var(--dots); background-size:4px 4px; padding:1.2rem; overflow-y:auto; }
 .w-gate.done { display:none; }
-.w-gate .logo { font-family:var(--display); font-size:clamp(2.4rem,9vw,4.6rem); letter-spacing:.12em; line-height:1; }
-.w-gate .sub { font-size:.95rem; color:var(--dim); max-width:30rem; line-height:1.6; }
-.w-gate .bar { width:min(320px,72vw); height:16px; border:var(--border); background:var(--surface); box-shadow:var(--shadow); }
-.w-gate .bar i { display:block; height:100%; width:0%; background:var(--hot); transition:width .3s ease; }
-.w-gate .pct { font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; color:var(--dim); }
-.w-gate .enter { font-family:var(--mono); font-size:.9rem; letter-spacing:.16em; padding:.9rem 1.8rem; cursor:pointer;
+.w-boot { width:min(880px, 96vw); margin:auto; background:var(--surface); border:var(--border);
+  box-shadow:6px 6px 0 rgba(20,20,20,.3); text-align:left; }
+.w-boot .tb { display:flex; align-items:center; gap:.55rem; padding:.5rem .7rem; background:var(--accent);
+  color:var(--accent-ink); font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; }
+.w-boot .tb .wb { display:flex; gap:4px; }
+.w-boot .tb .wb i { width:11px; height:11px; border:1.5px solid var(--accent-ink); display:block; }
+.w-boot .path { display:flex; gap:.6rem; font-family:var(--mono); font-size:.62rem; letter-spacing:.05em; color:var(--dim);
+  padding:.4rem .7rem; border-bottom:1.5px dashed var(--line); }
+.w-boot .path span { margin-left:auto; }
+.w-boot .bd { padding:.9rem 1.1rem 1.1rem; }
+.w-boot canvas { width:100%; height:auto; display:block; background:var(--paper2); border:1.5px solid var(--line); }
+.w-boot .cap { font-family:var(--mono); font-size:.64rem; letter-spacing:.05em; color:var(--dim); margin-top:.45rem; }
+.w-boot .cap b { color:var(--hot); }
+.w-boot h2 { font-size:clamp(1.15rem,2.8vw,1.6rem); font-weight:800; letter-spacing:-.02em; line-height:1.35; margin-top:.9rem; }
+.w-boot h2 em { font-style:normal; color:var(--hot); }
+.w-boot p { font-size:.9rem; line-height:1.78; margin-top:.5rem; }
+.w-boot .quote { font-size:.82rem; line-height:1.7; color:var(--dim); border-left:3px solid var(--line);
+  padding-left:.7rem; margin-top:.75rem; }
+.w-boot .note { font-size:.74rem; line-height:1.65; color:var(--dim); margin-top:.65rem; }
+.w-boot .bar { height:14px; border:1.5px solid var(--line); background:var(--bg); margin-top:1rem; }
+.w-boot .bar i { display:block; height:100%; width:0%; background:var(--hot); transition:width .3s ease; }
+.w-boot .pct { font-family:var(--mono); font-size:.64rem; letter-spacing:.14em; color:var(--dim); margin-top:.3rem; }
+.w-boot .acts { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:1rem; }
+.w-boot .acts .skip { margin-right:auto; }
+.w-boot .enter { font-family:var(--mono); font-size:.8rem; letter-spacing:.12em; padding:.75rem 1.2rem; cursor:pointer;
   background:var(--accent); color:var(--accent-ink); border:var(--border); box-shadow:var(--shadow); display:none; }
+.w-boot .enter.quiet { background:var(--surface); color:var(--fg); }
 .w-gate.ready .enter { display:inline-block; }
+.w-gate.ready .enter[hidden] { display:none; }
 .w-gate.ready .bar, .w-gate.ready .pct { display:none; }
-.w-gate .skip { font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; color:var(--dim); text-decoration:underline;
-  text-underline-offset:3px; background:none; border:0; cursor:pointer; }
+.w-boot .skip { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; color:var(--dim); text-decoration:underline;
+  text-underline-offset:3px; background:none; border:0; cursor:pointer; padding:.4rem 0; }
+@media(max-width:620px) {
+  .w-boot .quote, .w-boot .note { display:none; }     /* 좁은 화면에서는 핵심만 */
+  .w-boot .acts .skip { margin-right:0; width:100%; text-align:left; }
+  .w-boot .enter { flex:1; text-align:center; padding:.7rem .6rem; font-size:.72rem; }
+}
 
 /* ── HUD ── */
 .w-hud { position:absolute; inset:0; pointer-events:none; z-index:4; }
@@ -963,12 +989,31 @@ body { font-size:16.5px; }
   <canvas id="w-canvas" tabindex="0"></canvas>
 
   <div class="w-gate" id="w-gate">
-    <div class="logo">ELORA WORLD</div>
-    <p class="sub">AI 웹서비스 개발 · 기획부터 운영까지 한 사람이 끝까지.<br>3D 마을에서 제가 직접 안내해 드릴게요.</p>
-    <div class="bar"><i id="w-bar"></i></div>
-    <div class="pct" id="w-pct">마을 짓는 중… 0%</div>
-    <button type="button" class="enter" id="w-enter">▶ 마을 들어가기</button>
-    <button type="button" class="skip" id="w-skip">3D 없이 평범한 사이트로 보기</button>
+    <div class="w-boot">
+      <div class="tb"><span class="wb"><i></i><i></i><i></i></span> ELORA.SYS — 코어 로프 짜는 중…</div>
+      <div class="path">C:\ELORA\WORLD\boot.exe <span>Rope 1 · Weaving · OK</span></div>
+      <div class="bd">
+        <canvas id="w-loom" width="720" height="168" aria-hidden="true"></canvas>
+        <p class="cap" id="w-loom-cap">구리선이 코어를 <b>통과하면 1</b>, <b>비껴가면 0</b></p>
+
+        <h2>코드는 한때, 정말로 <em>짜는</em> 것이었습니다.</h2>
+        <p>1969년 달에 간 <b>아폴로 유도컴퓨터</b>의 프로그램은 구리선을 자기 코어에 손으로 꿰어 만들었습니다.
+          선이 코어를 통과하면 1, 비껴가면 0. 모듈 하나에 800m가 넘는 선이 들어갔고 짜는 데 8주가 걸렸습니다.
+          짠 사람들은 대부분 <b>방직공장에서 온 여성들</b>이었습니다.</p>
+        <p class="quote">“해석기관은 자카르 직조기가 꽃과 잎을 짜듯, 대수의 무늬를 짠다.”<br>
+          — 에이다 러브레이스, 1843</p>
+        <p class="note">※ ‘code’는 라틴어 <b>codex</b>(법전)에서 왔고, 컴퓨터를 가리키는 뜻으로 쓰인 건 1946년부터입니다.
+          코어 로프가 단어의 어원은 아니지만, 코드를 손으로 짜던 시절의 실물입니다.</p>
+
+        <div class="bar"><i id="w-bar"></i></div>
+        <div class="pct" id="w-pct">마을 짓는 중… 0%</div>
+        <div class="acts">
+          <button type="button" class="skip" id="w-skip">3D 없이 평범한 사이트로 보기</button>
+          <button type="button" class="enter quiet" id="w-enter-q">조용히 들어가기</button>
+          <button type="button" class="enter" id="w-enter" hidden>♪ 음악과 함께 들어가기 →</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="w-nogl">
@@ -2274,6 +2319,87 @@ document.querySelectorAll('.js-mail').forEach(a => {
 })();
 
 /* ══════════════════════════════════════════════════════════════
+   코어 로프 짜기 애니메이션 — 시작 화면에서 돕니다.
+   구리선이 자기 코어를 통과하면 1, 비껴가면 0.
+   글자 한 자(8비트)씩 실제로 짜 보여 줍니다: E L O R A
+   ══════════════════════════════════════════════════════════════ */
+{
+  const cv = document.getElementById('w-loom'), cap = document.getElementById('w-loom-cap');
+  const gateEl = document.getElementById('w-gate');
+  if (cv && cv.getContext) {
+    const ctx = cv.getContext('2d');
+    const W = 720, H = 168, N = 8;
+    const X0 = 58, GAP = (W - X0 * 2) / (N - 1), CY = 78, R = 21;
+    const WORD = 'ELORA';
+    let idx = 0, t0 = performance.now(), raf = 0;
+    const bitsOf = ch => ch.charCodeAt(0).toString(2).padStart(8, '0');
+
+    function ring(x, threaded) {                        // 자기 코어 (도넛)
+      ctx.lineWidth = 7; ctx.strokeStyle = threaded ? '#6B4A33' : '#8C7A66';
+      ctx.beginPath(); ctx.arc(x, CY, R, 0, Math.PI * 2); ctx.stroke();
+    }
+    function draw(now) {
+      if (!gateEl || gateEl.classList.contains('done')) { raf = 0; return; }
+      const bits = bitsOf(WORD[idx]);
+      const span = 2600, el = now - t0;
+      let p = Math.min(1, el / span);                   // 선이 나아간 정도
+      ctx.clearRect(0, 0, W, H);
+
+      // 코어 먼저
+      for (let i = 0; i < N; i++) ring(X0 + i * GAP, false);
+
+      // 구리선 — 1이면 코어를 통과, 0이면 위로 비껴감
+      const endX = X0 - 34 + p * (W - (X0 - 34) * 2 + 68);
+      ctx.save();
+      ctx.beginPath(); ctx.rect(0, 0, endX, H); ctx.clip();
+      ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#C97A3A';
+      ctx.beginPath(); ctx.moveTo(0, CY);
+      for (let i = 0; i < N; i++) {
+        const x = X0 + i * GAP;
+        if (bits[i] === '1') { ctx.lineTo(x + R + 10, CY); }        // 그대로 통과
+        else {                                                       // 위로 비껴감
+          ctx.lineTo(x - R - 14, CY);
+          ctx.quadraticCurveTo(x, CY - R - 64, x + R + 14, CY);
+        }
+      }
+      ctx.lineTo(W, CY); ctx.stroke();
+      ctx.restore();
+
+      if (p < 1) {                                     // 짜고 있는 바늘 끝
+        ctx.fillStyle = '#C05A3A';
+        ctx.beginPath(); ctx.arc(endX, CY, 6, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // 이미 지나간 코어는 진하게 + 비트 숫자
+      ctx.font = 'bold 17px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let i = 0; i < N; i++) {
+        const x = X0 + i * GAP, done = endX > x + R + 12;
+        if (bits[i] === '1' && done) {                   // 통과한 선 위에 코어 윗부분을 다시 그려 꿴 느낌
+          ring(x, true);
+          ctx.save(); ctx.beginPath(); ctx.rect(x - R - 9, 0, (R + 9) * 2, CY - 2); ctx.clip();
+          ring(x, true); ctx.restore();
+        } else if (done) ring(x, true);
+        ctx.fillStyle = done ? (bits[i] === '1' ? '#C05A3A' : '#8C7A66') : '#CFC4B4';
+        ctx.fillText(bits[i], x, CY + R + 26);
+      }
+
+      // 글자 이름표
+      ctx.font = 'bold 20px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#4A3524'; ctx.textAlign = 'left';
+      ctx.fillText(WORD[idx] + '  =  ' + bits, 14, 22);
+
+      if (p >= 1 && el > span + 700) { idx = (idx + 1) % WORD.length; t0 = now; }
+      raf = requestAnimationFrame(draw);
+    }
+    const start = () => { if (!raf) { t0 = performance.now(); raf = requestAnimationFrame(draw); } };
+    start();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) start(); });
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    배경음악 — 마을 BGM.
    · 자동 재생은 브라우저가 막습니다. 반드시 버튼(사용자 동작)으로 시작합니다.
    · 켜고 끈 선택은 브라우저에 기억해 둡니다.
@@ -2302,7 +2428,11 @@ document.querySelectorAll('.js-mail').forEach(a => {
     function play() {
       bgm.play().then(() => fadeTo(0.32)).catch(() => { want = false; label(false); });
     }
-    bgm.addEventListener('loadedmetadata', () => { btn.hidden = false; if (want) play(); }, { once:true });
+    bgm.addEventListener('loadedmetadata', () => {
+      btn.hidden = false;
+      dispatchEvent(new CustomEvent('elora-bgm-ready'));   // 시작 화면이 이걸 듣고 버튼을 냅니다
+      if (want) play();
+    }, { once:true });
     bgm.addEventListener('error', () => { btn.hidden = true; }, { once:true });
     btn.addEventListener('click', () => {
       want = !want; remember(want ? 'on' : 'off'); label(want);
@@ -2313,7 +2443,9 @@ document.querySelectorAll('.js-mail').forEach(a => {
     window.eloraBgm = {
       pause() { if (!bgm.paused) fadeTo(0, 400); },
       resume() { if (want) play(); },
+      start() { want = true; remember('on'); label(true); play(); },
       get on() { return want; },
+      get ready() { return !btn.hidden; },
     };
   }
 }
@@ -3339,11 +3471,16 @@ function progress() {
   $('w-bar').style.width = pct + '%'; $('w-pct').textContent = '마을 짓는 중… ' + pct + '%';
   if (loaded >= pending) openWhenReady();
 }
-/* 준비되면 버튼을 누를 필요 없이 바로 들어갑니다 (인사는 캐릭터가 합니다) */
+/* 준비되면 들어가기 버튼을 냅니다. (여기서 눌러 주는 덕분에 음악도 켤 수 있습니다 —
+   브라우저는 사용자가 누르기 전에는 소리를 재생하지 못하게 막습니다.) */
 function openWhenReady() {
   gate.classList.add('ready');
-  setTimeout(() => { if (!entered) enterWorld(true); }, 240);
+  const m = $('w-enter');
+  if (m) m.hidden = !(window.eloraBgm && window.eloraBgm.ready);
+  const q = $('w-enter-q');
+  if (q) q.textContent = (m && !m.hidden) ? '조용히 들어가기' : '▶ 마을 들어가기';
 }
+addEventListener('elora-bgm-ready', () => { if (gate.classList.contains('ready')) openWhenReady(); });
 camera.position.set(0, 12, -30);   // 뒤(북)에서 마을을 내려다봅니다
 yaw = Math.PI;
 setTimeout(openWhenReady, 2400);                      // 이미지가 늦어도 2.4초 뒤엔 들어갑니다
@@ -3356,7 +3493,11 @@ function enterWorld(greet = true) {
      { label:'🚗 바로 주문하러', fn:() => goDrive(null) },
      { label:'▶ 따라오세요', fn:startTour, ghost:true }]);
 }
-$('w-enter').addEventListener('click', () => enterWorld(true));
+$('w-enter').addEventListener('click', () => {
+  if (window.eloraBgm) window.eloraBgm.start();          // 누른 김에 음악도 켭니다
+  enterWorld(true);
+});
+$('w-enter-q').addEventListener('click', () => enterWorld(true));
 
 /* 주소로 바로 들어가기 — ?enter=1 (시작 화면 건너뜀) · ?go=work (그 건물 앞에서 시작) */
 {
