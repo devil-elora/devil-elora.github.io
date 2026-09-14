@@ -589,7 +589,7 @@ body.world-on .nav { display:none; }
 .g-foot .bar i { display:block; height:100%; width:0%; background:#E0A97A; transition:width .3s ease; }
 .g-foot .pct { font-family:var(--mono); font-size:.62rem; letter-spacing:.16em; color:#D8C6B4; margin-top:.35rem; }
 .w-gate.ready .bar, .w-gate.ready .pct { display:none; }
-.g-acts { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:.5rem; margin-top:.7rem; }
+.g-acts { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.5rem; margin-top:.7rem; }
 .g-acts .enter { font-family:var(--mono); font-size:.76rem; letter-spacing:.1em; padding:.7rem 1.1rem; cursor:pointer;
   background:#FFF3E4; color:#1B1620; border:1.5px solid #FFF3E4; display:none; }
 .g-acts .enter.quiet { background:transparent; color:#FFF3E4; }
@@ -3001,10 +3001,10 @@ const wheelSpin = [];
     gw.add(spoke);
   };
   wheel(-1.3, 1.2, 0.66); wheel(1.3, 1.2, 0.66); wheel(-1.15, -1.35, 0.54); wheel(1.15, -1.35, 0.54);
-  box(0.14, 1.2, 0.14, 0xFFFDF7, 0, 2.7, -1.25, robot);                   // 안테나
+  box(0.12, 1.0, 0.12, 0xFFFDF7, -0.88, 2.6, -1.35, robot);               // 안테나 (얼굴 안 가리게 옆으로)
   const ball = new THREE.Mesh(new THREE.SphereGeometry(0.26, 14, 12), new THREE.MeshStandardMaterial({
     color:0xE0453A, emissive:0xE0453A, emissiveIntensity:0.6, roughness:0.6 }));
-  ball.position.set(0, 3.35, -1.25); robot.add(ball);
+  ball.position.set(-0.88, 3.12, -1.35); robot.add(ball);
   const plate = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.48),
     new THREE.MeshBasicMaterial({ map: labelTex('ELORA', '#FFF7E8', '#4A3524', 256, 84) }));
   plate.position.set(0, 0.92, -2.09); robot.add(plate);
@@ -3109,6 +3109,25 @@ const legL = limbPart(0.34, 0.95, 0.34, PANTS, -0.27, 0.95, 0);
 const legR = limbPart(0.34, 0.95, 0.34, PANTS, 0.27, 0.95, 0);
 rball(0.24, SHOE, 0, -0.9, 0.12, legL, 1, 0.7, 1.35);
 rball(0.24, SHOE, 0, -0.9, 0.12, legR, 1, 0.7, 1.35);
+/* 옷: 아이보리 원피스 + 분홍 치마·퍼프 소매·리본 (브레드 이발소 톤) */
+const DRESS = 0xF6C6CD, RIBBON = 0xF2A79F, BTN = 0xE3D6BE;
+{
+  const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.76, 1.06, 0.62, 22), mat(DRESS));
+  skirt.position.y = 1.10; skirt.castShadow = true; skirt.receiveShadow = true; hero.add(skirt);
+  const hem = new THREE.Mesh(new THREE.TorusGeometry(1.03, 0.07, 10, 26), mat(0xFFFDF7));
+  hem.position.y = 0.80; hem.rotation.x = Math.PI / 2; hero.add(hem);          // 치마 밑단 레이스
+  const belt = new THREE.Mesh(new THREE.TorusGeometry(0.70, 0.075, 10, 24), mat(RIBBON));
+  belt.position.y = 1.40; belt.rotation.x = Math.PI / 2; hero.add(belt);       // 허리 띠
+  [1.62, 1.86, 2.02].forEach(by => rball(0.075, BTN, 0, by, 0.66, hero));      // 단추
+  rball(0.17, RIBBON, -0.21, 2.14, 0.42, hero, 1.3, 0.85, 0.5);                // 목 리본
+  rball(0.17, RIBBON, 0.21, 2.14, 0.42, hero, 1.3, 0.85, 0.5);
+  rball(0.09, RIBBON, 0, 2.14, 0.48, hero);
+  [armL, armR].forEach(a => {                                                   // 퍼프 소매
+    const puff = new THREE.Mesh(new THREE.SphereGeometry(0.31, 18, 14), mat(DRESS));
+    puff.position.set(0, -0.14, 0); puff.scale.set(1.12, 0.9, 1.12);
+    puff.castShadow = true; a.add(puff);
+  });
+}
 const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map:labelTex('ELORA', '#FFF7E8', '#4A3524', 512, 150), transparent:true }));
 tag.scale.set(2.5, 0.73, 1); tag.position.y = 4.5; hero.add(tag);
 const blob = new THREE.Mesh(new THREE.CircleGeometry(0.95, 22), new THREE.MeshBasicMaterial({ color:0x6B5A4A, transparent:true, opacity:0.15 }));
@@ -3579,6 +3598,24 @@ let gTube = null, gTubeCount = 0, gNeedle = null, gArmL = null, gArmR = null, gH
       gbox(0.32, 0.3, 0.95, 0x4C4A57, sx * 0.3, 0.42, 0.42, per, 0.9);
       gbox(0.9, 0.28, 0.3, 0x4C4A57, sx * 0.52, 0.42, 0.82, per, 0.9);
     });
+    /* 옷: 아이보리 원피스 + 분홍 치마·퍼프 소매·리본 */
+    const DRESS2 = 0xF6C6CD, RIBBON2 = 0xF2A79F;
+    const dressMat = new THREE.MeshStandardMaterial({ color: DRESS2, roughness: 0.9 });
+    const skirt2 = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.86, 0.42, 20), dressMat);
+    skirt2.position.set(0, 0.42, 0.04); skirt2.castShadow = true; per.add(skirt2);
+    const belt2 = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.055, 10, 22),
+      new THREE.MeshStandardMaterial({ color: RIBBON2, roughness: 0.9 }));
+    belt2.position.set(0, 0.62, 0); belt2.rotation.x = Math.PI / 2; per.add(belt2);
+    [0.82, 0.98, 1.10].forEach(by => {                                   // 단추
+      const b2 = new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 10),
+        new THREE.MeshStandardMaterial({ color: 0xE3D6BE, roughness: 0.8 }));
+      b2.position.set(0, by, 0.47); per.add(b2);
+    });
+    [-1, 1].forEach(sg => {                                              // 목 리본
+      const r2 = new THREE.Mesh(new THREE.SphereGeometry(0.13, 14, 12),
+        new THREE.MeshStandardMaterial({ color: RIBBON2, roughness: 0.9 }));
+      r2.position.set(sg * 0.16, 1.24, 0.34); r2.scale.set(1.3, 0.85, 0.5); per.add(r2);
+    });
     const armGeo = new RoundedBoxGeometry(0.22, 0.85, 0.22, 3, 0.1); armGeo.translate(0, -0.425, 0);
     const armMat = new THREE.MeshStandardMaterial({ color: TOP, roughness: 0.9 });
     gArmL = new THREE.Mesh(armGeo, armMat); gArmL.position.set(-0.5, 1.2, 0); gArmL.castShadow = true; per.add(gArmL);
@@ -3587,6 +3624,8 @@ let gTube = null, gTubeCount = 0, gNeedle = null, gArmL = null, gArmR = null, gH
       const hand = new THREE.Mesh(new THREE.SphereGeometry(0.15, 14, 12),
         new THREE.MeshStandardMaterial({ color: SKIN, roughness: 0.9 }));
       hand.position.set(0, -0.85, 0); am.add(hand);
+      const puff = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 12), dressMat);   // 퍼프 소매
+      puff.position.set(0, -0.11, 0); puff.scale.set(1.12, 0.9, 1.12); puff.castShadow = true; am.add(puff);
     });
   }
 
