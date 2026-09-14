@@ -3553,9 +3553,12 @@ function frame(now) {
     }
   }
   // 다음 목적지로 (자동 주행)
-  if (autoQ && !target) {
-    if (++autoQ.i < autoQ.pts.length) target = autoQ.pts[autoQ.i];
-    else { const done = autoQ.onEnd; autoQ = null; if (done) done(); }
+  if (autoQ) {
+    const wp = autoQ.pts[autoQ.i];
+    if (!wp || Math.hypot(hero.position.x - wp.x, hero.position.z - wp.z) < 1.3) {
+      if (++autoQ.i < autoQ.pts.length) target = autoQ.pts[autoQ.i];
+      else { const done = autoQ.onEnd; autoQ = null; if (done) done(); }
+    } else if (!target) target = wp;      // 장애물에 밀려 목표가 지워졌으면 다시 잡습니다
   }
 
   if (riding) {                          // 로봇에 앉은 모습
