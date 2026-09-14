@@ -2923,7 +2923,7 @@ LANGS.forEach(L => {
 const hero = new THREE.Group(); scene.add(hero);
 { const sp = roadAt(SPAWN_T), sg = road.getTangentAt(SPAWN_T);
   hero.position.set(sp.x, 0, sp.z); hero.rotation.y = Math.atan2(sg.x, sg.z); }
-const SKIN = 0xF7D9C4, SHIRT = 0x7FC9B9, HAIR = 0x4A3327, PANTS = 0x4C4A57, SHOE = 0xE8A0A8;
+const SKIN = 0xFAE3D2, SHIRT = 0xF4ECDC, HAIR = 0x1C1519, PANTS = 0x3E3C47, SHOE = 0xE8A0A8;
 function rball(r, color, x, y, z, parent, sx = 1, sy = 1, sz = 1) {
   const m = new THREE.Mesh(new THREE.SphereGeometry(r, 22, 18), mat(color));
   m.position.set(x, y, z); m.scale.set(sx, sy, sz);
@@ -2938,16 +2938,24 @@ function limbPart(w, h, d, color, x, y, z) {
 {
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.72, 1.25, 20), mat(SHIRT));
   body.position.y = 1.55; body.castShadow = true; body.receiveShadow = true; hero.add(body);
-  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.09, 10, 22), mat(0xFFFDF7));
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.09, 10, 22), mat(0xE3D6BE));
   collar.position.y = 2.14; collar.rotation.x = Math.PI / 2; hero.add(collar);
 }
 const head = rball(0.95, SKIN, 0, 2.95, 0, hero, 1, 0.96, 0.94);
-rball(0.99, HAIR, 0, 3.12, -0.06, hero, 1, 0.78, 1.0);                 // 머리카락
-rball(0.5, HAIR, 0, 2.72, -0.62, hero, 1, 1.1, 0.6);                   // 뒷머리
-rball(0.13, 0x2C2119, -0.31, 2.95, 0.82, hero, 1, 1.25, 0.5);          // 눈
-rball(0.13, 0x2C2119, 0.31, 2.95, 0.82, hero, 1, 1.25, 0.5);
-rball(0.05, 0xFFFFFF, -0.35, 3.03, 0.9, hero);
-rball(0.05, 0xFFFFFF, 0.27, 3.03, 0.9, hero);
+/* 긴 흑발 웨이브 · 시스루 앞머리 (사진 참고해 만든 모양) */
+rball(1.0, HAIR, 0, 3.18, -0.16, hero, 1.02, 0.76, 1.0);               // 윗머리
+rball(0.88, HAIR, 0, 3.40, 0.30, hero, 1.0, 0.24, 0.46);               // 앞머리(시스루 뱅)
+rball(0.86, HAIR, 0, 2.40, -0.74, hero, 1.08, 1.30, 0.62);             // 뒷머리 윗단
+rball(0.74, HAIR, 0, 1.52, -0.80, hero, 1.00, 1.10, 0.55);             // 뒷머리 아랫단
+[-1, 1].forEach(sg => {                                                 // 어깨 앞으로 흘러내린 머리
+  rball(0.40, HAIR, sg * 1.04, 2.46, -0.12, hero, 0.56, 1.70, 0.88);
+  rball(0.34, HAIR, sg * 1.00, 1.62, -0.10, hero, 0.58, 1.35, 0.84);
+  rball(0.26, HAIR, sg * 0.94, 1.02, -0.08, hero, 0.60, 1.05, 0.78);    // 끝단 웨이브
+});
+rball(0.145, 0x2C2119, -0.34, 2.93, 0.80, hero, 1, 1.2, 0.5);          // 눈
+rball(0.145, 0x2C2119, 0.34, 2.93, 0.80, hero, 1, 1.2, 0.5);
+rball(0.052, 0xFFFFFF, -0.38, 3.01, 0.89, hero);
+rball(0.052, 0xFFFFFF, 0.30, 3.01, 0.89, hero);
 rball(0.2, 0xF6AFB4, -0.62, 2.72, 0.6, hero, 1, 0.62, 0.35);           // 볼
 rball(0.2, 0xF6AFB4, 0.62, 2.72, 0.6, hero, 1, 0.62, 0.35);
 {
@@ -3389,7 +3397,7 @@ let gTube = null, gTubeCount = 0, gNeedle = null, gArmL = null, gArmR = null, gH
   /* ── 바닥에 앉아 코일을 짜는 사람 ── */
   {
     const per = new THREE.Group(); per.position.set(-2.6, 0, 1.6); per.rotation.y = 0.88; gScene.add(per);
-    const SKIN = 0xF7D9C4, TOP = 0x7FC9B9, HAIR = 0x3A2A20;
+    const SKIN = 0xFAE3D2, TOP = 0xF4ECDC, HAIR = 0x1C1519;
     gbox(1.5, 0.3, 1.5, 0xF2A79F, 0, 0.15, 0, per, 0.95);                 // 방석
     const body = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.56, 0.95, 18),
       new THREE.MeshStandardMaterial({ color: TOP, roughness: 0.9 }));
@@ -3397,12 +3405,22 @@ let gTube = null, gTubeCount = 0, gNeedle = null, gArmL = null, gArmR = null, gH
     gHead = new THREE.Mesh(new THREE.SphereGeometry(0.42, 22, 18),
       new THREE.MeshStandardMaterial({ color: SKIN, roughness: 0.9 }));
     gHead.position.set(0, 1.6, 0.02); gHead.castShadow = true; per.add(gHead);
-    const hair = new THREE.Mesh(new THREE.SphereGeometry(0.44, 22, 18),
-      new THREE.MeshStandardMaterial({ color: HAIR, roughness: 0.95 }));
-    hair.position.set(0, 0.08, -0.06); hair.scale.set(1, 0.8, 1); gHead.add(hair);
-    const bun = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 14),
-      new THREE.MeshStandardMaterial({ color: HAIR, roughness: 0.95 }));
-    bun.position.set(0, 0.16, -0.42); gHead.add(bun);
+    const hairMat = new THREE.MeshStandardMaterial({ color: HAIR, roughness: 0.95 });
+    const hair = new THREE.Mesh(new THREE.SphereGeometry(0.44, 22, 18), hairMat);
+    hair.position.set(0, 0.09, -0.06); hair.scale.set(1.02, 0.82, 1.02); gHead.add(hair);
+    const bang = new THREE.Mesh(new THREE.SphereGeometry(0.43, 20, 16), hairMat);   // 시스루 앞머리
+    bang.position.set(0, 0.22, 0.14); bang.scale.set(1.0, 0.24, 0.48); gHead.add(bang);
+    // 긴 머리 (몸 기준으로 붙여 고개를 움직여도 흐트러지지 않게)
+    const lock = (r, x, y, z, sx, sy, sz) => {
+      const m2 = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), hairMat);
+      m2.position.set(x, y, z); m2.scale.set(sx, sy, sz); m2.castShadow = true; per.add(m2);
+    };
+    lock(0.40, 0, 1.30, -0.30, 1.08, 1.45, 0.70);          // 뒷머리 윗단
+    lock(0.33, 0, 0.82, -0.32, 1.00, 1.20, 0.62);          // 뒷머리 아랫단
+    [-1, 1].forEach(sg => {
+      lock(0.20, sg * 0.46, 1.34, -0.04, 0.58, 1.70, 0.90); // 어깨 앞
+      lock(0.16, sg * 0.44, 0.90, -0.06, 0.60, 1.30, 0.84);
+    });
     const dark = new THREE.MeshStandardMaterial({ color: 0x2C2119, roughness: 0.6 });
     const blush = new THREE.MeshStandardMaterial({ color: 0xF6AFB4, roughness: 0.9 });
     [-0.14, 0.14].forEach(ex => {
