@@ -2882,6 +2882,50 @@ const wheelSpin = [];
   robot.rotation.y = Math.atan2(rg.x, rg.z);
 }
 
+/* ── 마을 주민: 프로그래밍 언어들 ──────────────────────────────────
+   길 안쪽에 서 있습니다. 가까이 가면 그 언어가 어떤 언어인지 한 줄 말해 줍니다.
+   (공식 마스코트가 아니라 빵·디저트풍으로 새로 그린 캐릭터입니다. 색만 각 언어 것을 씁니다.) */
+const LANGS = [
+  { t:0.085, name:'HTML',  color:0xE34F26, say:'저는 뼈대를 세워요. 제목·문단·버튼이 어디에 있는지 정하죠. 꾸미는 건 CSS가 해요.' },
+  { t:0.180, name:'CSS',   color:0x2E8BD6, say:'색·크기·배치는 제 일이에요. 같은 뼈대도 제가 입히면 완전히 달라 보여요.' },
+  { t:0.275, name:'JS',    color:0xF7DF1E, say:'브라우저가 저를 그대로 실행해요. 누르면 반응하는 건 거의 다 제가 합니다.' },
+  { t:0.375, name:'TS',    color:0x3178C6, say:'자바스크립트에 타입을 붙여요. 실행하기 전에 실수를 먼저 잡아 줍니다.' },
+  { t:0.455, name:'PYTHON',color:0x4B8BBE, say:'들여쓰기가 곧 문법이에요. 그래서 남이 쓴 코드도 잘 읽힙니다.' },
+  { t:0.585, name:'SQL',   color:0x7E8BA0, say:'어떻게 찾을지는 저한테 맡기고, 무엇이 필요한지만 적으시면 돼요.' },
+  { t:0.675, name:'GO',    color:0x30C3E0, say:'여러 일을 동시에 하는 기능이 처음부터 들어 있어요. 그래서 가볍고 빠릅니다.' },
+  { t:0.765, name:'RUST',  color:0xCE7A2E, say:'컴파일할 때 메모리를 안전하게 쓰는지 확인해요. 실행 중에 터지는 일이 적습니다.' },
+];
+const langNodes = [];
+LANGS.forEach(L => {
+  const pp = roadAt(L.t), n = outAt(L.t);
+  const x = pp.x - n.x * (ROAD_W / 2 + 1.5), z = pp.z - n.z * (ROAD_W / 2 + 1.5);   // 길 안쪽에 섭니다
+  const g = new THREE.Group(); g.position.set(x, 0, z);
+  g.rotation.y = Math.atan2(n.x, n.z);                        // 길 쪽을 바라봅니다
+  scene.add(g);
+  const bodyGeo = new RoundedBoxGeometry(1.5, 1.7, 1.2, 4, 0.5);
+  const body = new THREE.Mesh(bodyGeo, mat(L.color));
+  body.position.y = 1.0; body.castShadow = true; body.receiveShadow = true; g.add(body);
+  const crust = new THREE.Mesh(new RoundedBoxGeometry(1.58, 0.42, 1.28, 4, 0.2), mat(0xF0DCC0));
+  crust.position.y = 1.72; crust.castShadow = true; g.add(crust);                   // 빵 윗면
+  [-0.33, 0.33].forEach(ex => {
+    const e = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), mat(0x2C2119));
+    e.position.set(ex, 1.18, 0.61); e.scale.set(1, 1.3, 0.6); g.add(e);
+  });
+  [-0.55, 0.55].forEach(cx => {
+    const c = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 10), mat(0xF6AFB4));
+    c.position.set(cx, 1.0, 0.52); c.scale.set(1, 0.6, 0.35); g.add(c);
+  });
+  const smile = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.03, 8, 14, Math.PI), mat(0xB0503F));
+  smile.position.set(0, 0.95, 0.62); smile.rotation.z = Math.PI; g.add(smile);
+  [-0.35, 0.35].forEach(fx => box(0.42, 0.22, 0.62, 0x4C4A57, fx, 0.11, 0.12, g));
+  box(2.15, 0.68, 0.14, 0xF0DCC0, 0, 2.3, 0, g);                                    // 이름표
+  const plate = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 0.55),
+    new THREE.MeshBasicMaterial({ map: labelTex(L.name, '#FFF7E8', '#4A3524', 512, 140) }));
+  plate.position.set(0, 2.3, 0.09); g.add(plate);
+  L.pos = { x, z }; L.node = g; langNodes.push(g);
+  colliders.push({ x, z, w:0.9, d:0.8 });
+});
+
 /* ── 캐릭터 (둥글둥글한 비율 — 실제 3D 캐릭터가 오면 이 그룹만 교체) ── */
 const hero = new THREE.Group(); scene.add(hero);
 { const sp = roadAt(SPAWN_T), sg = road.getTangentAt(SPAWN_T);
@@ -3175,10 +3219,19 @@ function drawMap() {
 }
 
 /* ── 근접 확인 ── */
+let nearLang = null;
 function checkNear() {
   let found = null;
   for (const b of BUILDINGS) if (Math.hypot(hero.position.x - b.door.x, hero.position.z - b.door.z) < 3.4) { found = b; break; }
   if (!found && Math.hypot(hero.position.x - DRIVE.door.x, hero.position.z - DRIVE.door.z) < 4.4) found = DRIVE;
+  // 언어 주민 (건물 근처가 아닐 때만)
+  let lang = null;
+  if (!found) for (const L of LANGS)
+    if (Math.hypot(hero.position.x - L.pos.x, hero.position.z - L.pos.z) < 3.6) { lang = L; break; }
+  if (lang !== nearLang) {
+    nearLang = lang;
+    if (lang) { say(lang.name, lang.say, [], 7000); whereEl.textContent = lang.name + ' 주민'; }
+  }
   if (found !== near) {
     near = found;
     if (near) {
@@ -3420,6 +3473,37 @@ function disposeGate() {                                   // 들어가면 메�
   gScene.clear(); gTube = null; gNeedle = null;
 }
 
+/* ── 동물의 숲식 "말리는 지평선" (Rolling Log) ────────────────────────
+   멀어질수록 바닥이 아래로 휘어, 하늘과 땅이 한 화면에 같이 들어옵니다.
+   캐릭터 주변(uFocus 안쪽)은 휘지 않습니다 — 그림자가 어긋나지 않게 하려는 것입니다. */
+const uCurve = { value: 0.0016 }, uFocus = { value: 15 };
+const BEND = `vec4 mvPosition = vec4( transformed, 1.0 );
+#ifdef USE_INSTANCING
+  mvPosition = instanceMatrix * mvPosition;
+#endif
+mvPosition = modelViewMatrix * mvPosition;
+float bendD = max( 0.0, -mvPosition.z - uFocus );
+mvPosition.y -= bendD * bendD * uCurve;
+gl_Position = projectionMatrix * mvPosition;`;
+function bendAll() {
+  scene.traverse(o => {
+    if (!o.material) return;
+    (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+      // 하늘 구(안쪽에서 보는 BackSide)는 휘면 안 됩니다
+      if (!m || m.userData.bent || m.isSpriteMaterial || m.side === THREE.BackSide) return;
+      m.userData.bent = true;
+      const prev = m.onBeforeCompile;
+      m.onBeforeCompile = sh => {
+        if (prev) prev(sh);
+        sh.uniforms.uCurve = uCurve; sh.uniforms.uFocus = uFocus;
+        sh.vertexShader = 'uniform float uCurve;\nuniform float uFocus;\n' + sh.vertexShader;
+        sh.vertexShader = sh.vertexShader.replace('#include <project_vertex>', BEND);
+      };
+      m.needsUpdate = true;
+    });
+  });
+}
+
 /* ── 프레임 ── */
 let walk = 0, last = performance.now(), running = false, waveT = 0;
 const camPos = new THREE.Vector3(0, 9, 26);
@@ -3498,6 +3582,7 @@ function frame(now) {
     }
   }
   drop.position.y = 2.4 + Math.sin(now / 500) * 0.12; drop.rotation.y += dt;
+  if (!reduce) langNodes.forEach((g2, i) => { g2.position.y = Math.abs(Math.sin(now / 700 + i)) * 0.12; });
   if (!reduce) {                                  // 구름 · 나비 · 풍차
     clouds.forEach(c => { c.position.x += dt * c.userData.v; if (c.position.x > 72) c.position.x = -72; });
     flutter.forEach((b, i) => {
@@ -3611,6 +3696,7 @@ document.fonts.ready.then(() => {   // 픽셀 서체가 늦게 오면 글자만 
   if (menuFace) { menuFace.material.map = menuTex(); menuFace.material.needsUpdate = true; }
 });
 /* 콘솔/자동화용 — eloraWorld.goto('work') 처럼 쓸 수 있습니다 */
+bendAll();                       // 마지막에 한 번 — 이후 추가된 것은 안 휩니다
 ready = true; kickFn = kick;
 window.eloraWorld = {
   list: () => BUILDINGS.map(b => b.key),
@@ -3619,6 +3705,7 @@ window.eloraWorld = {
   enter(id) { const b = BUILDINGS.find(x => x.key === id); if (!b) return false; enterRoom(b); return true; },
   pos: () => ({ x: +hero.position.x.toFixed(2), z: +hero.position.z.toFixed(2), near: near && near.key }),
   ride: on => setRide(on !== false),
+  curve: v => { uCurve.value = v; return uCurve.value; },     // 0 이면 평평, 0.0016 이 기본
   /* 2D 지도의 "주문하러 가기"가 부르는 문 — 마을을 열고 로봇으로 드라이브 스루까지 갑니다 */
   driveThru(fromName) {
     toWorld(); gate.classList.add('ready', 'done'); hud.hidden = false;
