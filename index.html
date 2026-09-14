@@ -589,10 +589,7 @@ body.world-on .nav { display:none; }
 .g-foot .bar i { display:block; height:100%; width:0%; background:#E0A97A; transition:width .3s ease; }
 .g-foot .pct { font-family:var(--mono); font-size:.62rem; letter-spacing:.16em; color:#D8C6B4; margin-top:.35rem; }
 .w-gate.ready .bar, .w-gate.ready .pct { display:none; }
-.g-acts { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:.7rem; }
-.g-acts .skip { margin-right:auto; font-family:var(--mono); font-size:.62rem; letter-spacing:.08em; color:#B9A897;
-  text-decoration:underline; text-underline-offset:3px; background:none; border:0; cursor:pointer; padding:.3rem 0; }
-.g-acts .skip:hover { color:#FFF3E4; }
+.g-acts { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:.5rem; margin-top:.7rem; }
 .g-acts .enter { font-family:var(--mono); font-size:.76rem; letter-spacing:.1em; padding:.7rem 1.1rem; cursor:pointer;
   background:#FFF3E4; color:#1B1620; border:1.5px solid #FFF3E4; display:none; }
 .g-acts .enter.quiet { background:transparent; color:#FFF3E4; }
@@ -600,8 +597,7 @@ body.world-on .nav { display:none; }
 .w-gate.ready .enter { display:inline-block; }
 .w-gate.ready .enter[hidden] { display:none; }
 @media(max-width:560px) {
-  .g-acts .skip { margin-right:0; width:100%; }
-  .g-acts .enter { flex:1; text-align:center; padding:.65rem .5rem; font-size:.68rem; }
+  .g-acts .enter { flex:1; text-align:center; padding:.65rem .5rem; font-size:.72rem; }
 }
 
 .w-nogl { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:.8rem;
@@ -879,9 +875,7 @@ body { font-size:16.5px; }
       <div class="bar"><i id="w-bar"></i></div>
       <div class="pct" id="w-pct">0%</div>
       <div class="g-acts">
-        <button type="button" class="skip" id="w-skip">3D 없이 평범한 사이트로 보기</button>
-        <button type="button" class="enter quiet" id="w-enter-q">조용히 들어가기</button>
-        <button type="button" class="enter" id="w-enter" hidden>♪ 음악과 함께 들어가기 →</button>
+        <button type="button" class="enter" id="w-enter">▶ 마을 들어가기</button>
       </div>
     </div>
   </div>
@@ -2313,7 +2307,6 @@ function toWorld() {
   scrollTo(0, 0); canvas.focus({ preventScroll:true });
   if (ready && kickFn) kickFn();              // 준비 전(초기화 중)에는 맨 아래 kick() 이 돌립니다
 }
-$('w-skip').addEventListener('click', () => toSite('top'));
 $('w-nogl-go').addEventListener('click', () => toSite('top'));
 $('w-back').addEventListener('click', toWorld);
 $('w-exit').addEventListener('click', () => toSite('top'));
@@ -3635,14 +3628,7 @@ function progress() {
 }
 /* 준비되면 들어가기 버튼을 냅니다. (여기서 눌러 주는 덕분에 음악도 켤 수 있습니다 —
    브라우저는 사용자가 누르기 전에는 소리를 재생하지 못하게 막습니다.) */
-function openWhenReady() {
-  gate.classList.add('ready');
-  const m = $('w-enter');
-  if (m) m.hidden = !(window.eloraBgm && window.eloraBgm.ready);
-  const q = $('w-enter-q');
-  if (q) q.textContent = (m && !m.hidden) ? '조용히 들어가기' : '▶ 마을 들어가기';
-}
-addEventListener('elora-bgm-ready', () => { if (gate.classList.contains('ready')) openWhenReady(); });
+function openWhenReady() { gate.classList.add('ready'); }
 camera.position.set(0, 12, -30);   // 뒤(북)에서 마을을 내려다봅니다
 yaw = Math.PI;
 setTimeout(openWhenReady, 2400);                      // 이미지가 늦어도 2.4초 뒤엔 들어갑니다
@@ -3657,10 +3643,9 @@ function enterWorld(greet = true) {
      { label:'▶ 따라오세요', fn:startTour, ghost:true }]);
 }
 $('w-enter').addEventListener('click', () => {
-  if (window.eloraBgm) window.eloraBgm.start();          // 누른 김에 음악도 켭니다
+  if (window.eloraBgm) window.eloraBgm.start();          // 누른 김에 음악도 켭니다 (있을 때만)
   enterWorld(true);
 });
-$('w-enter-q').addEventListener('click', () => enterWorld(true));
 
 /* 주소로 바로 들어가기 — ?enter=1 (시작 화면 건너뜀) · ?go=work (그 건물 앞에서 시작) */
 {
